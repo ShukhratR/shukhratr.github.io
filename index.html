@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shukhrat Rustamov | Senior QA Automation Engineer</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/icons.css">
     <style>
         * {
             margin: 0;
@@ -18,6 +17,57 @@
             color: #ffffff;
             line-height: 1.6;
             overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Diagonal Grid Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(45deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(-45deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Green Glow Effects */
+        .glow-effect {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(0, 255, 163, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .glow-1 {
+            top: 10%;
+            left: 5%;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .glow-2 {
+            top: 60%;
+            right: 10%;
+            animation: float 10s ease-in-out infinite reverse;
+        }
+
+        .glow-3 {
+            bottom: 20%;
+            left: 30%;
+            animation: float 12s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(30px, -30px) scale(1.1); }
         }
 
         .header {
@@ -42,6 +92,8 @@
             padding: 0.5rem 1.5rem 0.5rem 0.5rem;
             border-radius: 50px;
             border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            z-index: 10;
         }
 
         .profile-avatar {
@@ -76,6 +128,8 @@
             border-radius: 50px;
             border: 1px solid rgba(0, 255, 163, 0.3);
             font-size: 0.9rem;
+            position: relative;
+            z-index: 10;
         }
 
         .status-dot {
@@ -87,8 +141,8 @@
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+            0%, 100% { opacity: 1; box-shadow: 0 0 10px rgba(0, 255, 163, 0.5); }
+            50% { opacity: 0.5; box-shadow: 0 0 20px rgba(0, 255, 163, 0.8); }
         }
 
         .hero {
@@ -101,6 +155,7 @@
             padding: 2rem;
             position: relative;
             padding-top: 100px;
+            z-index: 10;
         }
 
         .hero h1 {
@@ -109,6 +164,8 @@
             line-height: 1.1;
             margin-bottom: 1.5rem;
             max-width: 1000px;
+            position: relative;
+            z-index: 10;
         }
 
         .hero p {
@@ -116,6 +173,8 @@
             color: rgba(255, 255, 255, 0.7);
             max-width: 700px;
             margin: 0 auto 3rem;
+            position: relative;
+            z-index: 10;
         }
 
         .cta-button {
@@ -130,6 +189,8 @@
             font-weight: 600;
             font-size: 1.1rem;
             transition: all 0.3s ease;
+            position: relative;
+            z-index: 10;
         }
 
         .cta-button:hover {
@@ -139,36 +200,46 @@
 
         .companies {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 3rem;
             align-items: center;
             justify-content: center;
             margin-top: 4rem;
-            max-width: 800px;
+            max-width: 900px;
             width: 100%;
+            position: relative;
+            z-index: 10;
         }
 
         .company-logo {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 0.5rem;
+            gap: 1rem;
             opacity: 0.6;
-            transition: opacity 0.3s ease;
+            transition: all 0.3s ease;
         }
 
         .company-logo:hover {
             opacity: 1;
+            transform: translateY(-5px);
         }
 
-        .company-logo img {
-            height: 40px;
-            width: auto;
-            filter: brightness(0) invert(1);
+        .company-logo-img {
+            width: 60px;
+            height: 60px;
+            background: rgba(0, 255, 163, 0.1);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            border: 1px solid rgba(0, 255, 163, 0.2);
+            padding: 0.5rem;
         }
 
         .company-logo span {
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             font-weight: 500;
             letter-spacing: 0.5px;
         }
@@ -177,6 +248,8 @@
             padding: 6rem 2rem;
             max-width: 1200px;
             margin: 0 auto;
+            position: relative;
+            z-index: 10;
         }
 
         h2 {
@@ -207,12 +280,32 @@
             border-radius: 20px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 20px;
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(0, 255, 163, 0.2), transparent);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
         .service-card:hover {
             background: rgba(255, 255, 255, 0.05);
             border-color: rgba(0, 255, 163, 0.3);
             transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(0, 255, 163, 0.1);
+        }
+
+        .service-card:hover::before {
+            opacity: 1;
         }
 
         .service-icon {
@@ -254,6 +347,7 @@
         .experience-item:hover {
             background: rgba(255, 255, 255, 0.05);
             border-color: rgba(0, 255, 163, 0.3);
+            box-shadow: 0 5px 30px rgba(0, 255, 163, 0.1);
         }
 
         .experience-header {
@@ -355,20 +449,21 @@
         }
 
         .skill-tag {
-            background: rgba(0, 255, 163, 0.1);
+            background: rgba(0, 255
+            , 255, 163, 0.1);
             padding: 0.6rem 1.2rem;
             border-radius: 20px;
             font-size: 0.9rem;
             border: 1px solid rgba(0, 255, 163, 0.2);
-            display: flex;
+            display: inline-flex;
             align-items: center;
             gap: 0.5rem;
+            transition: all 0.3s ease;
         }
 
-        .skill-icon {
-            width: 20px;
-            height: 20px;
-            filter: brightness(0) saturate(100%) invert(88%) sepia(23%) saturate(3567%) hue-rotate(99deg) brightness(102%) contrast(101%);
+        .skill-tag:hover {
+            background: rgba(0, 255, 163, 0.2);
+            transform: translateY(-2px);
         }
 
         .contact-section {
@@ -397,6 +492,7 @@
             background: rgba(255, 255, 255, 0.05);
             border-color: rgba(0, 255, 163, 0.3);
             transform: translateY(-5px);
+            box-shadow: 0 5px 30px rgba(0, 255, 163, 0.1);
         }
 
         .contact-icon {
@@ -413,6 +509,11 @@
             color: #00ffa3;
             text-decoration: none;
             font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+
+        .contact-card a:hover {
+            color: #00ffbb;
         }
 
         .footer {
@@ -444,6 +545,11 @@
     </style>
 </head>
 <body>
+    <!-- Glow Effects -->
+    <div class="glow-effect glow-1"></div>
+    <div class="glow-effect glow-2"></div>
+    <div class="glow-effect glow-3"></div>
+
     <header class="header">
         <div class="profile-badge">
             <div class="profile-avatar">SR</div>
@@ -473,19 +579,19 @@
 
         <div class="companies">
             <div class="company-logo">
-                <img src="https://logo.clearbit.com/cnb.com" alt="City National Bank" onerror="this.style.display='none'">
+                <div class="company-logo-img">🏦</div>
                 <span>City National Bank</span>
             </div>
             <div class="company-logo">
-                <img src="https://logo.clearbit.com/capitalgroup.com" alt="Capital Group" onerror="this.style.display='none'">
+                <div class="company-logo-img">💼</div>
                 <span>Capital Group</span>
             </div>
             <div class="company-logo">
-                <img src="https://logo.clearbit.com/lacare.org" alt="LA Care" onerror="this.style.display='none'">
+                <div class="company-logo-img">🏥</div>
                 <span>LA Care</span>
             </div>
             <div class="company-logo">
-                <img src="https://logo.clearbit.com/verizon.com" alt="Verizon" onerror="this.style.display='none'">
+                <div class="company-logo-img">📱</div>
                 <span>Verizon</span>
             </div>
         </div>
@@ -607,132 +713,69 @@
             <div class="skill-category">
                 <h3>Languages</h3>
                 <div class="skill-tags">
-                    <span class="skill-tag">
-                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/typescript.svg" class="skill-icon" alt="TypeScript">
-                        TypeScript
-                    </span>
-                    <span class="skill-tag">
-                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/javascript.svg" class="skill-icon" alt="JavaScript">
-                        JavaScript
-                    </span>
-                    <span class="skill-tag">
-                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/java.svg" class="skill-icon" alt="Java">
-                        Java
-                    </span>
-                    <span class="skill-tag">
-                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/csharp.svg" class="skill-icon" alt="C#">
-                        C#
-                    </span>
-                    <span class="skill-tag">SQL</span>
-                    <span class="skill-tag">Gherkin</span>
+                    <span class="skill-tag">📘 TypeScript</span>
+                    <span class="skill-tag">📙 JavaScript</span>
+                    <span class="skill-tag">☕ Java</span>
+                    <span class="skill-tag">🔷 C#</span>
+                    <span class="skill-tag">🗄️ SQL</span>
+                    <span class="skill-tag">🥒 Gherkin</span>
                 </div>
             </div>
 
             <div class="skill-category">
                 <h3>Test Automation</h3>
                 <div class="skill-tags">
-                    <span class="skill-tag">
-                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/playwright.svg" class="skill-icon" alt="Playwright">
-                        Playwright
-                    </span>
-                    <span class="skill-tag">
-                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/selenium.svg" class="skill-icon" alt="Selenium">
-                        Selenium
-                    </span>
-                    <span class="skill-tag">JUnit</span>
-                    <span class="skill-tag">TestNG</span>
-                    <span class="skill-tag">
-                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/cucumber.svg" class="skill-icon" alt="Cucumber">
-                        Cucumber BDD
-                    </span>
-                    <span class="skill-tag">JMeter</span>
+                    <span class="skill-tag">🎭 Playwright</span>
+                    <span class="skill-tag">🔍 Selenium</span>
+                    <span class="skill-tag">✅ JUnit</span>
+                    <span class="skill-tag">🧪 TestNG</span>
+                    <span class="skill-tag">🥒 Cucumber BDD</span>
+                    <span class="skill-tag">⚡ JMeter</span>
                 </div>
             </div>
 
             <div class="skill-category">
                 <h3>Framework Design</h3>
                 <div class="skill-tags">
-                    <span class="skill-tag">Page Object Model</span>
-                    <span class="skill-tag">Data-Driven Testing</span>
-                    <span class="skill-tag">BDD</span>
-                    <span class="skill-tag">Fixtures</span>
-                    <span class="skill-tag">Parallel Execution</span>
+                    <span class="skill-tag">📄 Page Object Model</span>
+                    <span class="skill-tag">📊 Data-Driven Testing</span>
+                    <span class="skill-tag">🥒 BDD</span>
+                    <span class="skill-tag">🔧 Fixtures</span>
+                    <span class="skill-tag">⚡ Parallel Execution</span>
                 </div>
             </div>
 
             <div class="skill-category">
                 <h3>CI/CD & DevOps</h3>
                 <div class="skill-tags">
-                    <span class="skill-tag">
-                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/azuredevops.svg" class="skill-icon" alt="Azure DevOps">
-                        Azure DevOps
-                    </span>
-                    <span class="skill-tag">
-                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/jenkins.svg" class="skill-icon" alt="Jenkins">
-                        Jenkins
-                    </span>
-                    <span class="skill-tag">
-                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/github.svg" class="skill-icon" alt="GitHub">
-                        GitHub
-                    </span>
-                    <span class="skill-tag">
-                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/gitlab.svg" class="skill-icon" alt="GitLab">
-                        GitLab
-                    </span>
-                    <span class="skill-tag">
-                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/postman.svg" class="skill-icon" alt="Postman">
-                        Postman
-                    </span>
-                    <span class="skill-tag">
-                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/jira.svg" class="skill-icon" alt="Jira">
-                        Jira
-                    </span>
+                    <span class="skill-tag">☁️ Azure DevOps</span>
+                    <span class="skill-tag">🔨 Jenkins</span>
+                    <span class="skill-tag">🐙 GitHub</span>
+                    <span class="skill-tag">🦊 GitLab</span>
+                    <span class="skill-tag">📮 Postman</span>
+                    <span class="skill-tag">📋 Jira</span>
                 </div>
             </div>
 
             <div class="skill-category">
                 <h3>Databases</h3>
                 <div class="skill-tags">
-                    <span class="skill-tag">
-                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/postgresql.svg" class="skill-icon" alt="PostgreSQL">
-                        PostgreSQL
-                    </span>
-                    <span class="skill-tag">
-                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/oracle.svg" class="skill-icon" alt="Oracle">
-                        Oracle
-                    </span>
-                    <span class="skill-tag">
-                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/mysql.svg" class="skill-icon" alt="MySQL">
-                        MySQL
-                    </span>
-                    <span class="skill-tag">SQLite</span>
-                    <span class="skill-tag">JDBC</span>
+                    <span class="skill-tag">🐘 PostgreSQL</span>
+                    <span class="skill-tag">🔴 Oracle</span>
+                    <span class="skill-tag">🐬 MySQL</span>
+                    <span class="skill-tag">💾 SQLite</span>
+                    <span class="skill-tag">🔌 JDBC</span>
                 </div>
             </div>
 
             <div class="skill-category">
                 <h3>Platforms & Tools</h3>
                 <div class="skill-tags">
-                    <span class="skill-tag">
-                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/salesforce.svg" class="skill-icon" alt="Salesforce">
-                        Salesforce
-                    </span>
-                    <span class="skill-tag">
-                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/visualstudiocode.svg" class="skill-icon" alt="VS Code">
-                        VS Code
-                    </span>
-                    <span class="skill-tag">
-                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/intellijidea.svg" class="skill-icon" alt="IntelliJ">
-                        IntelliJ
-                    </span>
-                    <span class="skill-tag">
-                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/docker.svg" class="skill-icon" alt="Docker">
-                        Docker
-                    </span>
-                    <span class="skill-tag">
-                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/amazonwebservices.svg" class="skill-icon" alt="AWS">
-                        AWS
-                    </span>
+                    <span class="skill-tag">☁️ Salesforce</span>
+                    <span class="skill-tag">💻 VS Code</span>
+                    <span class="skill-tag">🧠 IntelliJ</span>
+                    <span class="skill-tag">🐳 Docker</span>
+                    <span class="skill-tag">☁️ AWS</span>
                 </div>
             </div>
         </div>
@@ -758,7 +801,6 @@
             <div class="contact-card">
                 <div class="contact-icon">💼</div>
                 <h3>LinkedIn</h3>
-                <a href="https://linkedin.com/in/shu
                 <a href="https://linkedin.com/in/shukhrat-rustamov" target="_blank">Connect on LinkedIn</a>
             </div>
 
