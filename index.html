@@ -24,34 +24,42 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: var(--bg-dark);
+            /* Sky gradient background with radial sphere effect */
+            background: radial-gradient(ellipse at center, 
+                rgba(20, 20, 60, 1) 0%,
+                rgba(15, 15, 45, 1) 25%,
+                rgba(10, 10, 30, 1) 50%,
+                rgba(5, 5, 15, 1) 75%,
+                rgba(0, 0, 0, 1) 100%
+            );
+            background-attachment: fixed;
             color: var(--text-white);
             line-height: 1.6;
             overflow-x: hidden;
+            position: relative;
         }
-        /* Shooting stars animation (45 stars - 3x the original) */
-        .shooting-star {
+
+        /* Static stars in the sky */
+        .star {
             position: fixed;
             width: 2px;
             height: 2px;
-            background: var(--primary-green);
+            background: white;
             border-radius: 50%;
-            box-shadow: 0 0 0 2px rgba(0, 255, 136, 0.1),
-                        0 0 0 4px rgba(0, 255, 136, 0.05),
-                        0 0 20px rgba(0, 255, 136, 0.5);
-            animation: shoot 3s linear infinite;
-            pointer-events: none;
+            box-shadow: 0 0 2px rgba(255, 255, 255, 0.8);
+            opacity: 0.8;
+            animation: twinkle 3s infinite;
         }
 
-        .shooting-star::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            right: 0;
-            height: 1px;
-            width: 50px;
-            background: linear-gradient(90deg, rgba(0, 255, 136, 0.8), transparent);
-            transform: translateY(-50%);
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 0.3; }
+        }
+
+        /* Shooting star animation - only some stars will shoot */
+        .star.shooting {
+            animation: shoot 3s linear;
+            opacity: 1;
         }
 
         @keyframes shoot {
@@ -68,95 +76,17 @@
             }
         }
 
-        /* Individual star variations with different colors */
-        .shooting-star:nth-child(1) { top: 10%; left: 10%; animation-delay: 0s; }
-        .shooting-star:nth-child(2) { top: 20%; left: 80%; animation-delay: 0.5s; background: var(--primary-cyan); }
-        .shooting-star:nth-child(3) { top: 30%; left: 50%; animation-delay: 1s; background: var(--primary-blue); }
-        .shooting-star:nth-child(4) { top: 40%; left: 20%; animation-delay: 1.5s; background: var(--primary-purple); }
-        .shooting-star:nth-child(5) { top: 50%; left: 70%; animation-delay: 2s; }
-        .shooting-star:nth-child(6) { top: 60%; left: 30%; animation-delay: 2.5s; background: var(--primary-cyan); }
-        .shooting-star:nth-child(7) { top: 15%; left: 60%; animation-delay: 0.3s; background: var(--primary-blue); }
-        .shooting-star:nth-child(8) { top: 25%; left: 40%; animation-delay: 0.8s; background: var(--primary-purple); }
-        .shooting-star:nth-child(9) { top: 35%; left: 90%; animation-delay: 1.3s; }
-        .shooting-star:nth-child(10) { top: 45%; left: 15%; animation-delay: 1.8s; background: var(--primary-cyan); }
-        .shooting-star:nth-child(11) { top: 55%; left: 55%; animation-delay: 2.3s; background: var(--primary-blue); }
-        .shooting-star:nth-child(12) { top: 65%; left: 75%; animation-delay: 0.6s; background: var(--primary-purple); }
-        .shooting-star:nth-child(13) { top: 18%; left: 25%; animation-delay: 1.1s; }
-        .shooting-star:nth-child(14) { top: 28%; left: 65%; animation-delay: 1.6s; background: var(--primary-cyan); }
-        .shooting-star:nth-child(15) { top: 38%; left: 45%; animation-delay: 2.1s; background: var(--primary-blue); }
-        .shooting-star:nth-child(16) { top: 48%; left: 12%; animation-delay: 2.4s; background: var(--primary-purple); }
-        .shooting-star:nth-child(17) { top: 58%; left: 82%; animation-delay: 0.7s; }
-        .shooting-star:nth-child(18) { top: 8%; left: 35%; animation-delay: 1.2s; background: var(--primary-cyan); }
-        .shooting-star:nth-child(19) { top: 22%; left: 92%; animation-delay: 1.7s; background: var(--primary-blue); }
-        .shooting-star:nth-child(20) { top: 32%; left: 8%; animation-delay: 2.2s; background: var(--primary-purple); }
-        .shooting-star:nth-child(21) { top: 42%; left: 68%; animation-delay: 0.4s; }
-        .shooting-star:nth-child(22) { top: 52%; left: 28%; animation-delay: 0.9s; background: var(--primary-cyan); }
-        .shooting-star:nth-child(23) { top: 62%; left: 48%; animation-delay: 1.4s; background: var(--primary-blue); }
-        .shooting-star:nth-child(24) { top: 12%; left: 72%; animation-delay: 1.9s; background: var(--primary-purple); }
-        .shooting-star:nth-child(25) { top: 26%; left: 18%; animation-delay: 2.6s; }
-        .shooting-star:nth-child(26) { top: 36%; left: 58%; animation-delay: 0.2s; background: var(--primary-cyan); }
-        .shooting-star:nth-child(27) { top: 46%; left: 38%; animation-delay: 0.7s; background: var(--primary-blue); }
-        .shooting-star:nth-child(28) { top: 56%; left: 88%; animation-delay: 1.2s; background: var(--primary-purple); }
-        .shooting-star:nth-child(29) { top: 66%; left: 22%; animation-delay: 1.7s; }
-        .shooting-star:nth-child(30) { top: 14%; left: 52%; animation-delay: 2.2s; background: var(--primary-cyan); }
-        .shooting-star:nth-child(31) { top: 24%; left: 78%; animation-delay: 0.5s; background: var(--primary-blue); }
-        .shooting-star:nth-child(32) { top: 34%; left: 32%; animation-delay: 1.0s; background: var(--primary-purple); }
-        .shooting-star:nth-child(33) { top: 44%; left: 62%; animation-delay: 1.5s; }
-        .shooting-star:nth-child(34) { top: 54%; left: 42%; animation-delay: 2.0s; background: var(--primary-cyan); }
-        .shooting-star:nth-child(35) { top: 64%; left: 16%; animation-delay: 2.5s; background: var(--primary-blue); }
-        .shooting-star:nth-child(36) { top: 16%; left: 86%; animation-delay: 0.3s; background: var(--primary-purple); }
-        .shooting-star:nth-child(37) { top: 28%; left: 26%; animation-delay: 0.8s; }
-        .shooting-star:nth-child(38) { top: 38%; left: 66%; animation-delay: 1.3s; background: var(--primary-cyan); }
-        .shooting-star:nth-child(39) { top: 50%; left: 46%; animation-delay: 1.8s; background: var(--primary-blue); }
-        .shooting-star:nth-child(40) { top: 60%; left: 96%; animation-delay: 2.3s; background: var(--primary-purple); }
-        .shooting-star:nth-child(41) { top: 70%; left: 36%; animation-delay: 0.6s; }
-        .shooting-star:nth-child(42) { top: 11%; left: 56%; animation-delay: 1.1s; background: var(--primary-cyan); }
-        .shooting-star:nth-child(43) { top: 21%; left: 76%; animation-delay: 1.6s; background: var(--primary-blue); }
-        .shooting-star:nth-child(44) { top: 31%; left: 6%; animation-delay: 2.1s; background: var(--primary-purple); }
-        .shooting-star:nth-child(45) { top: 41%; left: 86%; animation-delay: 2.7s; }
-
-        /* Update shooting star trail colors based on star color */
-        .shooting-star:nth-child(2)::before,
-        .shooting-star:nth-child(6)::before,
-        .shooting-star:nth-child(10)::before,
-        .shooting-star:nth-child(14)::before,
-        .shooting-star:nth-child(18)::before,
-        .shooting-star:nth-child(22)::before,
-        .shooting-star:nth-child(26)::before,
-        .shooting-star:nth-child(30)::before,
-        .shooting-star:nth-child(34)::before,
-        .shooting-star:nth-child(38)::before,
-        .shooting-star:nth-child(42)::before {
-            background: linear-gradient(90deg, rgba(0, 255, 245, 0.8), transparent);
+        .star.shooting::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: 0;
+            height: 1px;
+            width: 50px;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.8), transparent);
+            transform: translateY(-50%);
         }
 
-        .shooting-star:nth-child(3)::before,
-        .shooting-star:nth-child(7)::before,
-        .shooting-star:nth-child(11)::before,
-        .shooting-star:nth-child(15)::before,
-        .shooting-star:nth-child(19)::before,
-        .shooting-star:nth-child(23)::before,
-        .shooting-star:nth-child(27)::before,
-        .shooting-star:nth-child(31)::before,
-        .shooting-star:nth-child(35)::before,
-        .shooting-star:nth-child(39)::before,
-        .shooting-star:nth-child(43)::before {
-            background: linear-gradient(90deg, rgba(0, 212, 255, 0.8), transparent);
-        }
-
-        .shooting-star:nth-child(4)::before,
-        .shooting-star:nth-child(8)::before,
-        .shooting-star:nth-child(12)::before,
-        .shooting-star:nth-child(16)::before,
-        .shooting-star:nth-child(20)::before,
-        .shooting-star:nth-child(24)::before,
-        .shooting-star:nth-child(28)::before,
-        .shooting-star:nth-child(32)::before,
-        .shooting-star:nth-child(36)::before,
-        .shooting-star:nth-child(40)::before,
-        .shooting-star:nth-child(44)::before {
-            background: linear-gradient(90deg, rgba(176, 38, 255, 0.8), transparent);
-        }
         /* Header with slide-in animation */
         header {
             display: flex;
@@ -164,6 +94,8 @@
             align-items: center;
             padding: 2rem 5%;
             animation: slideDown 0.8s ease;
+            position: relative;
+            z-index: 10;
         }
 
         @keyframes slideDown {
@@ -239,6 +171,8 @@
             text-align: center;
             padding: 5rem 5% 3rem;
             animation: fadeIn 1s ease 0.5s both;
+            position: relative;
+            z-index: 10;
         }
 
         @keyframes fadeIn {
@@ -300,7 +234,6 @@
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-10px); }
         }
-
         /* Companies section with stagger animation */
         .companies {
             display: grid;
@@ -309,6 +242,8 @@
             padding: 3rem 5%;
             max-width: 1000px;
             margin: 0 auto;
+            position: relative;
+            z-index: 10;
         }
 
         .company-logo {
@@ -375,6 +310,8 @@
             padding: 5rem 5%;
             max-width: 1200px;
             margin: 0 auto;
+            position: relative;
+            z-index: 10;
         }
 
         .section-title {
@@ -395,7 +332,7 @@
 
         .services-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 2rem;
         }
 
@@ -436,6 +373,11 @@
             border: 1px solid rgba(176, 38, 255, 0.2);
         }
 
+        .service-card:nth-child(4) {
+            animation-delay: 0.8s;
+            border: 1px solid rgba(0, 255, 245, 0.2);
+        }
+
         .service-card:hover {
             transform: translateY(-10px);
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
@@ -470,8 +412,18 @@
             background: rgba(176, 38, 255, 0.1);
         }
 
+        .service-card:nth-child(4) .service-icon {
+            background: rgba(0, 255, 245, 0.1);
+        }
+
         .service-card:hover .service-icon {
             transform: rotate(360deg) scale(1.1);
+        }
+
+        .service-icon img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
         }
 
         .service-title {
@@ -484,6 +436,8 @@
             padding: 5rem 5%;
             max-width: 1200px;
             margin: 0 auto;
+            position: relative;
+            z-index: 10;
         }
 
         .experience-card {
@@ -560,17 +514,17 @@
             color: var(--primary-green);
         }
 
-        /* Tech Stack section */
+        /* Tech Stack section with smaller logos */
         .tech-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 1.5rem;
             padding: 2rem 0;
         }
 
         .tech-item {
             background: var(--bg-card);
-            padding: 1.5rem;
+            padding: 1rem;
             border-radius: 15px;
             text-align: center;
             transition: all 0.3s ease;
@@ -585,10 +539,10 @@
         }
 
         .tech-item img {
-            width: 60px;
-            height: 60px;
+            width: 40px;
+            height: 40px;
             object-fit: contain;
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
             filter: brightness(1.2);
             transition: all 0.3s ease;
         }
@@ -599,7 +553,7 @@
         }
 
         .tech-item p {
-            font-size: 0.9rem;
+            font-size: 0.75rem;
             color: var(--text-gray);
             margin: 0;
             font-weight: 500;
@@ -615,6 +569,8 @@
             max-width: 800px;
             margin: 0 auto;
             text-align: center;
+            position: relative;
+            z-index: 10;
         }
 
         .contact-buttons {
@@ -628,7 +584,7 @@
         .contact-btn {
             display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.75rem;
             padding: 1rem 2rem;
             background: var(--bg-card);
             color: var(--text-white);
@@ -636,6 +592,7 @@
             border-radius: 30px;
             text-decoration: none;
             transition: all 0.3s ease;
+            font-size: 1rem;
         }
 
         .contact-btn:hover {
@@ -644,12 +601,20 @@
             box-shadow: 0 10px 20px rgba(0, 255, 136, 0.2);
         }
 
+        .contact-btn img {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+        }
+
         /* Footer */
         footer {
             padding: 2rem 5%;
             text-align: center;
             color: var(--text-gray);
             border-top: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            z-index: 10;
         }
 
         /* Responsive design */
@@ -667,58 +632,14 @@
             }
 
             .tech-grid {
-                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
             }
         }
     </style>
 </head>
-    <body>
-    <!-- Shooting stars for dynamic effect (45 stars - 3x the original) -->
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
+<body>
+    <!-- Static stars in the sky (100+ stars) - JavaScript will create these -->
+    <div id="stars-container"></div>
 
     <!-- Header -->
     <header>
@@ -772,7 +693,7 @@
         </div>
     </section>
 
-    <!-- Expertise & Services Section -->
+    <!-- Expertise & Services Section (4 cards with tool logos) -->
     <section class="expertise">
         <h2 class="section-title">Expertise & Services</h2>
         <p class="section-subtitle">Building robust test automation solutions for enterprise applications</p>
@@ -780,7 +701,7 @@
         <div class="services-grid">
             <div class="service-card">
                 <div class="service-icon">
-                    <img src="img/cnb-logo.png" alt="Test Automation" style="width: 40px; height: 40px; object-fit: contain;">
+                    <img src="https://playwright.dev/img/playwright-logo.svg" alt="Test Automation">
                 </div>
                 <h3 class="service-title">Test Automation</h3>
                 <p>Building modern Playwright TypeScript frameworks using Page Object Model, fixtures, and reusable utilities for fast, stable UI and API automation.</p>
@@ -788,7 +709,7 @@
 
             <div class="service-card">
                 <div class="service-icon">
-                    <img src="img/capital-group-logo.png" alt="CI/CD Integration" style="width: 40px; height: 40px; object-fit: contain;">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/azure/azure-original.svg" alt="CI/CD Integration">
                 </div>
                 <h3 class="service-title">CI/CD Integration</h3>
                 <p>Integrating tests into Azure DevOps, Jenkins, and GitLab pipelines, improving execution speed by 30% and enabling continuous testing.</p>
@@ -796,10 +717,18 @@
 
             <div class="service-card">
                 <div class="service-icon">
-                    <img src="img/lacare-logo.png" alt="Salesforce Testing" style="width: 40px; height: 40px; object-fit: contain;">
+                    <img src="https://cdn.worldvectorlogo.com/logos/salesforce-2.svg" alt="Salesforce Testing">
                 </div>
                 <h3 class="service-title">Salesforce Testing</h3>
                 <p>7+ years expertise in enterprise web applications and Salesforce-based banking platforms with proven track record of quality delivery.</p>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" alt="TypeScript Development">
+                </div>
+                <h3 class="service-title">TypeScript Development</h3>
+                <p>Expert in TypeScript development for test automation frameworks, creating type-safe, maintainable code with modern ES6+ features and best practices.</p>
             </div>
         </div>
     </section>
@@ -869,7 +798,7 @@
             </ul>
         </div>
     </section>
-    <!-- Technical Stack Section -->
+    <!-- Technical Stack Section (All tools with smaller logos) -->
     <section class="expertise">
         <h2 class="section-title">Technical Stack</h2>
         <p class="section-subtitle">Technologies and tools I work with daily</p>
@@ -922,7 +851,12 @@
             
             <div class="tech-item">
                 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" alt="Git">
-                <p>Git/GitHub</p>
+                <p>Git</p>
+            </div>
+
+            <div class="tech-item">
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="GitHub">
+                <p>GitHub</p>
             </div>
             
             <div class="tech-item">
@@ -937,12 +871,62 @@
             
             <div class="tech-item">
                 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postman/postman-original.svg" alt="Postman">
-                <p>Postman/REST API</p>
+                <p>Postman</p>
+            </div>
+
+            <div class="tech-item">
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" alt="Node.js">
+                <p>Node.js</p>
+            </div>
+
+            <div class="tech-item">
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/npm/npm-original-wordmark.svg" alt="NPM">
+                <p>NPM</p>
+            </div>
+
+            <div class="tech-item">
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" alt="Docker">
+                <p>Docker</p>
+            </div>
+
+            <div class="tech-item">
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jira/jira-original.svg" alt="Jira">
+                <p>Jira</p>
+            </div>
+
+            <div class="tech-item">
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/confluence/confluence-original.svg" alt="Confluence">
+                <p>Confluence</p>
+            </div>
+
+            <div class="tech-item">
+                <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/cucumber/cucumber-plain.svg" alt="Cucumber">
+                <p>Cucumber</p>
+            </div>
+
+            <div class="tech-item">
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mocha/mocha-plain.svg" alt="Mocha">
+                <p>Mocha</p>
+            </div>
+
+            <div class="tech-item">
+                <img src="https://www.vectorlogo.zone/logos/mochajs/mochajs-icon.svg" alt="Chai">
+                <p>Chai</p>
+            </div>
+
+            <div class="tech-item">
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/slack/slack-original.svg" alt="Slack">
+                <p>Slack</p>
+            </div>
+
+            <div class="tech-item">
+                <img src="https://www.vectorlogo.zone/logos/getpostman/getpostman-icon.svg" alt="REST API">
+                <p>REST API</p>
             </div>
         </div>
     </section>
 
-    <!-- Contact Section -->
+    <!-- Contact Section with Social Media Logos -->
     <section class="contact">
         <h2 class="section-title">Let's Build Something Amazing</h2>
         <p class="section-subtitle">
@@ -952,13 +936,16 @@
         
         <div class="contact-buttons">
             <a href="mailto:shukhrat.rustamov@email.com" class="contact-btn">
-                ✉️ Email Me
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg" alt="Email">
+                Email Me
             </a>
             <a href="https://www.linkedin.com/in/shukhrat-rustamov/" target="_blank" class="contact-btn">
-                💼 LinkedIn
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg" alt="LinkedIn">
+                LinkedIn
             </a>
             <a href="https://github.com/ShukhratR" target="_blank" class="contact-btn">
-                🔗 GitHub
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="GitHub">
+                GitHub
             </a>
         </div>
     </section>
@@ -968,15 +955,77 @@
         <p>© 2024 Shukhrat Rustamov. All rights reserved.</p>
         <p style="margin-top: 0.5rem; font-size: 0.9rem;">Built with passion for quality software engineering</p>
     </footer>
-
     <script>
+        // Create static stars in the sky
+        function createStars() {
+            const starsContainer = document.getElementById('stars-container');
+            const numberOfStars = 150; // More stars for a fuller sky
+
+            for (let i = 0; i < numberOfStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                
+                // Random position
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.left = `${Math.random() * 100}%`;
+                
+                // Random delay for twinkling
+                star.style.animationDelay = `${Math.random() * 3}s`;
+                
+                // Random size variation
+                const size = Math.random() * 2 + 1;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // Make some stars shoot occasionally
+        function makeStarsShoot() {
+            const stars = document.querySelectorAll('.star');
+            
+            setInterval(() => {
+                // Pick 1-3 random stars to shoot
+                const numberOfShootingStars = Math.floor(Math.random() * 3) + 1;
+                
+                for (let i = 0; i < numberOfShootingStars; i++) {
+                    const randomStar = stars[Math.floor(Math.random() * stars.length)];
+                    
+                    // Skip if already shooting
+                    if (randomStar.classList.contains('shooting')) continue;
+                    
+                    // Add shooting class
+                    randomStar.classList.add('shooting');
+                    
+                    // Remove after animation completes
+                    setTimeout(() => {
+                        randomStar.classList.remove('shooting');
+                    }, 3000);
+                }
+            }, 2000); // Shoot stars every 2 seconds
+        }
+
+        // Initialize stars when page loads
+        window.addEventListener('DOMContentLoaded', () => {
+            createStars();
+            
+            // Wait a bit before starting shooting animations
+            setTimeout(makeStarsShoot, 1000);
+        });
+
         // Smooth scroll for CTA button
-        document.querySelector('.cta-button').addEventListener('click', function(e) {
-            e.preventDefault();
-            document.querySelector('.experience').scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctaButton = document.querySelector('.cta-button');
+            if (ctaButton) {
+                ctaButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    document.querySelector('.experience').scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                });
+            }
         });
 
         // Add intersection observer for fade-in animations
@@ -995,44 +1044,11 @@
         }, observerOptions);
 
         // Observe all animated elements
-        document.querySelectorAll('.service-card, .experience-card, .company-logo').forEach(el => {
-            observer.observe(el);
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.service-card, .experience-card, .company-logo, .tech-item').forEach(el => {
+                observer.observe(el);
+            });
         });
-
-        // Dynamic cursor trail effect (optional - for extra flair)
-        document.addEventListener('mousemove', (e) => {
-            if (Math.random() > 0.9) { // Only create trail 10% of the time for performance
-                const trail = document.createElement('div');
-                trail.className = 'cursor-trail';
-                trail.style.cssText = `
-                    position: fixed;
-                    width: 5px;
-                    height: 5px;
-                    background: var(--primary-green);
-                    border-radius: 50%;
-                    pointer-events: none;
-                    left: ${e.clientX}px;
-                    top: ${e.clientY}px;
-                    opacity: 0.6;
-                    z-index: 9999;
-                    animation: trailFade 1s ease-out forwards;
-                `;
-                document.body.appendChild(trail);
-                setTimeout(() => trail.remove(), 1000);
-            }
-        });
-
-        // Add keyframe for cursor trail
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes trailFade {
-                to {
-                    opacity: 0;
-                    transform: scale(0);
-                }
-            }
-        `;
-        document.head.appendChild(style);
     </script>
 </body>
 </html>
