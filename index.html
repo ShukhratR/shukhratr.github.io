@@ -1,248 +1,823 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Oswald:wght@200;300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="css/style.css" />
-    <title>Shukhrat Rustamov - QA Automation Engineer</title>
-  </head>
-  <body>
-    <!-- header -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shukhrat Rustamov | Senior QA Automation Engineer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+            background: #000000;
+            color: #ffffff;
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Diagonal Grid Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(45deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(-45deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Green Glow Effects */
+        .glow-effect {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(0, 255, 163, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .glow-1 {
+            top: 10%;
+            left: 5%;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .glow-2 {
+            top: 60%;
+            right: 10%;
+            animation: float 10s ease-in-out infinite reverse;
+        }
+
+        .glow-3 {
+            bottom: 20%;
+            left: 30%;
+            animation: float 12s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(30px, -30px) scale(1.1); }
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .profile-badge {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.5rem 1.5rem 0.5rem 0.5rem;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            z-index: 10;
+        }
+
+        .profile-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #00ffa3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #000;
+            font-size: 1.2rem;
+        }
+
+        .profile-info h3 {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .profile-info p {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(0, 255, 163, 0.1);
+            padding: 0.6rem 1.2rem;
+            border-radius: 50px;
+            border: 1px solid rgba(0, 255, 163, 0.3);
+            font-size: 0.9rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #00ffa3;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; box-shadow: 0 0 10px rgba(0, 255, 163, 0.5); }
+            50% { opacity: 0.5; box-shadow: 0 0 20px rgba(0, 255, 163, 0.8); }
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+            padding-top: 100px;
+            z-index: 10;
+        }
+
+        .hero h1 {
+            font-size: 4.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            max-width: 1000px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 700px;
+            margin: 0 auto 3rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #00ffa3;
+            color: #000;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 10;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px rgba(0, 255, 163, 0.4);
+        }
+
+        .companies {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 3rem;
+            align-items: center;
+            justify-content: center;
+            margin-top: 4rem;
+            max-width: 900px;
+            width: 100%;
+            position: relative;
+            z-index: 10;
+        }
+
+        .company-logo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            opacity: 0.6;
+            transition: all 0.3s ease;
+        }
+
+        .company-logo:hover {
+            opacity: 1;
+            transform: translateY(-5px);
+        }
+
+        .company-logo-img {
+            width: 60px;
+            height: 60px;
+            background: rgba(0, 255, 163, 0.1);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            border: 1px solid rgba(0, 255, 163, 0.2);
+            padding: 0.5rem;
+        }
+
+        .company-logo span {
+            font-size: 0.95rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        section {
+            padding: 6rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        h2 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            color: #00ffa3;
+            text-align: center;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 4rem;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .service-card {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 2.5rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 20px;
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(0, 255, 163, 0.2), transparent);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .service-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(0, 255, 163, 0.3);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(0, 255, 163, 0.1);
+        }
+
+        .service-card:hover::before {
+            opacity: 1;
+        }
+
+        .service-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(0, 255, 163, 0.1);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .service-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #fff;
+        }
+
+        .service-card p {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.7;
+        }
+
+        .experience-timeline {
+            margin-top: 3rem;
+        }
+
+        .experience-item {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 2.5rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .experience-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(0, 255, 163, 0.3);
+            box-shadow: 0 5px 30px rgba(0, 255, 163, 0.1);
+        }
+
+        .experience-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .experience-title-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .company-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(0, 255, 163, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .experience-header h3 {
+            font-size: 1.6rem;
+            color: #00ffa3;
+            margin-bottom: 0.5rem;
+        }
+
+        .experience-header .company {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1rem;
+        }
+
+        .experience-header .date {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.95rem;
+            white-space: nowrap;
+        }
+
+        .experience-item ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .experience-item li {
+            padding-left: 1.5rem;
+            margin-bottom: 0.75rem;
+            position: relative;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.7;
+        }
+
+        .experience-item li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #00ffa3;
+            font-weight: bold;
+        }
+
+        .skills-section {
+            background: rgba(255, 255, 255, 0.02);
+            padding: 6rem 2rem;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .skill-category {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 2rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .skill-category h3 {
+            color: #00ffa3;
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .skill-tag {
+            background: rgba(0, 255
+            , 255, 163, 0.1);
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            border: 1px solid rgba(0, 255, 163, 0.2);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .skill-tag:hover {
+            background: rgba(0, 255, 163, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .contact-section {
+            text-align: center;
+            padding: 6rem 2rem;
+        }
+
+        .contact-grid {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 3rem;
+        }
+
+        .contact-card {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 2rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            min-width: 250px;
+            transition: all 0.3s ease;
+        }
+
+        .contact-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(0, 255, 163, 0.3);
+            transform: translateY(-5px);
+            box-shadow: 0 5px 30px rgba(0, 255, 163, 0.1);
+        }
+
+        .contact-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .contact-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .contact-card a {
+            color: #00ffa3;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+
+        .contact-card a:hover {
+            color: #00ffbb;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            h2 {
+                font-size: 2rem;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .companies {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Glow Effects -->
+    <div class="glow-effect glow-1"></div>
+    <div class="glow-effect glow-2"></div>
+    <div class="glow-effect glow-3"></div>
+
     <header class="header">
-      <div class="container">
-        <div class="header__wrapper nav" id="about">
-          <div class="logo">
-            <h1 class="logo__text">SDET</h1>
-          </div>
-          <div class="hamburger">
-            <div class="line1"></div>
-            <div class="line2"></div>
-            <div class="line3"></div>
-          </div>
-          <ul class="nav__list">
-            <li class="nav__item">
-              <a href="#about" class="nav__link">About</a>
-            </li>
-            <li class="nav__item">
-              <a href="#work" class="nav__link">Experience</a>
-            </li>
-            <li class="nav__item">
-              <a href="#contact" class="nav__link">Contact</a>
-            </li>
-          </ul>
+        <div class="profile-badge">
+            <div class="profile-avatar">SR</div>
+            <div class="profile-info">
+                <h3>Shukhrat Rustamov</h3>
+                <p>QA Automation Engineer</p>
+            </div>
         </div>
-      </div>
+        <div class="status-badge">
+            <span class="status-dot"></span>
+            <span>Available for Projects</span>
+        </div>
     </header>
-    <!-- main -->
-    <main class="main">
-      <div class="container">
-        <div class="intro">
-          <div class="grid-container grid">
-            <div class="grid__item one">
-              <div class="one__wrapper">
-                <h1 class="one__title">Shukhrat Rustamov</h1>
-                <p class="one__about">
-                  QA Automation Engineer | SDET with 4+ years of experience specializing in test automation, 
-                  Salesforce/nCino platform testing, and performance optimization. Expert in TypeScript, 
-                  Playwright, and end-to-end testing frameworks. Passionate about delivering high-quality 
-                  software through comprehensive automation strategies and continuous improvement.
-                </p>
-              </div>
-            </div>
-            <div class="grid__item three">
-              <div class="three__wrapper">
-                <p class="three__title">AT THE MOMENT</p>
-                <p class="three__text">
-                  Currently working as a QA Automation Engineer, developing and maintaining comprehensive 
-                  test automation frameworks for Salesforce/nCino platforms. Actively improving performance 
-                  metrics, mentoring team members, and implementing AI-powered testing solutions to enhance 
-                  software quality and delivery speed.
-                </p>
-              </div>
-            </div>
-            <div class="grid__item four">
-              <div class="four__wrapper">
-                <div class="four__subtitle">Technical Skills</div>
-                <div class="four__box">
-                  <div>TypeScript</div>
-                  <div>JavaScript</div>
-                  <div>Playwright</div>
-                  <div>Salesforce</div>
-                  <div>nCino</div>
-                  <div>Git/GitHub</div>
-                  <div>Azure DevOps</div>
-                  <div>SOQL</div>
-                  <div>REST API</div>
-                  <div>CI/CD</div>
-                  <div>Performance</div>
-                  <div>Agile/Scrum</div>
-                </div>
-              </div>
-            </div>
-          </div>
+
+    <section class="hero">
+        <div class="status-badge" style="margin-bottom: 2rem;">
+            <span class="status-dot"></span>
+            <span>Available for Projects</span>
         </div>
-        <div class="work" id="work">
-          <h2 style="text-align: center; margin-bottom: 20px; font-size: 2rem;">Professional Experience</h2>
-          <ul class="work__list">
-            <li class="work__item">
-              <div class="work__wrapper">
-                <div class="work__inner">
-                  <span style="font-size: 24px;">🏦</span>
-                  <p class="work__title">QA Automation Engineer</p>
-                </div>
-                <span class="work__date">Feb 2024 - Present</span>
-              </div>
-              <p style="font-weight: 600; margin: 5px 0;">City National Bank</p>
-              <ul style="list-style: disc; padding-left: 20px; margin-top: 10px;">
-                <li>Developed and maintained 100+ automated test cases for Salesforce/nCino platform</li>
-                <li>Improved performance metrics: reduced SOQL queries, optimized CPU usage, and decreased script execution time</li>
-                <li>Mentored team members and facilitated knowledge-sharing sessions</li>
-                <li>Completed AI in Software Testing certification program</li>
-              </ul>
-            </li>
-            
-            <li class="work__item">
-              <div class="work__wrapper">
-                <div class="work__inner">
-                  <span style="font-size: 24px;">💼</span>
-                  <p class="work__title">Software Test Engineer</p>
-                </div>
-                <span class="work__date">Jun 2023 - Feb 2024</span>
-              </div>
-              <p style="font-weight: 600; margin: 5px 0;">Capital Group</p>
-              <ul style="list-style: disc; padding-left: 20px; margin-top: 10px;">
-                <li>Created regression testing suite from scratch for loan booking process</li>
-                <li>Developed data-driven end-to-end test scenarios using TypeScript and Playwright</li>
-                <li>Enhanced code quality and stability of automation framework</li>
-                <li>Collaborated with cross-functional teams in Agile environment</li>
-              </ul>
-            </li>
-            
-            <li class="work__item">
-              <div class="work__wrapper">
-                <div class="work__inner">
-                  <span style="font-size: 24px;">🏥</span>
-                  <p class="work__title">QA Automation Engineer</p>
-                </div>
-                <span class="work__date">Aug 2021 - Jun 2023</span>
-              </div>
-              <p style="font-weight: 600; margin: 5px 0;">Healthcare Technology Company</p>
-              <ul style="list-style: disc; padding-left: 20px; margin-top: 10px;">
-                <li>Maintained and updated existing test cases for healthcare platform</li>
-                <li>Created comprehensive test plans and automated test scripts</li>
-                <li>Performed API testing and validation using REST services</li>
-                <li>Collaborated with developers to identify and resolve defects</li>
-              </ul>
-            </li>
-            
-            <li class="work__item">
-              <div class="work__wrapper">
-                <div class="work__inner">
-                  <span style="font-size: 24px;">📱</span>
-                  <p class="work__title">Software QA Engineer</p>
-                </div>
-                <span class="work__date">Jul 2020 - Aug 2021</span>
-              </div>
-              <p style="font-weight: 600; margin: 5px 0;">Tech Startup</p>
-              <ul style="list-style: disc; padding-left: 20px; margin-top: 10px;">
-                <li>Developed test automation framework using industry best practices</li>
-                <li>Executed functional, regression, and integration testing</li>
-                <li>Participated in daily standups and sprint planning meetings</li>
-                <li>Documented test results and tracked defects in Azure DevOps</li>
-              </ul>
-            </li>
-          </ul>
+
+        <h1>Senior QA Automation Engineer & SDET</h1>
+        <p>Specializing in Playwright TypeScript frameworks, CI/CD automation, and Salesforce-based banking platforms. 7+ years of expertise delivering fast, stable test automation.</p>
+        
+        <a href="#contact" class="cta-button">
+            → Explore My Work
+        </a>
+
+        <div class="companies">
+            <div class="company-logo">
+                <div class="company-logo-img">🏦</div>
+                <span>City National Bank</span>
+            </div>
+            <div class="company-logo">
+                <div class="company-logo-img">💼</div>
+                <span>Capital Group</span>
+            </div>
+            <div class="company-logo">
+                <div class="company-logo-img">🏥</div>
+                <span>LA Care</span>
+            </div>
+            <div class="company-logo">
+                <div class="company-logo-img">📱</div>
+                <span>Verizon</span>
+            </div>
         </div>
-      </div>
-    </main>
-    <!-- footer -->
+    </section>
+
+    <section id="services">
+        <h2>Expertise & Services</h2>
+        <p class="section-subtitle">Building robust test automation solutions for enterprise applications</p>
+
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="service-icon">🎯</div>
+                <h3>Test Automation</h3>
+                <p>Building modern Playwright TypeScript frameworks using Page Object Model, fixtures, and reusable utilities for fast, stable UI and API automation.</p>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">⚙️</div>
+                <h3>CI/CD Integration</h3>
+                <p>Integrating tests into Azure DevOps, Jenkins, and GitLab pipelines, improving execution speed by 30% and enabling continuous testing.</p>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">🏦</div>
+                <h3>Salesforce Testing</h3>
+                <p>7+ years expertise in enterprise web applications and Salesforce-based banking platforms with proven track record of quality delivery.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="experience">
+        <h2>Professional Experience</h2>
+        <p class="section-subtitle">Building quality software at leading companies</p>
+
+        <div class="experience-timeline">
+            <div class="experience-item">
+                <div class="experience-header">
+                    <div class="experience-title-group">
+                        <div class="company-icon">🏦</div>
+                        <div>
+                            <h3>QA Automation Engineer</h3>
+                            <p class="company">City National Bank | Los Angeles, CA</p>
+                        </div>
+                    </div>
+                    <span class="date">June 2024 - Present</span>
+                </div>
+                <ul>
+                    <li>Designed Playwright TypeScript framework for Salesforce banking platform</li>
+                    <li>Led migration from C# Selenium to Playwright, improving maintainability 30%</li>
+                    <li>Built test suites integrated into Azure DevOps pipelines</li>
+                    <li>Maintained 90% on-time release rate with distributed teams</li>
+                </ul>
+            </div>
+
+            <div class="experience-item">
+                <div class="experience-header">
+                    <div class="experience-title-group">
+                        <div class="company-icon">💼</div>
+                        <div>
+                            <h3>Software Development Engineer in Test</h3>
+                            <p class="company">Capital Group | Los Angeles, CA</p>
+                        </div>
+                    </div>
+                    <span class="date">Jan 2023 - Apr 2024</span>
+                </div>
+                <ul>
+                    <li>Developed Selenium Java framework using Cucumber BDD and Maven</li>
+                    <li>Reduced test runtime by 35% using AWS and Jenkins CI/CD</li>
+                    <li>Implemented POM patterns increasing reusability 30%</li>
+                    <li>Conducted API testing with REST Assured and Postman</li>
+                </ul>
+            </div>
+
+            <div class="experience-item">
+                <div class="experience-header">
+                    <div class="experience-title-group">
+                        <div class="company-icon">🏥</div>
+                        <div>
+                            <h3>QA Automation Engineer</h3>
+                            <p class="company">Los Angeles Care Health Plan | Los Angeles, CA</p>
+                        </div>
+                    </div>
+                    <span class="date">Jan 2020 - Dec 2022</span>
+                </div>
+                <ul>
+                    <li>Designed POM-based framework using Java, Selenium WebDriver, JUnit</li>
+                    <li>Implemented data-driven testing with Apache POI</li>
+                    <li>Conducted database validation using JDBC with Oracle</li>
+                    <li>Elevated test coverage 25% above organizational average</li>
+                </ul>
+            </div>
+
+            <div class="experience-item">
+                <div class="experience-header">
+                    <div class="experience-title-group">
+                        <div class="company-icon">📱</div>
+                        <div>
+                            <h3>QA Automation Engineer</h3>
+                            <p class="company">Verizon | San Diego, CA</p>
+                        </div>
+                    </div>
+                    <span class="date">Mar 2018 - Dec 2019</span>
+                </div>
+                <ul>
+                    <li>Developed Selenium WebDriver framework with Cucumber and TestNG</li>
+                    <li>Achieved 85% automated test coverage across platforms</li>
+                    <li>Utilized Git for version control and code reviews</li>
+                    <li>Partnered with teams to triage production defects in Jira</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="skills-section">
+        <h2>Technical Skills</h2>
+        <p class="section-subtitle">Comprehensive expertise in modern testing technologies</p>
+
+        <div class="skills-grid">
+            <div class="skill-category">
+                <h3>Languages</h3>
+                <div class="skill-tags">
+                    <span class="skill-tag">📘 TypeScript</span>
+                    <span class="skill-tag">📙 JavaScript</span>
+                    <span class="skill-tag">☕ Java</span>
+                    <span class="skill-tag">🔷 C#</span>
+                    <span class="skill-tag">🗄️ SQL</span>
+                    <span class="skill-tag">🥒 Gherkin</span>
+                </div>
+            </div>
+
+            <div class="skill-category">
+                <h3>Test Automation</h3>
+                <div class="skill-tags">
+                    <span class="skill-tag">🎭 Playwright</span>
+                    <span class="skill-tag">🔍 Selenium</span>
+                    <span class="skill-tag">✅ JUnit</span>
+                    <span class="skill-tag">🧪 TestNG</span>
+                    <span class="skill-tag">🥒 Cucumber BDD</span>
+                    <span class="skill-tag">⚡ JMeter</span>
+                </div>
+            </div>
+
+            <div class="skill-category">
+                <h3>Framework Design</h3>
+                <div class="skill-tags">
+                    <span class="skill-tag">📄 Page Object Model</span>
+                    <span class="skill-tag">📊 Data-Driven Testing</span>
+                    <span class="skill-tag">🥒 BDD</span>
+                    <span class="skill-tag">🔧 Fixtures</span>
+                    <span class="skill-tag">⚡ Parallel Execution</span>
+                </div>
+            </div>
+
+            <div class="skill-category">
+                <h3>CI/CD & DevOps</h3>
+                <div class="skill-tags">
+                    <span class="skill-tag">☁️ Azure DevOps</span>
+                    <span class="skill-tag">🔨 Jenkins</span>
+                    <span class="skill-tag">🐙 GitHub</span>
+                    <span class="skill-tag">🦊 GitLab</span>
+                    <span class="skill-tag">📮 Postman</span>
+                    <span class="skill-tag">📋 Jira</span>
+                </div>
+            </div>
+
+            <div class="skill-category">
+                <h3>Databases</h3>
+                <div class="skill-tags">
+                    <span class="skill-tag">🐘 PostgreSQL</span>
+                    <span class="skill-tag">🔴 Oracle</span>
+                    <span class="skill-tag">🐬 MySQL</span>
+                    <span class="skill-tag">💾 SQLite</span>
+                    <span class="skill-tag">🔌 JDBC</span>
+                </div>
+            </div>
+
+            <div class="skill-category">
+                <h3>Platforms & Tools</h3>
+                <div class="skill-tags">
+                    <span class="skill-tag">☁️ Salesforce</span>
+                    <span class="skill-tag">💻 VS Code</span>
+                    <span class="skill-tag">🧠 IntelliJ</span>
+                    <span class="skill-tag">🐳 Docker</span>
+                    <span class="skill-tag">☁️ AWS</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="contact-section">
+        <h2>Let's Connect</h2>
+        <p class="section-subtitle">Available for new opportunities and collaborations</p>
+
+        <div class="contact-grid">
+            <div class="contact-card">
+                <div class="contact-icon">📧</div>
+                <h3>Email</h3>
+                <a href="mailto:shukhrat.rustamov@yahoo.com">shukhrat.rustamov@yahoo.com</a>
+            </div>
+
+            <div class="contact-card">
+                <div class="contact-icon">📱</div>
+                <h3>Phone</h3>
+                <a href="tel:+14243623020">424-362-3020</a>
+            </div>
+
+            <div class="contact-card">
+                <div class="contact-icon">💼</div>
+                <h3>LinkedIn</h3>
+                <a href="https://linkedin.com/in/shukhrat-rustamov" target="_blank">Connect on LinkedIn</a>
+            </div>
+
+            <div class="contact-card">
+                <div class="contact-icon">💻</div>
+                <h3>GitHub</h3>
+                <a href="https://github.com/ShukhratR" target="_blank">View GitHub Profile</a>
+            </div>
+        </div>
+
+        <div style="margin-top: 3rem;">
+            <p style="color: rgba(255, 255, 255, 0.6);">📍 Los Angeles, CA | 🇺🇸 U.S. Permanent Resident</p>
+        </div>
+    </section>
+
     <footer class="footer">
-      <div class="container">
-        <div class="footer__inner" id="contact">
-          <div class="textbox">
-            <p class="textbox__title">LET'S COLLABORATE</p>
-            <p class="textbox__content">
-              Interested in working together on test automation projects or discussing QA best practices? 
-              Feel free to reach out! I'm always open to connecting with fellow professionals and 
-              exploring new opportunities in software quality assurance.
-            </p>
-          </div>
-          <div class="footer__wrapper">
-            <form class="form">
-              <input
-                type="text"
-                class="name"
-                aria-label="Your name"
-                placeholder="Name*"
-              />
-              <input
-                type="email"
-                name="email"
-                id="email"
-                placeholder="Email*"
-                aria-label="Your email"
-                class="email"
-              />
-              <textarea
-                name="form_texarea"
-                id="form_textarea"
-                cols="30"
-                rows="10"
-                class="form__textarea"
-                placeholder="Project details (Optional)"
-              ></textarea>
-              <a href="mailto:shukhrat.rustamov@email.com">Submit</a>
-            </form>
-          </div>
-        </div>
-        <nav class="footer__nav">
-          <p class="logo__text" style="font-size: 1.4rem;">Quality First</p>
-          <ul class="footer__list">
-            <li class="footer__item">
-              <a href="#about" class="footer__link">About</a>
-            </li>
-            <li class="footer__item">
-              <a href="#work" class="footer__link">Experience</a>
-            </li>
-            <li class="footer__item">
-              <a href="#contact" class="footer__link">Contact</a>
-            </li>
-          </ul>
-        </nav>
-        <div class="footer__container">
-          <p>2024 @ All rights reserved</p>
-          <a
-            href="mailto:shukhrat.rustamov@email.com"
-            class="footer__email"
-            >shukhrat.rustamov@email.com</a
-          >
-          <ul class="footer__social">
-            <li class="social__item">
-              <a
-                title="LinkedIn"
-                href="https://www.linkedin.com/in/shukhrat-rustamov/"
-                class="social__link linkedin"
-                target="_blank"
-              ></a>
-            </li>
-            <li class="social__item">
-              <a
-                title="GitHub"
-                href="https://github.com/ShukhratR"
-                class="social__link facebook"
-                target="_blank"
-              ></a>
-            </li>
-          </ul>
-        </div>
-      </div>
+        <p>&copy; 2024 Shukhrat Rustamov. All rights reserved.</p>
     </footer>
-    <script src="js/script.js"></script>
-  </body>
+</body>
 </html>
