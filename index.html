@@ -374,3 +374,242 @@
       font-size: 0.74rem;
       color: var(--text-soft);
     }
+    .footer-note {
+      grid-column: 1 / -1;
+      margin-top: 8px;
+      font-size: 0.74rem;
+      color: var(--text-soft);
+      text-align: right;
+      padding: 0 4px;
+    }
+    a {
+      color: var(--accent-strong);
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    @media (max-width: 900px) {
+      .main {
+        padding: 20px 16px 20px;
+        grid-template-columns: 1fr;
+      }
+      header {
+        flex-direction: column;
+      }
+      main {
+        grid-template-columns: 1fr;
+      }
+      .profile-card {
+        align-self: stretch;
+        max-width: none;
+      }
+    }
+    @media (max-width: 600px) {
+      body {
+        padding: 16px 8px 24px;
+      }
+      .shell {
+        border-radius: 20px;
+      }
+      .chrome-bar {
+        padding: 8px 10px;
+      }
+      .main {
+        padding: 16px 12px 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="chrome-bar">
+      <div class="chrome-left">
+        <div class="chrome-dot"></div>
+        <div class="chrome-dot"></div>
+        <div class="chrome-dot"></div>
+      </div>
+      <div class="chrome-path">
+        ~/portfolio/<span>shukhrat-rustamov</span>/index.html
+      </div>
+      <div class="chrome-right">
+        <div class="chrome-pill">
+          <span class="chrome-pill-dot"></span>
+          BUILD: passing
+        </div>
+      </div>
+    </div>
+
+    <div class="main">
+      <header>
+        <div class="hero">
+          <div class="eyebrow">
+            QA AUTOMATION ENGINEER
+            <span class="eyebrow-badge">
+              <span class="eyebrow-dot"></span>
+              Available for Opportunities
+            </span>
+          </div>
+          <h1>
+            Shukhrat <span class="title-highlight">Rustamov</span>
+          </h1>
+          <p class="subtitle">
+            Senior QA Automation Engineer / SDET with 7+ years of expertise designing and scaling automated testing solutions for enterprise web applications and Salesforce-based banking platforms.
+          </p>
+          <div class="hero-tags">
+            <div class="tag-pill"><span></span>Playwright</div>
+            <div class="tag-pill"><span></span>TypeScript</div>
+            <div class="tag-pill"><span></span>Selenium</div>
+            <div class="tag-pill"><span></span>CI/CD</div>
+            <div class="tag-pill"><span></span>Azure DevOps</div>
+          </div>
+        </div>
+
+        <div class="profile-card">
+          <div class="avatar">SR</div>
+          <div class="profile-meta">
+            <strong>Los Angeles, CA</strong><br>
+            U.S. Permanent Resident<br>
+            📞 (424) 362-3020
+          </div>
+          <div class="profile-links">
+            <a href="https://github.com/shukhratr" target="_blank" class="link-chip">
+              <span>⚡</span> GitHub
+            </a>
+            <a href="https://linkedin.com/in/shukhrat-rustamov" target="_blank" class="link-chip">
+              <span>💼</span> LinkedIn
+            </a>
+            <a href="mailto:shukhrat.rustamov@yahoo.com" class="link-chip">
+              <span>✉️</span> Email
+            </a>
+          </div>
+        </div>
+      </header>
+
+      <main>
+        <section style="grid-column: 1 / -1;">
+          <h2>PROFESSIONAL SUMMARY</h2>
+          <div class="summary">
+            Senior QA Automation Engineer and SDET with <strong>7 years of expertise</strong> designing and scaling automated testing solutions for enterprise web applications and Salesforce-based banking platforms. Specializes in building modern <strong>Playwright TypeScript frameworks</strong> using Page Object Model, fixtures, and reusable utilities to deliver fast, stable UI and API automation. Proven track record integrating tests into <strong>CI/CD pipelines</strong> (Azure DevOps, Jenkins, GitLab), improving execution speed by 30%, and collaborating effectively with distributed engineering teams in Agile environments to ensure high-quality releases.
+          </div>
+        </section>
+
+        <section style="grid-column: 1 / -1;">
+          <h2>TECHNICAL SKILLS</h2>
+          <div class="code-block">
+<span class="code-line-muted"># Languages</span>
+languages: [TypeScript, JavaScript, Java, C#, SQL, Gherkin]
+
+<span class="code-line-muted"># Test Automation</span>
+frameworks:
+  - Playwright (UI/API, cross-browser, parallel runs)
+  - Selenium WebDriver/Grid
+  - JUnit, TestNG, Cucumber BDD, JMeter
+
+<span class="code-line-muted"># Framework Design</span>
+patterns:
+  - Page Object Model (POM)
+  - Data-Driven Testing
+  - BDD (Behavior-Driven Development)
+  - Reusable Fixtures/Utilities
+  - Test Tagging & Parallel Execution
+
+<span class="code-line-muted"># CI/CD & DevOps</span>
+tools: [Azure DevOps, Jenkins, GitHub, GitLab, Swagger]
+api_testing: [REST Assured, Postman, Hoverfly]
+tracking: [Jira, Xray]
+
+<span class="code-line-muted"># Databases</span>
+databases: [PostgreSQL, Oracle, MySQL, SQLite, JDBC, DBeaver]
+
+<span class="code-line-muted"># Platforms & Tools</span>
+platforms: [Salesforce, nCino, Android Studio, Appium, SauceLabs]
+ide: [VS Code, IntelliJ, Eclipse]
+          </div>
+        </section>
+
+        <section style="grid-column: 1 / -1;">
+          <h2>PROFESSIONAL EXPERIENCE</h2>
+          <div class="section-body">
+            
+            <div class="exp-item">
+              <div class="exp-role">QA Automation Engineer</div>
+              <div class="exp-meta">City National Bank | Los Angeles, CA | June 2024 - Present</div>
+              <ul class="exp-bullets">
+                <li>Designed and maintained a Playwright TypeScript UI automation framework for a Salesforce-based banking platform, improving end-to-end test execution speed by 30% and reducing flaky tests through advanced POM patterns and fixture management</li>
+                <li>Led the migration from legacy C# and Selenium framework to Playwright, consolidating scenarios, improving maintainability, and enhancing automation coverage for critical customer and back-office workflows</li>
+                <li>Implemented Page Object Model, shared fixtures, and reusable utilities to increase code reusability and simplify onboarding for new QA engineers across multiple Agile squads</li>
+                <li>Built and executed comprehensive smoke and regression test suites integrated into Azure DevOps pipelines, enabling continuous testing and earlier defect detection on each deployment</li>
+                <li>Collaborated with onshore and offshore developers, product owners, and QA leads to refine test strategies and maintain a 90% on-time release rate for new features and enhancements</li>
+              </ul>
+            </div>
+
+            <div class="exp-item">
+              <div class="exp-role">Software Development Engineer in Test (SDET)</div>
+              <div class="exp-meta">Capital Group | Los Angeles, CA | Jan 2023 - Apr 2024</div>
+              <ul class="exp-bullets">
+                <li>Developed and maintained Selenium Java test automation framework using Cucumber BDD and Maven, enabling data-driven and behavior-driven testing across multiple web platforms</li>
+                <li>Optimized test execution by leveraging AWS instances and Jenkins CI/CD integration, reducing smoke and regression test runtime by 35% and freeing developer cycles for feature development</li>
+                <li>Implemented Page Object Model design patterns to standardize code structure and increase reusability by 30%, significantly reducing script maintenance overhead and improving team onboarding</li>
+                <li>Performed comprehensive cross-browser and parallel testing on Chrome and Firefox using Selenium Grid and Cucumber-JUnit, ensuring consistent user experience across supported platforms</li>
+                <li>Conducted API testing via REST Assured and Postman to validate UI-database data synchronization and backend service contracts, identifying and resolving integration defects early in development cycle</li>
+              </ul>
+            </div>
+
+            <div class="exp-item">
+              <div class="exp-role">QA Automation Engineer</div>
+              <div class="exp-meta">Los Angeles Care Health Plan | Los Angeles, CA | Jan 2020 - Dec 2022</div>
+              <ul class="exp-bullets">
+                <li>Designed and deployed POM-based automation framework using Java, Selenium WebDriver, JUnit, and IntelliJ, elevating test coverage 25% above organizational average and accelerating bug detection cycles</li>
+                <li>Implemented positive and negative UI test scenarios using data-driven techniques with Apache POI, extracting test data from Excel files and increasing scenario reusability across test suites</li>
+                <li>Conducted database validation testing using JDBC against Oracle databases, ensuring data consistency and integrity across application layers and preventing data corruption in production</li>
+              </ul>
+            </div>
+
+            <div class="exp-item">
+              <div class="exp-role">QA Automation Engineer</div>
+              <div class="exp-meta">Verizon | San Diego, CA | Mar 2018 - Dec 2019</div>
+              <ul class="exp-bullets">
+                <li>Developed Selenium WebDriver automation framework using Cucumber, Gherkin, TestNG, and Java — executed 100% manual and 85% automated test coverage across multiple platforms and devices</li>
+                <li>Utilized Git for version control and code reviews, enforcing quality standards and mitigating release risks through peer collaboration and continuous integration practices</li>
+                <li>Partnered with developers and product teams to triage production defects in Jira, analyze root causes, and implement corrective actions with fast turnaround times</li>
+              </ul>
+            </div>
+
+          </div>
+        </section>
+
+        <section>
+          <h2>EDUCATION</h2>
+          <div class="section-body">
+            <div class="edu-item">
+              <div class="edu-title">Bachelor of Science in Computer Science</div>
+              <div class="edu-meta">University of California</div>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h2>CERTIFICATIONS</h2>
+          <div class="section-body">
+            <div class="edu-item">
+              <div class="edu-title">AI in Software Testing</div>
+              <div class="edu-meta">Completed 2024</div>
+            </div>
+            <div class="edu-item">
+              <div class="edu-title">Test Automation University</div>
+              <div class="edu-meta">Multiple Courses Completed</div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+
+      <div class="footer-note">
+        Last updated: December 2025
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+
