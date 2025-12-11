@@ -23,91 +23,140 @@
         }
 
         body {
-            <!-- Shooting stars for dynamic effect (15 stars) -->
-<div class="shooting-star"></div>
-<div class="shooting-star"></div>
-<div class="shooting-star"></div>
-<div class="shooting-star"></div>
-
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-white);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        /* Shooting stars animation (45 stars - 3x the original) */
+        .shooting-star {
+            position: fixed;
+            width: 2px;
+            height: 2px;
+            background: var(--primary-green);
+            border-radius: 50%;
+            box-shadow: 0 0 0 2px rgba(0, 255, 136, 0.1),
+                        0 0 0 4px rgba(0, 255, 136, 0.05),
+                        0 0 20px rgba(0, 255, 136, 0.5);
+            animation: shoot 3s linear infinite;
+            pointer-events: none;
         }
 
-      /* Shooting stars animation (15 stars - 3x the original) */
-.shooting-star {
-    position: fixed;
-    width: 2px;
-    height: 2px;
-    background: var(--primary-green);
-    border-radius: 50%;
-    box-shadow: 0 0 0 2px rgba(0, 255, 136, 0.1),
-                0 0 0 4px rgba(0, 255, 136, 0.05),
-                0 0 20px rgba(0, 255, 136, 0.5);
-    animation: shoot 3s linear infinite;
-    pointer-events: none;
-}
+        .shooting-star::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: 0;
+            height: 1px;
+            width: 50px;
+            background: linear-gradient(90deg, rgba(0, 255, 136, 0.8), transparent);
+            transform: translateY(-50%);
+        }
 
-.shooting-star::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    right: 0;
-    height: 1px;
-    width: 50px;
-    background: linear-gradient(90deg, rgba(0, 255, 136, 0.8), transparent);
-    transform: translateY(-50%);
-}
+        @keyframes shoot {
+            0% {
+                transform: translateX(0) translateY(0);
+                opacity: 1;
+            }
+            70% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(-300px) translateY(300px);
+                opacity: 0;
+            }
+        }
 
-@keyframes shoot {
-    0% {
-        transform: translateX(0) translateY(0);
-        opacity: 1;
-    }
-    70% {
-        opacity: 1;
-    }
-    100% {
-        transform: translateX(-300px) translateY(300px);
-        opacity: 0;
-    }
-}
+        /* Individual star variations with different colors */
+        .shooting-star:nth-child(1) { top: 10%; left: 10%; animation-delay: 0s; }
+        .shooting-star:nth-child(2) { top: 20%; left: 80%; animation-delay: 0.5s; background: var(--primary-cyan); }
+        .shooting-star:nth-child(3) { top: 30%; left: 50%; animation-delay: 1s; background: var(--primary-blue); }
+        .shooting-star:nth-child(4) { top: 40%; left: 20%; animation-delay: 1.5s; background: var(--primary-purple); }
+        .shooting-star:nth-child(5) { top: 50%; left: 70%; animation-delay: 2s; }
+        .shooting-star:nth-child(6) { top: 60%; left: 30%; animation-delay: 2.5s; background: var(--primary-cyan); }
+        .shooting-star:nth-child(7) { top: 15%; left: 60%; animation-delay: 0.3s; background: var(--primary-blue); }
+        .shooting-star:nth-child(8) { top: 25%; left: 40%; animation-delay: 0.8s; background: var(--primary-purple); }
+        .shooting-star:nth-child(9) { top: 35%; left: 90%; animation-delay: 1.3s; }
+        .shooting-star:nth-child(10) { top: 45%; left: 15%; animation-delay: 1.8s; background: var(--primary-cyan); }
+        .shooting-star:nth-child(11) { top: 55%; left: 55%; animation-delay: 2.3s; background: var(--primary-blue); }
+        .shooting-star:nth-child(12) { top: 65%; left: 75%; animation-delay: 0.6s; background: var(--primary-purple); }
+        .shooting-star:nth-child(13) { top: 18%; left: 25%; animation-delay: 1.1s; }
+        .shooting-star:nth-child(14) { top: 28%; left: 65%; animation-delay: 1.6s; background: var(--primary-cyan); }
+        .shooting-star:nth-child(15) { top: 38%; left: 45%; animation-delay: 2.1s; background: var(--primary-blue); }
+        .shooting-star:nth-child(16) { top: 48%; left: 12%; animation-delay: 2.4s; background: var(--primary-purple); }
+        .shooting-star:nth-child(17) { top: 58%; left: 82%; animation-delay: 0.7s; }
+        .shooting-star:nth-child(18) { top: 8%; left: 35%; animation-delay: 1.2s; background: var(--primary-cyan); }
+        .shooting-star:nth-child(19) { top: 22%; left: 92%; animation-delay: 1.7s; background: var(--primary-blue); }
+        .shooting-star:nth-child(20) { top: 32%; left: 8%; animation-delay: 2.2s; background: var(--primary-purple); }
+        .shooting-star:nth-child(21) { top: 42%; left: 68%; animation-delay: 0.4s; }
+        .shooting-star:nth-child(22) { top: 52%; left: 28%; animation-delay: 0.9s; background: var(--primary-cyan); }
+        .shooting-star:nth-child(23) { top: 62%; left: 48%; animation-delay: 1.4s; background: var(--primary-blue); }
+        .shooting-star:nth-child(24) { top: 12%; left: 72%; animation-delay: 1.9s; background: var(--primary-purple); }
+        .shooting-star:nth-child(25) { top: 26%; left: 18%; animation-delay: 2.6s; }
+        .shooting-star:nth-child(26) { top: 36%; left: 58%; animation-delay: 0.2s; background: var(--primary-cyan); }
+        .shooting-star:nth-child(27) { top: 46%; left: 38%; animation-delay: 0.7s; background: var(--primary-blue); }
+        .shooting-star:nth-child(28) { top: 56%; left: 88%; animation-delay: 1.2s; background: var(--primary-purple); }
+        .shooting-star:nth-child(29) { top: 66%; left: 22%; animation-delay: 1.7s; }
+        .shooting-star:nth-child(30) { top: 14%; left: 52%; animation-delay: 2.2s; background: var(--primary-cyan); }
+        .shooting-star:nth-child(31) { top: 24%; left: 78%; animation-delay: 0.5s; background: var(--primary-blue); }
+        .shooting-star:nth-child(32) { top: 34%; left: 32%; animation-delay: 1.0s; background: var(--primary-purple); }
+        .shooting-star:nth-child(33) { top: 44%; left: 62%; animation-delay: 1.5s; }
+        .shooting-star:nth-child(34) { top: 54%; left: 42%; animation-delay: 2.0s; background: var(--primary-cyan); }
+        .shooting-star:nth-child(35) { top: 64%; left: 16%; animation-delay: 2.5s; background: var(--primary-blue); }
+        .shooting-star:nth-child(36) { top: 16%; left: 86%; animation-delay: 0.3s; background: var(--primary-purple); }
+        .shooting-star:nth-child(37) { top: 28%; left: 26%; animation-delay: 0.8s; }
+        .shooting-star:nth-child(38) { top: 38%; left: 66%; animation-delay: 1.3s; background: var(--primary-cyan); }
+        .shooting-star:nth-child(39) { top: 50%; left: 46%; animation-delay: 1.8s; background: var(--primary-blue); }
+        .shooting-star:nth-child(40) { top: 60%; left: 96%; animation-delay: 2.3s; background: var(--primary-purple); }
+        .shooting-star:nth-child(41) { top: 70%; left: 36%; animation-delay: 0.6s; }
+        .shooting-star:nth-child(42) { top: 11%; left: 56%; animation-delay: 1.1s; background: var(--primary-cyan); }
+        .shooting-star:nth-child(43) { top: 21%; left: 76%; animation-delay: 1.6s; background: var(--primary-blue); }
+        .shooting-star:nth-child(44) { top: 31%; left: 6%; animation-delay: 2.1s; background: var(--primary-purple); }
+        .shooting-star:nth-child(45) { top: 41%; left: 86%; animation-delay: 2.7s; }
 
-/* Individual star variations with different colors */
-.shooting-star:nth-child(1) { top: 10%; left: 10%; animation-delay: 0s; }
-.shooting-star:nth-child(2) { top: 20%; left: 80%; animation-delay: 0.5s; background: var(--primary-cyan); }
-.shooting-star:nth-child(3) { top: 30%; left: 50%; animation-delay: 1s; background: var(--primary-blue); }
-.shooting-star:nth-child(4) { top: 40%; left: 20%; animation-delay: 1.5s; background: var(--primary-purple); }
-.shooting-star:nth-child(5) { top: 50%; left: 70%; animation-delay: 2s; }
-.shooting-star:nth-child(6) { top: 60%; left: 30%; animation-delay: 2.5s; background: var(--primary-cyan); }
-.shooting-star:nth-child(7) { top: 15%; left: 60%; animation-delay: 0.3s; background: var(--primary-blue); }
-.shooting-star:nth-child(8) { top: 25%; left: 40%; animation-delay: 0.8s; background: var(--primary-purple); }
-.shooting-star:nth-child(9) { top: 35%; left: 90%; animation-delay: 1.3s; }
-.shooting-star:nth-child(10) { top: 45%; left: 15%; animation-delay: 1.8s; background: var(--primary-cyan); }
-.shooting-star:nth-child(11) { top: 55%; left: 55%; animation-delay: 2.3s; background: var(--primary-blue); }
-.shooting-star:nth-child(12) { top: 65%; left: 75%; animation-delay: 0.6s; background: var(--primary-purple); }
-.shooting-star:nth-child(13) { top: 18%; left: 25%; animation-delay: 1.1s; }
-.shooting-star:nth-child(14) { top: 28%; left: 65%; animation-delay: 1.6s; background: var(--primary-cyan); }
-.shooting-star:nth-child(15) { top: 38%; left: 45%; animation-delay: 2.1s; background: var(--primary-blue); }
+        /* Update shooting star trail colors based on star color */
+        .shooting-star:nth-child(2)::before,
+        .shooting-star:nth-child(6)::before,
+        .shooting-star:nth-child(10)::before,
+        .shooting-star:nth-child(14)::before,
+        .shooting-star:nth-child(18)::before,
+        .shooting-star:nth-child(22)::before,
+        .shooting-star:nth-child(26)::before,
+        .shooting-star:nth-child(30)::before,
+        .shooting-star:nth-child(34)::before,
+        .shooting-star:nth-child(38)::before,
+        .shooting-star:nth-child(42)::before {
+            background: linear-gradient(90deg, rgba(0, 255, 245, 0.8), transparent);
+        }
 
-/* Update shooting star trail colors based on star color */
-.shooting-star:nth-child(2)::before,
-.shooting-star:nth-child(6)::before,
-.shooting-star:nth-child(10)::before,
-.shooting-star:nth-child(14)::before {
-    background: linear-gradient(90deg, rgba(0, 255, 245, 0.8), transparent);
-}
+        .shooting-star:nth-child(3)::before,
+        .shooting-star:nth-child(7)::before,
+        .shooting-star:nth-child(11)::before,
+        .shooting-star:nth-child(15)::before,
+        .shooting-star:nth-child(19)::before,
+        .shooting-star:nth-child(23)::before,
+        .shooting-star:nth-child(27)::before,
+        .shooting-star:nth-child(31)::before,
+        .shooting-star:nth-child(35)::before,
+        .shooting-star:nth-child(39)::before,
+        .shooting-star:nth-child(43)::before {
+            background: linear-gradient(90deg, rgba(0, 212, 255, 0.8), transparent);
+        }
 
-.shooting-star:nth-child(3)::before,
-.shooting-star:nth-child(7)::before,
-.shooting-star:nth-child(11)::before,
-.shooting-star:nth-child(15)::before {
-    background: linear-gradient(90deg, rgba(0, 212, 255, 0.8), transparent);
-}
-
-.shooting-star:nth-child(4)::before,
-.shooting-star:nth-child(8)::before,
-.shooting-star:nth-child(12)::before {
-    background: linear-gradient(90deg, rgba(176, 38, 255, 0.8), transparent);
-}
-
+        .shooting-star:nth-child(4)::before,
+        .shooting-star:nth-child(8)::before,
+        .shooting-star:nth-child(12)::before,
+        .shooting-star:nth-child(16)::before,
+        .shooting-star:nth-child(20)::before,
+        .shooting-star:nth-child(24)::before,
+        .shooting-star:nth-child(28)::before,
+        .shooting-star:nth-child(32)::before,
+        .shooting-star:nth-child(36)::before,
+        .shooting-star:nth-child(40)::before,
+        .shooting-star:nth-child(44)::before {
+            background: linear-gradient(90deg, rgba(176, 38, 255, 0.8), transparent);
+        }
         /* Header with slide-in animation */
         header {
             display: flex;
@@ -118,8 +167,14 @@
         }
 
         @keyframes slideDown {
-            from { transform: translateY(-100px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+            from {
+                transform: translateY(-100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
 
         .avatar {
@@ -144,8 +199,14 @@
         }
 
         @keyframes pulse {
-            0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(0, 255, 136, 0.5); }
-            50% { transform: scale(1.05); box-shadow: 0 0 40px rgba(0, 255, 136, 0.8); }
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 40px rgba(0, 255, 136, 0.8);
+            }
         }
 
         .status-badge {
@@ -181,8 +242,14 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         h1 {
@@ -221,6 +288,7 @@
             cursor: pointer;
             transition: all 0.3s ease;
             animation: bounce 2s ease-in-out infinite;
+            text-decoration: none;
         }
 
         .cta-button:hover {
@@ -253,14 +321,35 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .company-logo:nth-child(1) { animation-delay: 0.1s; border-color: rgba(0, 255, 136, 0.3); }
-        .company-logo:nth-child(2) { animation-delay: 0.2s; border-color: rgba(0, 212, 255, 0.3); }
-        .company-logo:nth-child(3) { animation-delay: 0.3s; border-color: rgba(176, 38, 255, 0.3); }
-        .company-logo:nth-child(4) { animation-delay: 0.4s; border-color: rgba(0, 255, 245, 0.3); }
+        .company-logo:nth-child(1) {
+            animation-delay: 0.1s;
+            border-color: rgba(0, 255, 136, 0.3);
+        }
+
+        .company-logo:nth-child(2) {
+            animation-delay: 0.2s;
+            border-color: rgba(0, 212, 255, 0.3);
+        }
+
+        .company-logo:nth-child(3) {
+            animation-delay: 0.3s;
+            border-color: rgba(176, 38, 255, 0.3);
+        }
+
+        .company-logo:nth-child(4) {
+            animation-delay: 0.4s;
+            border-color: rgba(0, 255, 245, 0.3);
+        }
 
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .company-logo:hover {
@@ -332,17 +421,17 @@
             transition: transform 0.3s ease;
         }
 
-        .service-card:nth-child(1) { 
+        .service-card:nth-child(1) {
             animation-delay: 0.2s;
             border: 1px solid rgba(0, 255, 136, 0.2);
         }
-        
-        .service-card:nth-child(2) { 
+
+        .service-card:nth-child(2) {
             animation-delay: 0.4s;
             border: 1px solid rgba(0, 212, 255, 0.2);
         }
-        
-        .service-card:nth-child(3) { 
+
+        .service-card:nth-child(3) {
             animation-delay: 0.6s;
             border: 1px solid rgba(176, 38, 255, 0.2);
         }
@@ -369,9 +458,17 @@
             transition: all 0.3s ease;
         }
 
-        .service-card:nth-child(1) .service-icon { background: rgba(0, 255, 136, 0.1); }
-        .service-card:nth-child(2) .service-icon { background: rgba(0, 212, 255, 0.1); }
-        .service-card:nth-child(3) .service-icon { background: rgba(176, 38, 255, 0.1); }
+        .service-card:nth-child(1) .service-icon {
+            background: rgba(0, 255, 136, 0.1);
+        }
+
+        .service-card:nth-child(2) .service-icon {
+            background: rgba(0, 212, 255, 0.1);
+        }
+
+        .service-card:nth-child(3) .service-icon {
+            background: rgba(176, 38, 255, 0.1);
+        }
 
         .service-card:hover .service-icon {
             transform: rotate(360deg) scale(1.1);
@@ -400,8 +497,14 @@
         }
 
         @keyframes slideInLeft {
-            from { opacity: 0; transform: translateX(-50px); }
-            to { opacity: 1; transform: translateX(0); }
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
         .experience-card:hover {
@@ -409,52 +512,221 @@
             box-shadow: -10px 0 30px rgba(0, 255, 136, 0.2);
         }
 
+        .experience-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .experience-logo {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            margin-bottom: 1rem;
+        }
+
+        .experience-date {
+            color: var(--primary-green);
+            font-weight: 600;
+        }
+
+        .experience-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .experience-card p {
+            color: var(--text-gray);
+            margin-bottom: 1rem;
+        }
+
+        .experience-card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .experience-card li {
+            color: var(--text-gray);
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .experience-card li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--primary-green);
+        }
+
+        /* Tech Stack section */
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 2rem;
+            padding: 2rem 0;
+        }
+
+        .tech-item {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: fadeInUp 0.6s ease backwards;
+        }
+
+        .tech-item:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 15px 30px rgba(0, 255, 136, 0.2);
+            border-color: rgba(0, 255, 136, 0.5);
+        }
+
+        .tech-item img {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            margin-bottom: 1rem;
+            filter: brightness(1.2);
+            transition: all 0.3s ease;
+        }
+
+        .tech-item:hover img {
+            transform: scale(1.1);
+            filter: brightness(1.5);
+        }
+
+        .tech-item p {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+            margin: 0;
+            font-weight: 500;
+        }
+
+        .tech-item:hover p {
+            color: var(--primary-green);
+        }
+
+        /* Contact section */
+        .contact {
+            padding: 5rem 5%;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .contact-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .contact-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            background: var(--bg-card);
+            color: var(--text-white);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .contact-btn:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-green);
+            box-shadow: 0 10px 20px rgba(0, 255, 136, 0.2);
+        }
+
+        /* Footer */
+        footer {
+            padding: 2rem 5%;
+            text-align: center;
+            color: var(--text-gray);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
         /* Responsive design */
         @media (max-width: 768px) {
-            h1 { font-size: 2.5rem; }
-            .companies { grid-template-columns: repeat(2, 1fr); }
-            .services-grid { grid-template-columns: 1fr; }
-        }
+            h1 {
+                font-size: 2.5rem;
+            }
 
-        /* Floating particles animation */
-        .particle {
-            position: fixed;
-            width: 4px;
-            height: 4px;
-            background: var(--primary-green);
-            border-radius: 50%;
-            pointer-events: none;
-            animation: float 10s infinite;
-            opacity: 0.3;
-        }
+            .companies {
+                grid-template-columns: repeat(2, 1fr);
+            }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0) translateX(0); }
-            50% { transform: translateY(-100vh) translateX(50px); }
-        }
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
 
-        .particle:nth-child(2) { left: 20%; animation-delay: 2s; background: var(--primary-cyan); }
-        .particle:nth-child(3) { left: 40
-%; animation-delay: 4s; background: var(--primary-blue); }
-        .particle:nth-child(4) { left: 60%; animation-delay: 6s; background: var(--primary-purple); }
-        .particle:nth-child(5) { left: 80%; animation-delay: 8s; background: var(--primary-cyan); }
+            .tech-grid {
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            }
+        }
     </style>
 </head>
-<body>
-    <!-- Floating particles for dynamic effect -->
-    <div class="particle" style="top: 10%;"></div>
-    <div class="particle" style="top: 30%;"></div>
-    <div class="particle" style="top: 50%;"></div>
-    <div class="particle" style="top: 70%;"></div>
-    <div class="particle" style="top: 90%;"></div>
+    <body>
+    <!-- Shooting stars for dynamic effect (45 stars - 3x the original) -->
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
 
     <!-- Header -->
     <header>
         <div class="avatar">
             <div class="avatar-circle">SR</div>
             <div>
-                <div style="font-weight: 600;">Shukhrat Rustamov</div>
-                <div style="color: var(--text-gray); font-size: 0.9rem;">QA Automation Engineer</div>
+                <h2 style="margin: 0; font-size: 1.2rem;">Shukhrat Rustamov</h2>
+                <p style="margin: 0; color: var(--text-gray); font-size: 0.9rem;">QA Automation Engineer</p>
             </div>
         </div>
         <div class="status-badge">
@@ -465,37 +737,38 @@
 
     <!-- Hero Section -->
     <section class="hero">
-        <div class="status-badge" style="margin: 0 auto 2rem;">
+        <div class="status-badge" style="display: inline-flex; margin-bottom: 2rem;">
             <span class="status-dot"></span>
             Available for Projects
         </div>
+        
         <h1>Senior QA Automation<br>Engineer & SDET</h1>
+        
         <p class="subtitle">
-            Specializing in Playwright TypeScript frameworks, CI/CD automation, and 
-            Salesforce-based banking platforms. 7+ years of expertise delivering fast, stable test automation.
+            Specializing in Playwright TypeScript frameworks, CI/CD automation, and Salesforce-based banking platforms. 
+            7+ years of expertise delivering fast, stable test automation.
         </p>
-        <button class="cta-button">
-            → Explore My Work
-        </button>
+        
+        <button class="cta-button">→ Explore My Work</button>
     </section>
 
-    <!-- Companies Section with Real Logos -->
+    <!-- Companies Section -->
     <section class="companies">
         <div class="company-logo">
-            <img src="img/cnb-logo.png" alt="City National Bank" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏦</text></svg>'">
-            <div style="font-size: 0.9rem; color: var(--text-gray);">City National Bank</div>
+            <img src="img/cnb-logo.png" alt="City National Bank">
+            <p>City National Bank</p>
         </div>
         <div class="company-logo">
-            <img src="img/capital-group-logo.png" alt="Capital Group" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💼</text></svg>'">
-            <div style="font-size: 0.9rem; color: var(--text-gray);">Capital Group</div>
+            <img src="img/capital-group-logo.png" alt="Capital Group">
+            <p>Capital Group</p>
         </div>
         <div class="company-logo">
-            <img src="img/lacare-logo.png" alt="LA Care" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏥</text></svg>'">
-            <div style="font-size: 0.9rem; color: var(--text-gray);">LA Care</div>
+            <img src="img/lacare-logo.png" alt="LA Care">
+            <p>LA Care</p>
         </div>
         <div class="company-logo">
-            <img src="img/verizon-logo.png" alt="Verizon" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📱</text></svg>'">
-            <div style="font-size: 0.9rem; color: var(--text-gray);">Verizon</div>
+            <img src="img/verizon-logo.png" alt="Verizon">
+            <p>Verizon</p>
         </div>
     </section>
 
@@ -506,233 +779,201 @@
         
         <div class="services-grid">
             <div class="service-card">
-                <div class="service-icon">🎯</div>
+                <div class="service-icon">
+                    <img src="img/cnb-logo.png" alt="Test Automation" style="width: 40px; height: 40px; object-fit: contain;">
+                </div>
                 <h3 class="service-title">Test Automation</h3>
-                <p style="color: var(--text-gray);">
-                    Building modern Playwright TypeScript frameworks using Page Object Model, 
-                    fixtures, and reusable utilities for fast, stable UI and API automation.
-                </p>
+                <p>Building modern Playwright TypeScript frameworks using Page Object Model, fixtures, and reusable utilities for fast, stable UI and API automation.</p>
             </div>
 
             <div class="service-card">
-                <div class="service-icon">⚙️</div>
+                <div class="service-icon">
+                    <img src="img/capital-group-logo.png" alt="CI/CD Integration" style="width: 40px; height: 40px; object-fit: contain;">
+                </div>
                 <h3 class="service-title">CI/CD Integration</h3>
-                <p style="color: var(--text-gray);">
-                    Integrating tests into Azure DevOps, Jenkins, and GitLab pipelines, 
-                    improving execution speed by 30% and enabling continuous testing.
-                </p>
+                <p>Integrating tests into Azure DevOps, Jenkins, and GitLab pipelines, improving execution speed by 30% and enabling continuous testing.</p>
             </div>
 
             <div class="service-card">
-                <div class="service-icon">🏦</div>
+                <div class="service-icon">
+                    <img src="img/lacare-logo.png" alt="Salesforce Testing" style="width: 40px; height: 40px; object-fit: contain;">
+                </div>
                 <h3 class="service-title">Salesforce Testing</h3>
-                <p style="color: var(--text-gray);">
-                    7+ years expertise in enterprise web applications and Salesforce-based 
-                    banking platforms with proven track record of quality delivery.
-                </p>
+                <p>7+ years expertise in enterprise web applications and Salesforce-based banking platforms with proven track record of quality delivery.</p>
             </div>
         </div>
     </section>
 
-<!-- Professional Experience Section -->
-<section class="experience">
-    <h2 class="section-title">Professional Experience</h2>
-    <p class="section-subtitle">Building quality software at leading companies</p>
+    <!-- Professional Experience Section -->
+    <section class="experience">
+        <h2 class="section-title">Professional Experience</h2>
+        <p class="section-subtitle">Building quality software at leading companies</p>
 
-    <div class="experience-card" style="animation-delay: 0.2s;">
-        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
-            <div>
-                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
-                    <img src="img/cnb-logo.png" alt="City National Bank" style="width: 50px; height: 50px; border-radius: 10px; object-fit: contain; background: rgba(0, 255, 136, 0.1); padding: 8px;" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏦</text></svg>'">
-                    <h3 style="font-size: 1.5rem;">QA Automation Engineer</h3>
-                </div>
-                <p style="color: var(--text-gray);">City National Bank | Los Angeles, CA</p>
+        <div class="experience-card">
+            <img src="img/cnb-logo.png" alt="City National Bank" class="experience-logo">
+            <div class="experience-header">
+                <h3>QA Automation Engineer</h3>
+                <span class="experience-date">June 2024 - Present</span>
             </div>
-            <div style="color: var(--primary-green); font-weight: 600;">June 2024 - Present</div>
+            <p>City National Bank | Los Angeles, CA</p>
+            <ul>
+                <li>Designed Playwright TypeScript framework for Salesforce banking platform</li>
+                <li>Led migration from C# Selenium to Playwright, improving maintainability 30%</li>
+                <li>Built test suites integrated into Azure DevOps pipelines</li>
+                <li>Maintained 90% on-time release rate with distributed teams</li>
+            </ul>
         </div>
-        <ul style="list-style: none; padding-left: 0;">
-            <li style="padding: 0.5rem 0; padding-left: 1.5rem; position: relative;">
-                <span style="position: absolute; left: 0; color: var(--primary-green);">→</span>
-                Designed Playwright TypeScript framework for Salesforce banking platform
-            </li>
-            <li style="padding: 0.5rem 0; padding-left: 1.5rem; position: relative;">
-                <span style="position: absolute; left: 0; color: var(--primary-green);">→</span>
-                Led migration from C# Selenium to Playwright, improving maintainability 30%
-            </li>
-            <li style="padding: 0.5rem 0; padding-left: 1.5rem; position: relative;">
-                <span style="position: absolute; left: 0; color: var(--primary-green);">→</span>
-                Built test suites integrated into Azure DevOps pipelines
-            </li>
-            <li style="padding: 0.5rem 0; padding-left: 1.5rem; position: relative;">
-                <span style="position: absolute; left: 0; color: var(--primary-green);">→</span>
-                Maintained 90% on-time release rate with distributed teams
-            </li>
-        </ul>
-    </div>
 
-    <div class="experience-card" style="animation-delay: 0.4s; border-left-color: var(--primary-blue);">
-        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
-            <div>
-                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
-                    <img src="img/capital-group-logo.png" alt="Capital Group" style="width: 50px; height: 50px; border-radius: 10px; object-fit: contain; background: rgba(0, 212, 255, 0.1); padding: 8px;" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💼</text></svg>'">
-                    <h3 style="font-size: 1.5rem;">Software Test Engineer</h3>
-                </div>
-                <p style="color: var(--text-gray);">Capital Group | Los Angeles, CA</p>
+        <div class="experience-card">
+            <img src="img/capital-group-logo.png" alt="Capital Group" class="experience-logo">
+            <div class="experience-header">
+                <h3>Software Test Engineer</h3>
+                <span class="experience-date">Jun 2023 - Jun 2024</span>
             </div>
-            <div style="color: var(--primary-blue); font-weight: 600;">Jun 2023 - Jun 2024</div>
+            <p>Capital Group | Los Angeles, CA</p>
+            <ul>
+                <li>Created regression suite for loan booking process in nCino platform</li>
+                <li>Developed data-driven E2E scenarios using TypeScript and Playwright</li>
+                <li>Enhanced framework stability and code quality standards</li>
+                <li>Collaborated with cross-functional teams in Agile environment</li>
+            </ul>
         </div>
-        <ul style="list-style: none; padding-left: 0;">
-            <li style="padding: 0.5rem 0; padding-left: 1.5rem; position: relative;">
-                <span style="position: absolute; left: 0; color: var(--primary-blue);">→</span>
-                Created regression suite for loan booking process in nCino platform
-            </li>
-            <li style="padding: 0.5rem 0; padding-left: 1.5rem; position: relative;">
-                <span style="position: absolute; left: 0; color: var(--primary-blue);">→</span>
-                Developed data-driven E2E scenarios using TypeScript and Playwright
-            </li>
-            <li style="padding: 0.5rem 0; padding-left: 1.5rem; position: relative;">
-                <span style="position: absolute; left: 0; color: var(--primary-blue);">→</span>
-                Enhanced framework stability and code quality standards
-            </li>
-            <li style="padding: 0.5rem 0; padding-left: 1.5rem; position: relative;">
-                <span style="position: absolute; left: 0; color: var(--primary-blue);">→</span>
-                Collaborated with cross-functional teams in Agile environment
-            </li>
-        </ul>
-    </div>
 
-    <div class="experience-card" style="animation-delay: 0.6s; border-left-color: var(--primary-purple);">
-        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
-            <div>
-                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
-                    <img src="img/lacare-logo.png" alt="LA Care" style="width: 50px; height: 50px; border-radius: 10px; object-fit: contain; background: rgba(176, 38, 255, 0.1); padding: 8px;" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏥</text></svg>'">
-                    <h3 style="font-size: 1.5rem;">QA Automation Engineer</h3>
-                </div>
-                <p style="color: var(--text-gray);">LA Care Health Plan | Los Angeles, CA</p>
+        <div class="experience-card">
+            <img src="img/lacare-logo.png" alt="LA Care" class="experience-logo">
+            <div class="experience-header">
+                <h3>QA Automation Engineer</h3>
+                <span class="experience-date">Aug 2021 - Jun 2023</span>
             </div>
-            <div style="color: var(--primary-purple); font-weight: 600;">Aug 2021 - Jun 2023</div>
+            <p>LA Care Health Plan | Los Angeles, CA</p>
+            <ul>
+                <li>Maintained and updated test cases for healthcare platform</li>
+                <li>Created comprehensive test plans and automated test scripts</li>
+                <li>Performed API testing and validation using REST services</li>
+                <li>Collaborated with developers to identify and resolve defects</li>
+            </ul>
         </div>
-        <ul style="list-style: none; padding-left: 0;">
-            <li style="padding: 0.5rem 0; padding-left: 1.5rem; position: relative;">
-                <span style="position: absolute; left: 0; color: var(--primary-purple);">→</span>
-                Maintained and updated test cases for healthcare platform
-            </li>
-            <li style="padding: 0.5rem 0; padding-left: 1.5rem; position: relative;">
-                <span style="position: absolute; left: 0; color: var(--primary-purple);">→</span>
-                Created comprehensive test plans and automated test scripts
-            </li>
-            <li style="padding: 0.5rem 0; padding-left: 1.5rem; position: relative;">
-                <span style="position: absolute; left: 0; color: var(--primary-purple);">→</span>
-                Performed API testing and validation using REST services
-            </li>
-            <li style="padding: 0.5rem 0; padding-left: 1.5rem; position: relative;">
-                <span style="position: absolute; left: 0; color: var(--primary-purple);">→</span>
-                Collaborated with developers to identify and resolve defects
-            </li>
-        </ul>
-    </div>
 
-    <div class="experience-card" style="animation-delay: 0.8s; border-left-color: var(--primary-cyan);">
-        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
-            <div>
-                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
-                    <img src="img/verizon-logo.png" alt="Verizon" style="width: 50px; height: 50px; border-radius: 10px; object-fit: contain; background: rgba(0, 255, 245, 0.1); padding: 8px;" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📱</text></svg>'">
-                    <h3 style="font-size: 1.5rem;">Software QA Engineer</h3>
-                </div>
-                <p style="color: var(--text-gray);">Verizon | Remote</p>
+        <div class="experience-card">
+            <img src="img/verizon-logo.png" alt="Verizon" class="experience-logo">
+            <div class="experience-header">
+                <h3>Software QA Engineer</h3>
+                <span class="experience-date">Jul 2020 - Aug 2021</span>
             </div>
-            <div style="color: var(--primary-cyan); font-weight: 600;">Jul 2020 - Aug 2021</div>
+            <p>Verizon | Remote</p>
+            <ul>
+                <li>Developed test automation framework using industry best practices</li>
+                <li>Executed functional, regression, and integration testing</li>
+                <li>Participated in daily standups and sprint planning meetings</li>
+                <li>Documented test results and tracked defects in Azure DevOps</li>
+            </ul>
         </div>
-        <ul style="list-style: none; padding-left: 0;">
-            <li style="padding: 0.5rem 0; padding-left: 1.5rem; position: relative;">
-                <span style="position: absolute; left: 0; color: var(--primary-cyan);">→</span>
-                Developed test automation framework using industry best practices
-            </li>
-            <li style="padding: 0.5rem 0; padding-left: 1.5rem; position: relative;">
-                <span style="position: absolute; left: 0; color: var(--primary-cyan);">→</span>
-                Executed functional, regression, and integration testing
-            </li>
-            <li style="padding: 0.5rem 0; padding-left: 1.5rem; position: relative;">
-                <span style="position: absolute; left: 0; color: var(--primary-cyan);">→</span>
-                Participated in daily standups and sprint planning meetings
-            </li>
-            <li style="padding: 0.5rem 0; padding-left: 1.5rem; position: relative;">
-                <span style="position: absolute; left: 0; color: var(--primary-cyan);">→</span>
-                Documented test results and tracked defects in Azure DevOps
-            </li>
-        </ul>
-    </div>
-</section>
-
-
-   <!-- Technical Skills Section -->
-<section class="expertise">
-    <h2 class="section-title">Technical Stack</h2>
-    <p class="section-subtitle">Technologies and tools I work with daily</p>
-    
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1.5rem; max-width: 1000px; margin: 0 auto;">
-        <!-- TypeScript -->
-        <div style="background: var(--bg-card); padding: 1.5rem; border-radius: 15px; text-align: center; border: 1px solid rgba(0, 255, 136, 0.2); transition: all 0.3s ease; display: flex; flex-direction: column; align-items: center; gap: 0.8rem;" onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 15px 30px rgba(0,255,136,0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
-            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" alt="TypeScript" style="width: 48px; height: 48px;">
-            <div style="font-weight: 600; color: var(--primary-green); font-size: 0.95rem;">TypeScript</div>
-        </div>
-
-        <!-- Playwright -->
-        <div style="background: var(--bg-card); padding: 1.5rem; border-radius: 15px; text-align: center; border: 1px solid rgba(0, 212, 255, 0.2); transition: all 0.3s ease; display: flex; flex-direction: column; align-items: center; gap: 0.8rem;" onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 15px 30px rgba(0,212,255,0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
-            <img src="https://playwright.dev/img/playwright-logo.svg" alt="Playwright" style="width: 48px; height: 48px;">
-            <div style="font-weight: 600; color: var(--primary-blue); font-size: 0.95rem;">Playwright</div>
-        </div>
-
-        <!-- Salesforce -->
-        <div style="background: var(--bg-card); padding: 1.5rem; border-radius: 15px; text-align: center; border: 1px solid rgba(176, 38, 255, 0.2); transition: all 0.3s ease; display: flex; flex-direction: column; align-items: center; gap: 0.8rem;" onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 15px 30px rgba(176,38,255,0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
-            <img src="https://cdn.worldvectorlogo.com/logos/salesforce-2.svg" alt="Salesforce" style="width: 48px; height: 48px;">
-            <div style="font-weight: 600; color: var(--primary-purple); font-size: 0.95rem;">Salesforce</div>
-        </div>
-
-        <!-- Git -->
-        <div style="background: var(--bg-card); padding: 1.5rem; border-radius: 15px; text-align: center; border: 1px solid rgba(0, 255, 245, 0.2); transition: all 0.3s ease; display: flex; flex-direction: column; align-items: center; gap: 0.8rem;" onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 15px 30px rgba(0,255,245,0.3)'" onmouseout="this.style.transform='translateY(0)'; this.
-
-
-    <!-- Contact/CTA Section -->
-    <section class="expertise" style="text-align: center;">
-        <div style="max-width: 700px; margin: 0 auto; padding: 3rem 2rem; background: linear-gradient(135deg, rgba(0, 255, 136, 0.05), rgba(0, 212, 255, 0.05)); border-radius: 30px; border: 1px solid rgba(0, 255, 136, 0.2);">
-            <h2 style="font-size: 2.5rem; margin-bottom: 1rem; background: linear-gradient(135deg, var(--primary-green), var(--primary-cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
-                Let's Build Something Amazing
-            </h2>
-            <p style="color: var(--text-gray); margin-bottom: 2rem; font-size: 1.1rem;">
-                Looking for a Senior QA Automation Engineer to help deliver quality software? 
-                Let's discuss how I can contribute to your team's success.
-            </p>
-            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-                <a href="mailto:shukhrat.rustamov@email.com" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 1rem 2rem; background: var(--primary-green); color: #000; text-decoration: none; border-radius: 30px; font-weight: 600; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 10px 30px rgba(0,255,136,0.5)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
-                    ✉️ Email Me
-                </a>
-                <a href="https://www.linkedin.com/in/shukhrat-rustamov/" target="_blank" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 1rem 2rem; background: var(--bg-card); color: var(--text-white); text-decoration: none; border-radius: 30px; border: 1px solid var(--primary-cyan); font-weight: 600; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.borderColor=getComputedStyle(document.documentElement).getPropertyValue('--primary-cyan')" onmouseout="this.style.transform='translateY(0)'">
-                    💼 LinkedIn
-                </a>
-                <a href="https://github.com/ShukhratR" target="_blank" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 1rem 2rem; background: var(--bg-card); color: var(--text-white); text-decoration: none; border-radius: 30px; border: 1px solid var(--primary-purple); font-weight: 600; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.borderColor=getComputedStyle(document.documentElement).getPropertyValue('--primary-purple')" onmouseout="this.style.transform='translateY(0)'">
-                    🔗 GitHub
-                </a>
+    </section>
+    <!-- Technical Stack Section -->
+    <section class="expertise">
+        <h2 class="section-title">Technical Stack</h2>
+        <p class="section-subtitle">Technologies and tools I work with daily</p>
+        
+        <div class="tech-grid">
+            <div class="tech-item">
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" alt="TypeScript">
+                <p>TypeScript</p>
             </div>
+
+            <div class="tech-item">
+                <img src="https://playwright.dev/img/playwright-logo.svg" alt="Playwright">
+                <p>Playwright</p>
+            </div>
+
+            <div class="tech-item">
+                <img src="https://cdn.worldvectorlogo.com/logos/salesforce-2.svg" alt="Salesforce">
+                <p>Salesforce</p>
+            </div>
+
+            <div class="tech-item">
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="JavaScript">
+                <p>JavaScript</p>
+            </div>
+            
+            <div class="tech-item">
+                <img src="https://www.selenium.dev/images/selenium_logo_square_green.png" alt="Selenium">
+                <p>Selenium</p>
+            </div>
+            
+            <div class="tech-item">
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jest/jest-plain.svg" alt="Jest">
+                <p>Jest</p>
+            </div>
+            
+            <div class="tech-item">
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/azure/azure-original.svg" alt="Azure DevOps">
+                <p>Azure DevOps</p>
+            </div>
+            
+            <div class="tech-item">
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jenkins/jenkins-original.svg" alt="Jenkins">
+                <p>Jenkins</p>
+            </div>
+            
+            <div class="tech-item">
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/gitlab/gitlab-original.svg" alt="GitLab">
+                <p>GitLab</p>
+            </div>
+            
+            <div class="tech-item">
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" alt="Git">
+                <p>Git/GitHub</p>
+            </div>
+            
+            <div class="tech-item">
+                <img src="https://www.ncino.com/wp-content/uploads/2023/03/nCino-Bank-Operating-System.svg" alt="nCino">
+                <p>nCino</p>
+            </div>
+            
+            <div class="tech-item">
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg" alt="VS Code">
+                <p>VS Code</p>
+            </div>
+            
+            <div class="tech-item">
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postman/postman-original.svg" alt="Postman">
+                <p>Postman/REST API</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact">
+        <h2 class="section-title">Let's Build Something Amazing</h2>
+        <p class="section-subtitle">
+            Looking for a Senior QA Automation Engineer to help deliver quality software? 
+            Let's discuss how I can contribute to your team's success.
+        </p>
+        
+        <div class="contact-buttons">
+            <a href="mailto:shukhrat.rustamov@email.com" class="contact-btn">
+                ✉️ Email Me
+            </a>
+            <a href="https://www.linkedin.com/in/shukhrat-rustamov/" target="_blank" class="contact-btn">
+                💼 LinkedIn
+            </a>
+            <a href="https://github.com/ShukhratR" target="_blank" class="contact-btn">
+                🔗 GitHub
+            </a>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer style="text-align: center; padding: 3rem 5%; border-top: 1px solid rgba(255, 255, 255, 0.1); margin-top: 5rem;">
-        <p style="color: var(--text-gray); margin-bottom: 0.5rem;">
-            © 2024 Shukhrat Rustamov. All rights reserved.
-        </p>
-        <p style="color: var(--text-gray); font-size: 0.9rem;">
-            Built with passion for quality software engineering
-        </p>
+    <footer>
+        <p>© 2024 Shukhrat Rustamov. All rights reserved.</p>
+        <p style="margin-top: 0.5rem; font-size: 0.9rem;">Built with passion for quality software engineering</p>
     </footer>
 
-    <!-- Smooth scroll behavior script -->
     <script>
         // Smooth scroll for CTA button
         document.querySelector('.cta-button').addEventListener('click', function(e) {
             e.preventDefault();
-            document.querySelector('.experience').scrollIntoView({ 
+            document.querySelector('.experience').scrollIntoView({
                 behavior: 'smooth',
                 block: 'start'
             });
@@ -777,7 +1018,6 @@
                     animation: trailFade 1s ease-out forwards;
                 `;
                 document.body.appendChild(trail);
-                
                 setTimeout(() => trail.remove(), 1000);
             }
         });
