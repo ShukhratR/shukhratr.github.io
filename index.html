@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shukhrat Rustamov | Senior QA Automation Engineer</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/icons.css">
     <style>
         * {
             margin: 0;
@@ -102,23 +103,6 @@
             padding-top: 100px;
         }
 
-        .hero-image {
-            width: 300px;
-            height: 400px;
-            border-radius: 20px;
-            overflow: hidden;
-            margin-bottom: 3rem;
-            border: 2px solid rgba(0, 255, 163, 0.3);
-            box-shadow: 0 20px 60px rgba(0, 255, 163, 0.2);
-        }
-
-        .hero-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            filter: grayscale(100%) contrast(1.1);
-        }
-
         .hero h1 {
             font-size: 4.5rem;
             font-weight: 800;
@@ -154,19 +138,39 @@
         }
 
         .companies {
-            display: flex;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 3rem;
             align-items: center;
             justify-content: center;
             margin-top: 4rem;
-            flex-wrap: wrap;
-            opacity: 0.4;
+            max-width: 800px;
+            width: 100%;
         }
 
-        .companies span {
-            font-size: 1rem;
+        .company-logo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            opacity: 0.6;
+            transition: opacity 0.3s ease;
+        }
+
+        .company-logo:hover {
+            opacity: 1;
+        }
+
+        .company-logo img {
+            height: 40px;
+            width: auto;
+            filter: brightness(0) invert(1);
+        }
+
+        .company-logo span {
+            font-size: 0.9rem;
             font-weight: 500;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
         }
 
         section {
@@ -261,6 +265,25 @@
             gap: 1rem;
         }
 
+        .experience-title-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .company-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(0, 255, 163, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
         .experience-header h3 {
             font-size: 1.6rem;
             color: #00ffa3;
@@ -333,10 +356,19 @@
 
         .skill-tag {
             background: rgba(0, 255, 163, 0.1);
-            padding: 0.5rem 1rem;
+            padding: 0.6rem 1.2rem;
             border-radius: 20px;
             font-size: 0.9rem;
             border: 1px solid rgba(0, 255, 163, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .skill-icon {
+            width: 20px;
+            height: 20px;
+            filter: brightness(0) saturate(100%) invert(88%) sepia(23%) saturate(3567%) hue-rotate(99deg) brightness(102%) contrast(101%);
         }
 
         .contact-section {
@@ -394,11 +426,6 @@
             .hero h1 {
                 font-size: 2.5rem;
             }
-            
-            .hero-image {
-                width: 250px;
-                height: 333px;
-            }
 
             h2 {
                 font-size: 2rem;
@@ -407,6 +434,11 @@
             .header {
                 flex-direction: column;
                 gap: 1rem;
+            }
+
+            .companies {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 2rem;
             }
         }
     </style>
@@ -431,10 +463,6 @@
             <span class="status-dot"></span>
             <span>Available for Projects</span>
         </div>
-        
-        <div class="hero-image">
-            <img src="images/profile.jpg" alt="Shukhrat Rustamov - Professional Photo">
-        </div>
 
         <h1>Senior QA Automation Engineer & SDET</h1>
         <p>Specializing in Playwright TypeScript frameworks, CI/CD automation, and Salesforce-based banking platforms. 7+ years of expertise delivering fast, stable test automation.</p>
@@ -444,10 +472,22 @@
         </a>
 
         <div class="companies">
-            <span>City National Bank</span>
-            <span>Capital Group</span>
-            <span>LA Care</span>
-            <span>Verizon</span>
+            <div class="company-logo">
+                <img src="https://logo.clearbit.com/cnb.com" alt="City National Bank" onerror="this.style.display='none'">
+                <span>City National Bank</span>
+            </div>
+            <div class="company-logo">
+                <img src="https://logo.clearbit.com/capitalgroup.com" alt="Capital Group" onerror="this.style.display='none'">
+                <span>Capital Group</span>
+            </div>
+            <div class="company-logo">
+                <img src="https://logo.clearbit.com/lacare.org" alt="LA Care" onerror="this.style.display='none'">
+                <span>LA Care</span>
+            </div>
+            <div class="company-logo">
+                <img src="https://logo.clearbit.com/verizon.com" alt="Verizon" onerror="this.style.display='none'">
+                <span>Verizon</span>
+            </div>
         </div>
     </section>
 
@@ -483,9 +523,12 @@
         <div class="experience-timeline">
             <div class="experience-item">
                 <div class="experience-header">
-                    <div>
-                        <h3>QA Automation Engineer</h3>
-                        <p class="company">City National Bank | Los Angeles, CA</p>
+                    <div class="experience-title-group">
+                        <div class="company-icon">🏦</div>
+                        <div>
+                            <h3>QA Automation Engineer</h3>
+                            <p class="company">City National Bank | Los Angeles, CA</p>
+                        </div>
                     </div>
                     <span class="date">June 2024 - Present</span>
                 </div>
@@ -499,9 +542,12 @@
 
             <div class="experience-item">
                 <div class="experience-header">
-                    <div>
-                        <h3>Software Development Engineer in Test</h3>
-                        <p class="company">Capital Group | Los Angeles, CA</p>
+                    <div class="experience-title-group">
+                        <div class="company-icon">💼</div>
+                        <div>
+                            <h3>Software Development Engineer in Test</h3>
+                            <p class="company">Capital Group | Los Angeles, CA</p>
+                        </div>
                     </div>
                     <span class="date">Jan 2023 - Apr 2024</span>
                 </div>
@@ -515,9 +561,12 @@
 
             <div class="experience-item">
                 <div class="experience-header">
-                    <div>
-                        <h3>QA Automation Engineer</h3>
-                        <p class="company">Los Angeles Care Health Plan | Los Angeles, CA</p>
+                    <div class="experience-title-group">
+                        <div class="company-icon">🏥</div>
+                        <div>
+                            <h3>QA Automation Engineer</h3>
+                            <p class="company">Los Angeles Care Health Plan | Los Angeles, CA</p>
+                        </div>
                     </div>
                     <span class="date">Jan 2020 - Dec 2022</span>
                 </div>
@@ -531,9 +580,12 @@
 
             <div class="experience-item">
                 <div class="experience-header">
-                    <div>
-                        <h3>QA Automation Engineer</h3>
-                        <p class="company">Verizon | San Diego, CA</p>
+                    <div class="experience-title-group">
+                        <div class="company-icon">📱</div>
+                        <div>
+                            <h3>QA Automation Engineer</h3>
+                            <p class="company">Verizon | San Diego, CA</p>
+                        </div>
                     </div>
                     <span class="date">Mar 2018 - Dec 2019</span>
                 </div>
@@ -555,10 +607,22 @@
             <div class="skill-category">
                 <h3>Languages</h3>
                 <div class="skill-tags">
-                    <span class="skill-tag">TypeScript</span>
-                    <span class="skill-tag">JavaScript</span>
-                    <span class="skill-tag">Java</span>
-                    <span class="skill-tag">C#</span>
+                    <span class="skill-tag">
+                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/typescript.svg" class="skill-icon" alt="TypeScript">
+                        TypeScript
+                    </span>
+                    <span class="skill-tag">
+                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/javascript.svg" class="skill-icon" alt="JavaScript">
+                        JavaScript
+                    </span>
+                    <span class="skill-tag">
+                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/java.svg" class="skill-icon" alt="Java">
+                        Java
+                    </span>
+                    <span class="skill-tag">
+                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/csharp.svg" class="skill-icon" alt="C#">
+                        C#
+                    </span>
                     <span class="skill-tag">SQL</span>
                     <span class="skill-tag">Gherkin</span>
                 </div>
@@ -567,11 +631,20 @@
             <div class="skill-category">
                 <h3>Test Automation</h3>
                 <div class="skill-tags">
-                    <span class="skill-tag">Playwright</span>
-                    <span class="skill-tag">Selenium</span>
+                    <span class="skill-tag">
+                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/playwright.svg" class="skill-icon" alt="Playwright">
+                        Playwright
+                    </span>
+                    <span class="skill-tag">
+                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/selenium.svg" class="skill-icon" alt="Selenium">
+                        Selenium
+                    </span>
                     <span class="skill-tag">JUnit</span>
                     <span class="skill-tag">TestNG</span>
-                    <span class="skill-tag">Cucumber BDD</span>
+                    <span class="skill-tag">
+                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/cucumber.svg" class="skill-icon" alt="Cucumber">
+                        Cucumber BDD
+                    </span>
                     <span class="skill-tag">JMeter</span>
                 </div>
             </div>
@@ -590,36 +663,76 @@
             <div class="skill-category">
                 <h3>CI/CD & DevOps</h3>
                 <div class="skill-tags">
-                    <span class="skill-tag">Azure DevOps</span>
-                    <span class="skill-tag">Jenkins</span>
-                    <span class="skill-tag">GitHub</span>
-                    <span class="skill-tag">GitLab</span>
-                    <span class="skill-tag">REST Assured</span>
-                    <span class="skill-tag">Postman</span>
+                    <span class="skill-tag">
+                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/azuredevops.svg" class="skill-icon" alt="Azure DevOps">
+                        Azure DevOps
+                    </span>
+                    <span class="skill-tag">
+                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/jenkins.svg" class="skill-icon" alt="Jenkins">
+                        Jenkins
+                    </span>
+                    <span class="skill-tag">
+                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/github.svg" class="skill-icon" alt="GitHub">
+                        GitHub
+                    </span>
+                    <span class="skill-tag">
+                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/gitlab.svg" class="skill-icon" alt="GitLab">
+                        GitLab
+                    </span>
+                    <span class="skill-tag">
+                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/postman.svg" class="skill-icon" alt="Postman">
+                        Postman
+                    </span>
+                    <span class="skill-tag">
+                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/jira.svg" class="skill-icon" alt="Jira">
+                        Jira
+                    </span>
                 </div>
             </div>
 
             <div class="skill-category">
                 <h3>Databases</h3>
                 <div class="skill-tags">
-                    <span class="skill-tag">PostgreSQL</span>
-                    <span class="skill-tag">Oracle</span>
-                    <span class="skill-tag">MySQL</span>
+                    <span class="skill-tag">
+                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/postgresql.svg" class="skill-icon" alt="PostgreSQL">
+                        PostgreSQL
+                    </span>
+                    <span class="skill-tag">
+                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/oracle.svg" class="skill-icon" alt="Oracle">
+                        Oracle
+                    </span>
+                    <span class="skill-tag">
+                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/mysql.svg" class="skill-icon" alt="MySQL">
+                        MySQL
+                    </span>
                     <span class="skill-tag">SQLite</span>
                     <span class="skill-tag">JDBC</span>
-                    <span class="skill-tag">DBeaver</span>
                 </div>
             </div>
 
             <div class="skill-category">
                 <h3>Platforms & Tools</h3>
                 <div class="skill-tags">
-                    <span class="skill-tag">Salesforce</span>
-                    <span class="skill-tag">VS Code</span>
-                    <span class="skill-tag">IntelliJ</span>
-                    <span class="skill-tag">Jira</span>
-                    <span class="skill-tag">Appium</span>
-                    <span class="skill-tag">SauceLabs</span>
+                    <span class="skill-tag">
+                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/salesforce.svg" class="skill-icon" alt="Salesforce">
+                        Salesforce
+                    </span>
+                    <span class="skill-tag">
+                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/visualstudiocode.svg" class="skill-icon" alt="VS Code">
+                        VS Code
+                    </span>
+                    <span class="skill-tag">
+                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/intellijidea.svg" class="skill-icon" alt="IntelliJ">
+                        IntelliJ
+                    </span>
+                    <span class="skill-tag">
+                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/docker.svg" class="skill-icon" alt="Docker">
+                        Docker
+                    </span>
+                    <span class="skill-tag">
+                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/amazonwebservices.svg" class="skill-icon" alt="AWS">
+                        AWS
+                    </span>
                 </div>
             </div>
         </div>
@@ -645,6 +758,7 @@
             <div class="contact-card">
                 <div class="contact-icon">💼</div>
                 <h3>LinkedIn</h3>
+                <a href="https://linkedin.com/in/shu
                 <a href="https://linkedin.com/in/shukhrat-rustamov" target="_blank">Connect on LinkedIn</a>
             </div>
 
