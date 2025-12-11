@@ -11,16 +11,26 @@
             box-sizing: border-box;
         }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
-            background: #000000;
-            color: #ffffff;
-            line-height: 1.6;
-            overflow-x: hidden;
-            position: relative;
+        :root {
+            --primary-green: #00FF88;
+            --primary-blue: #00D4FF;
+            --primary-purple: #B026FF;
+            --primary-cyan: #00FFF5;
+            --bg-dark: #0A0A0A;
+            --bg-card: #141414;
+            --text-white: #FFFFFF;
+            --text-gray: #A0A0A0;
         }
 
-        /* Diagonal Grid Background */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-white);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Animated background gradient */
         body::before {
             content: '';
             position: fixed;
@@ -28,796 +38,719 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: 
-                linear-gradient(45deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(-45deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-            background-size: 50px 50px;
-            z-index: 0;
-            pointer-events: none;
+            background: radial-gradient(circle at 20% 30%, rgba(0, 255, 136, 0.05) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 70%, rgba(0, 212, 255, 0.05) 0%, transparent 50%),
+                        radial-gradient(circle at 50% 50%, rgba(176, 38, 255, 0.03) 0%, transparent 50%);
+            animation: gradientShift 15s ease infinite;
+            z-index: -1;
         }
 
-        /* Green Glow Effects */
-        .glow-effect {
-            position: absolute;
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(0, 255, 163, 0.15) 0%, transparent 70%);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        .glow-1 {
-            top: 10%;
-            left: 5%;
-            animation: float 8s ease-in-out infinite;
-        }
-
-        .glow-2 {
-            top: 60%;
-            right: 10%;
-            animation: float 10s ease-in-out infinite reverse;
-        }
-
-        .glow-3 {
-            bottom: 20%;
-            left: 30%;
-            animation: float 12s ease-in-out infinite;
-        }
-
-        @keyframes float {
+        @keyframes gradientShift {
             0%, 100% { transform: translate(0, 0) scale(1); }
             50% { transform: translate(30px, -30px) scale(1.1); }
         }
 
-        .header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            padding: 1.5rem 2rem;
+        /* Header with slide-in animation */
+        header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            z-index: 1000;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
+            padding: 2rem 5%;
+            animation: slideDown 0.8s ease;
         }
 
-        .profile-badge {
+        @keyframes slideDown {
+            from { transform: translateY(-100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .avatar {
             display: flex;
             align-items: center;
             gap: 1rem;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 0.5rem 1.5rem 0.5rem 0.5rem;
-            border-radius: 50px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            position: relative;
-            z-index: 10;
+            animation: fadeIn 1s ease 0.3s both;
         }
 
-        .profile-avatar {
-            width: 50px;
-            height: 50px;
+        .avatar-circle {
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
-            background: #00ffa3;
+            background: linear-gradient(135deg, var(--primary-green), var(--primary-cyan));
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 700;
+            font-size: 1.5rem;
+            font-weight: bold;
             color: #000;
-            font-size: 1.2rem;
+            animation: pulse 3s ease-in-out infinite;
         }
 
-        .profile-info h3 {
-            font-size: 1rem;
-            font-weight: 600;
-        }
-
-        .profile-info p {
-            font-size: 0.85rem;
-            color: rgba(255, 255, 255, 0.6);
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(0, 255, 136, 0.5); }
+            50% { transform: scale(1.05); box-shadow: 0 0 40px rgba(0, 255, 136, 0.8); }
         }
 
         .status-badge {
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid var(--primary-green);
+            color: var(--primary-green);
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            background: rgba(0, 255, 163, 0.1);
-            padding: 0.6rem 1.2rem;
-            border-radius: 50px;
-            border: 1px solid rgba(0, 255, 163, 0.3);
-            font-size: 0.9rem;
-            position: relative;
-            z-index: 10;
+            animation: glow 2s ease-in-out infinite;
         }
 
         .status-dot {
             width: 8px;
             height: 8px;
-            background: #00ffa3;
+            background: var(--primary-green);
             border-radius: 50%;
-            animation: pulse 2s infinite;
+            animation: blink 2s ease-in-out infinite;
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 1; box-shadow: 0 0 10px rgba(0, 255, 163, 0.5); }
-            50% { opacity: 0.5; box-shadow: 0 0 20px rgba(0, 255, 163, 0.8); }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
         }
 
+        /* Hero section with fade-in */
         .hero {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
             text-align: center;
-            padding: 2rem;
-            position: relative;
-            padding-top: 100px;
-            z-index: 10;
+            padding: 5rem 5% 3rem;
+            animation: fadeIn 1s ease 0.5s both;
         }
 
-        .hero h1 {
-            font-size: 4.5rem;
-            font-weight: 800;
-            line-height: 1.1;
-            margin-bottom: 1.5rem;
-            max-width: 1000px;
-            position: relative;
-            z-index: 10;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .hero p {
-            font-size: 1.25rem;
-            color: rgba(255, 255, 255, 0.7);
-            max-width: 700px;
-            margin: 0 auto 3rem;
-            position: relative;
-            z-index: 10;
+        h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--text-white), var(--primary-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: textShine 3s ease-in-out infinite;
+        }
+
+        @keyframes textShine {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-gray);
+            max-width: 800px;
+            margin: 0 auto 2rem;
         }
 
         .cta-button {
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            background: #00ffa3;
+            padding: 1rem 2rem;
+            background: var(--primary-green);
             color: #000;
-            padding: 1rem 2.5rem;
-            border-radius: 50px;
-            text-decoration: none;
+            border: none;
+            border-radius: 30px;
+            font-size: 1rem;
             font-weight: 600;
-            font-size: 1.1rem;
+            cursor: pointer;
             transition: all 0.3s ease;
-            position: relative;
-            z-index: 10;
+            animation: bounce 2s ease-in-out infinite;
         }
 
         .cta-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 40px rgba(0, 255, 163, 0.4);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.5);
         }
 
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Companies section with stagger animation */
         .companies {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 3rem;
-            align-items: center;
-            justify-content: center;
-            margin-top: 4rem;
-            max-width: 900px;
-            width: 100%;
-            position: relative;
-            z-index: 10;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 2rem;
+            padding: 3rem 5%;
+            max-width: 1000px;
+            margin: 0 auto;
         }
 
         .company-logo {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1rem;
-            opacity: 0.6;
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
             transition: all 0.3s ease;
+            animation: fadeInUp 0.6s ease backwards;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .company-logo:nth-child(1) { animation-delay: 0.1s; border-color: rgba(0, 255, 136, 0.3); }
+        .company-logo:nth-child(2) { animation-delay: 0.2s; border-color: rgba(0, 212, 255, 0.3); }
+        .company-logo:nth-child(3) { animation-delay: 0.3s; border-color: rgba(176, 38, 255, 0.3); }
+        .company-logo:nth-child(4) { animation-delay: 0.4s; border-color: rgba(0, 255, 245, 0.3); }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .company-logo:hover {
-            opacity: 1;
-            transform: translateY(-5px);
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(0, 255, 136, 0.2);
         }
 
-        .company-logo-img {
-            width: 60px;
-            height: 60px;
-            background: rgba(0, 255, 163, 0.1);
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            border: 1px solid rgba(0, 255, 163, 0.2);
-            padding: 0.5rem;
+        .company-logo img {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            margin-bottom: 1rem;
+            filter: grayscale(1) brightness(1.5);
+            transition: filter 0.3s ease;
         }
 
-        .company-logo span {
-            font-size: 0.95rem;
-            font-weight: 500;
-            letter-spacing: 0.5px;
+        .company-logo:hover img {
+            filter: grayscale(0) brightness(1);
         }
 
-        section {
-            padding: 6rem 2rem;
+        /* Expertise section with color variations */
+        .expertise {
+            padding: 5rem 5%;
             max-width: 1200px;
             margin: 0 auto;
-            position: relative;
-            z-index: 10;
         }
 
-        h2 {
+        .section-title {
             font-size: 3rem;
-            font-weight: 800;
-            margin-bottom: 1rem;
-            color: #00ffa3;
             text-align: center;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary-green), var(--primary-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .section-subtitle {
             text-align: center;
-            font-size: 1.1rem;
-            color: rgba(255, 255, 255, 0.6);
-            margin-bottom: 4rem;
+            color: var(--text-gray);
+            margin-bottom: 3rem;
         }
 
         .services-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
-            margin-top: 3rem;
         }
 
         .service-card {
-            background: rgba(255, 255, 255, 0.03);
-            padding: 2.5rem;
+            background: var(--bg-card);
+            padding: 2rem;
             border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
             transition: all 0.3s ease;
+            animation: fadeInUp 0.8s ease backwards;
             position: relative;
+            overflow: hidden;
         }
 
         .service-card::before {
             content: '';
             position: absolute;
-            inset: 0;
-            border-radius: 20px;
-            padding: 1px;
-            background: linear-gradient(135deg, rgba(0, 255, 163, 0.2), transparent);
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-green), var(--primary-cyan));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .service-card:nth-child(1) { 
+            animation-delay: 0.2s;
+            border: 1px solid rgba(0, 255, 136, 0.2);
+        }
+        
+        .service-card:nth-child(2) { 
+            animation-delay: 0.4s;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+        }
+        
+        .service-card:nth-child(3) { 
+            animation-delay: 0.6s;
+            border: 1px solid rgba(176, 38, 255, 0.2);
         }
 
         .service-card:hover {
-            background: rgba(255, 255, 255, 0.05);
-            border-color: rgba(0, 255, 163, 0.3);
-            transform: translateY(-5px);
-            box-shadow: 0 10px 40px rgba(0, 255, 163, 0.1);
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
         }
 
         .service-card:hover::before {
-            opacity: 1;
+            transform: scaleX(1);
         }
 
         .service-icon {
             width: 60px;
             height: 60px;
-            background: rgba(0, 255, 163, 0.1);
+            background: rgba(0, 255, 136, 0.1);
             border-radius: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.8rem;
+            font-size: 2rem;
             margin-bottom: 1.5rem;
-        }
-
-        .service-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: #fff;
-        }
-
-        .service-card p {
-            color: rgba(255, 255, 255, 0.7);
-            line-height: 1.7;
-        }
-
-        .experience-timeline {
-            margin-top: 3rem;
-        }
-
-        .experience-item {
-            background: rgba(255, 255, 255, 0.03);
-            padding: 2.5rem;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            margin-bottom: 2rem;
             transition: all 0.3s ease;
         }
 
-        .experience-item:hover {
-            background: rgba(255, 255, 255, 0.05);
-            border-color: rgba(0, 255, 163, 0.3);
-            box-shadow: 0 5px 30px rgba(0, 255, 163, 0.1);
+        .service-card:nth-child(1) .service-icon { background: rgba(0, 255, 136, 0.1); }
+        .service-card:nth-child(2) .service-icon { background: rgba(0, 212, 255, 0.1); }
+        .service-card:nth-child(3) .service-icon { background: rgba(176, 38, 255, 0.1); }
+
+        .service-card:hover .service-icon {
+            transform: rotate(360deg) scale(1.1);
         }
 
-        .experience-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .experience-title-group {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .company-icon {
-            width: 50px;
-            height: 50px;
-            background: rgba(0, 255, 163, 0.1);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .service-title {
             font-size: 1.5rem;
-            flex-shrink: 0;
+            margin-bottom: 1rem;
         }
 
-        .experience-header h3 {
-            font-size: 1.6rem;
-            color: #00ffa3;
-            margin-bottom: 0.5rem;
-        }
-
-        .experience-header .company {
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 1.1rem;
-        }
-
-        .experience-header .date {
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 0.95rem;
-            white-space: nowrap;
-        }
-
-        .experience-item ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .experience-item li {
-            padding-left: 1.5rem;
-            margin-bottom: 0.75rem;
-            position: relative;
-            color: rgba(255, 255, 255, 0.8);
-            line-height: 1.7;
-        }
-
-        .experience-item li:before {
-            content: "→";
-            position: absolute;
-            left: 0;
-            color: #00ffa3;
-            font-weight: bold;
-        }
-
-        .skills-section {
-            background: rgba(255, 255, 255, 0.02);
-            padding: 6rem 2rem;
-        }
-
-        .skills-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
+        /* Experience section */
+        .experience {
+            padding: 5rem 5%;
             max-width: 1200px;
             margin: 0 auto;
         }
 
-        .skill-category {
-            background: rgba(255, 255, 255, 0.03);
+        .experience-card {
+            background: var(--bg-card);
             padding: 2rem;
             border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .skill-category h3 {
-            color: #00ffa3;
-            font-size: 1.3rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .skill-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.75rem;
-        }
-
-        .skill-tag {
-            background: rgba(0, 255
-            , 255, 163, 0.1);
-            padding: 0.6rem 1.2rem;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            border: 1px solid rgba(0, 255, 163, 0.2);
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--primary-green);
             transition: all 0.3s ease;
+            animation: slideInLeft 0.8s ease backwards;
         }
 
-        .skill-tag:hover {
-            background: rgba(0, 255, 163, 0.2);
-            transform: translateY(-2px);
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
         }
 
-        .contact-section {
-            text-align: center;
-            padding: 6rem 2rem;
+        .experience-card:hover {
+            transform: translateX(10px);
+            box-shadow: -10px 0 30px rgba(0, 255, 136, 0.2);
         }
 
-        .contact-grid {
-            display: flex;
-            gap: 2rem;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-top: 3rem;
-        }
-
-        .contact-card {
-            background: rgba(255, 255, 255, 0.03);
-            padding: 2rem;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            min-width: 250px;
-            transition: all 0.3s ease;
-        }
-
-        .contact-card:hover {
-            background: rgba(255, 255, 255, 0.05);
-            border-color: rgba(0, 255, 163, 0.3);
-            transform: translateY(-5px);
-            box-shadow: 0 5px 30px rgba(0, 255, 163, 0.1);
-        }
-
-        .contact-icon {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-
-        .contact-card h3 {
-            font-size: 1.1rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .contact-card a {
-            color: #00ffa3;
-            text-decoration: none;
-            font-size: 0.95rem;
-            transition: color 0.3s ease;
-        }
-
-        .contact-card a:hover {
-            color: #00ffbb;
-        }
-
-        .footer {
-            text-align: center;
-            padding: 2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: rgba(255, 255, 255, 0.5);
-        }
-
+        /* Responsive design */
         @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-
-            h2 {
-                font-size: 2rem;
-            }
-
-            .header {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            .companies {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 2rem;
-            }
+            h1 { font-size: 2.5rem; }
+            .companies { grid-template-columns: repeat(2, 1fr); }
+            .services-grid { grid-template-columns: 1fr; }
         }
+
+        /* Floating particles animation */
+        .particle {
+            position: fixed;
+            width: 4px;
+            height: 4px;
+            background: var(--primary-green);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: float 10s infinite;
+            opacity: 0.3;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); }
+            50% { transform: translateY(-100vh) translateX(50px); }
+        }
+
+        .particle:nth-child(2) { left: 20%; animation-delay: 2s; background: var(--primary-cyan); }
+        .particle:nth-child(3) { left: 40
+%; animation-delay: 4s; background: var(--primary-blue); }
+        .particle:nth-child(4) { left: 60%; animation-delay: 6s; background: var(--primary-purple); }
+        .particle:nth-child(5) { left: 80%; animation-delay: 8s; background: var(--primary-cyan); }
     </style>
 </head>
 <body>
-    <!-- Glow Effects -->
-    <div class="glow-effect glow-1"></div>
-    <div class="glow-effect glow-2"></div>
-    <div class="glow-effect glow-3"></div>
+    <!-- Floating particles for dynamic effect -->
+    <div class="particle" style="top: 10%;"></div>
+    <div class="particle" style="top: 30%;"></div>
+    <div class="particle" style="top: 50%;"></div>
+    <div class="particle" style="top: 70%;"></div>
+    <div class="particle" style="top: 90%;"></div>
 
-    <header class="header">
-        <div class="profile-badge">
-            <div class="profile-avatar">SR</div>
-            <div class="profile-info">
-                <h3>Shukhrat Rustamov</h3>
-                <p>QA Automation Engineer</p>
+    <!-- Header -->
+    <header>
+        <div class="avatar">
+            <div class="avatar-circle">SR</div>
+            <div>
+                <div style="font-weight: 600;">Shukhrat Rustamov</div>
+                <div style="color: var(--text-gray); font-size: 0.9rem;">QA Automation Engineer</div>
             </div>
         </div>
         <div class="status-badge">
             <span class="status-dot"></span>
-            <span>Available for Projects</span>
+            Available for Projects
         </div>
     </header>
 
+    <!-- Hero Section -->
     <section class="hero">
-        <div class="status-badge" style="margin-bottom: 2rem;">
+        <div class="status-badge" style="margin: 0 auto 2rem;">
             <span class="status-dot"></span>
-            <span>Available for Projects</span>
+            Available for Projects
         </div>
-
-        <h1>Senior QA Automation Engineer & SDET</h1>
-        <p>Specializing in Playwright TypeScript frameworks, CI/CD automation, and Salesforce-based banking platforms. 7+ years of expertise delivering fast, stable test automation.</p>
-        
-        <a href="#contact" class="cta-button">
+        <h1>Senior QA Automation<br>Engineer & SDET</h1>
+        <p class="subtitle">
+            Specializing in Playwright TypeScript frameworks, CI/CD automation, and 
+            Salesforce-based banking platforms. 7+ years of expertise delivering fast, stable test automation.
+        </p>
+        <button class="cta-button">
             → Explore My Work
-        </a>
+        </button>
+    </section>
 
-        <div class="companies">
-            <div class="company-logo">
-                <div class="company-logo-img">🏦</div>
-                <span>City National Bank</span>
-            </div>
-            <div class="company-logo">
-                <div class="company-logo-img">💼</div>
-                <span>Capital Group</span>
-            </div>
-            <div class="company-logo">
-                <div class="company-logo-img">🏥</div>
-                <span>LA Care</span>
-            </div>
-            <div class="company-logo">
-                <div class="company-logo-img">📱</div>
-                <span>Verizon</span>
-            </div>
+    <!-- Companies Section with Real Logos -->
+    <section class="companies">
+        <div class="company-logo">
+            <img src="img/cnb-logo.png" alt="City National Bank" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏦</text></svg>'">
+            <div style="font-size: 0.9rem; color: var(--text-gray);">City National Bank</div>
+        </div>
+        <div class="company-logo">
+            <img src="img/capital-group-logo.png" alt="Capital Group" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💼</text></svg>'">
+            <div style="font-size: 0.9rem; color: var(--text-gray);">Capital Group</div>
+        </div>
+        <div class="company-logo">
+            <img src="img/lacare-logo.png" alt="LA Care" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏥</text></svg>'">
+            <div style="font-size: 0.9rem; color: var(--text-gray);">LA Care</div>
+        </div>
+        <div class="company-logo">
+            <img src="img/verizon-logo.png" alt="Verizon" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📱</text></svg>'">
+            <div style="font-size: 0.9rem; color: var(--text-gray);">Verizon</div>
         </div>
     </section>
 
-    <section id="services">
-        <h2>Expertise & Services</h2>
+    <!-- Expertise & Services Section -->
+    <section class="expertise">
+        <h2 class="section-title">Expertise & Services</h2>
         <p class="section-subtitle">Building robust test automation solutions for enterprise applications</p>
-
+        
         <div class="services-grid">
             <div class="service-card">
                 <div class="service-icon">🎯</div>
-                <h3>Test Automation</h3>
-                <p>Building modern Playwright TypeScript frameworks using Page Object Model, fixtures, and reusable utilities for fast, stable UI and API automation.</p>
+                <h3 class="service-title">Test Automation</h3>
+                <p style="color: var(--text-gray);">
+                    Building modern Playwright TypeScript frameworks using Page Object Model, 
+                    fixtures, and reusable utilities for fast, stable UI and API automation.
+                </p>
             </div>
 
             <div class="service-card">
                 <div class="service-icon">⚙️</div>
-                <h3>CI/CD Integration</h3>
-                <p>Integrating tests into Azure DevOps, Jenkins, and GitLab pipelines, improving execution speed by 30% and enabling continuous testing.</p>
+                <h3 class="service-title">CI/CD Integration</h3>
+                <p style="color: var(--text-gray);">
+                    Integrating tests into Azure DevOps, Jenkins, and GitLab pipelines, 
+                    improving execution speed by 30% and enabling continuous testing.
+                </p>
             </div>
 
             <div class="service-card">
                 <div class="service-icon">🏦</div>
-                <h3>Salesforce Testing</h3>
-                <p>7+ years expertise in enterprise web applications and Salesforce-based banking platforms with proven track record of quality delivery.</p>
+                <h3 class="service-title">Salesforce Testing</h3>
+                <p style="color: var(--text-gray);">
+                    7+ years expertise in enterprise web applications and Salesforce-based 
+                    banking platforms with proven track record of quality delivery.
+                </p>
             </div>
         </div>
     </section>
 
-    <section id="experience">
-        <h2>Professional Experience</h2>
+    <!-- Professional Experience Section -->
+    <section class="experience">
+        <h2 class="section-title">Professional Experience</h2>
         <p class="section-subtitle">Building quality software at leading companies</p>
 
-        <div class="experience-timeline">
-            <div class="experience-item">
-                <div class="experience-header">
-                    <div class="experience-title-group">
-                        <div class="company-icon">🏦</div>
-                        <div>
-                            <h3>QA Automation Engineer</h3>
-                            <p class="company">City National Bank | Los Angeles, CA</p>
-                        </div>
+        <div class="experience-card" style="animation-delay: 0.2s;">
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                <div>
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
+                        <div style="width: 50px; height: 50px; background: rgba(0, 255, 136, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">🏦</div>
+                        <h3 style="font-size: 1.5rem;">QA Automation Engineer</h3>
                     </div>
-                    <span class="date">June 2024 - Present</span>
+                    <p style="color: var(--text-gray);">City National Bank | Los Angeles, CA</p>
                 </div>
-                <ul>
-                    <li>Designed Playwright TypeScript framework for Salesforce banking platform</li>
-                    <li>Led migration from C# Selenium to Playwright, improving maintainability 30%</li>
-                    <li>Built test suites integrated into Azure DevOps pipelines</li>
-                    <li>Maintained 90% on-time release rate with distributed teams</li>
-                </ul>
+                <div style="color: var(--primary-green); font-weight: 600;">June 2024 - Present</div>
             </div>
+            <ul style="list-style: none; padding-left: 0;">
+                <li style="padding: 0.5rem 0; padding-left: 1.5rem; position: relative;">
+                    <span style="position: absolute; left: 0; color: var(--primary-green);">→</span>
+                    Designed Playwright TypeScript framework for Salesforce banking platform
+                </li>
+                <li style="padding: 0.5rem 0; padding-left: 1.5rem; position: relative;">
+                    <span style="position: absolute; left: 0; color: var(--primary-green);">→</span>
+                    Led migration from C# Selenium to Playwright, improving maintainability 30%
+                </li>
+                <li style="padding: 0.5rem 0; padding-left: 1.5rem; position: relative;">
+                    <span style="position: absolute; left: 0; color: var(--primary-green);">→</span>
+                    Built test suites integrated into Azure DevOps pipelines
+                </li>
+                <li style="padding: 0.5rem 0; padding-left: 1.5rem; position: relative;">
+                    <span style="position: absolute; left: 0; color: var(--primary-green);">→</span>
+                    Maintained 90% on-time release rate with distributed teams
+                </li>
+            </ul>
+        </div>
 
-            <div class="experience-item">
-                <div class="experience-header">
-                    <div class="experience-title-group">
-                        <div class="company-icon">💼</div>
-                        <div>
-                            <h3>Software Development Engineer in Test</h3>
-                            <p class="company">Capital Group | Los Angeles, CA</p>
-                        </div>
+        <div class="experience-card" style="animation-delay: 0.4s; border-left-color: var(--primary-blue);">
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                <div>
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
+                        <div style="width: 50px; height: 50px; background: rgba(0, 212, 255, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">💼</div>
+                        <h3 style="font-size: 1.5rem;">Software Test Engineer</h3>
                     </div>
-                    <span class="date">Jan 2023 - Apr 2024</span>
+                    <p style="color: var(--text-gray);">Capital Group | Los Angeles, CA</p>
                 </div>
-                <ul>
-                    <li>Developed Selenium Java framework using Cucumber BDD and Maven</li>
-                    <li>Reduced test runtime by 35% using AWS and Jenkins CI/CD</li>
-                    <li>Implemented POM patterns increasing reusability 30%</li>
-                    <li>Conducted API testing with REST Assured and Postman</li>
-                </ul>
+                <div style="color: var(--primary-blue); font-weight: 600;">Jun 2023 - Jun 2024</div>
             </div>
+            <ul style="list-style: none; padding-left: 0;">
+                <li style="padding: 0.5rem 0; padding-left: 1.5rem; position: relative;">
+                    <span style="position: absolute; left: 0; color: var(--primary-blue);">→</span>
+                    Created regression suite for loan booking process in nCino platform
+                </li>
+                <li style="padding: 0.5rem 0; padding-left: 1.5rem; position: relative;">
+                    <span style="position: absolute; left: 0; color: var(--primary-blue);">→</span>
+                    Developed data-driven E2E scenarios using TypeScript and Playwright
+                </li>
+                <li style="padding: 0.5rem 0; padding-left: 1.5rem; position: relative;">
+                    <span style="position: absolute; left: 0; color: var(--primary-blue);">→</span>
+                    Enhanced framework stability and code quality standards
+                </li>
+                <li style="padding: 0.5rem 0; padding-left: 1.5rem; position: relative;">
+                    <span style="position: absolute; left: 0; color: var(--primary-blue);">→</span>
+                    Collaborated with cross-functional teams in Agile environment
+                </li>
+            </ul>
+        </div>
 
-            <div class="experience-item">
-                <div class="experience-header">
-                    <div class="experience-title-group">
-                        <div class="company-icon">🏥</div>
-                        <div>
-                            <h3>QA Automation Engineer</h3>
-                            <p class="company">Los Angeles Care Health Plan | Los Angeles, CA</p>
-                        </div>
+        <div class="experience-card" style="animation-delay: 0.6s; border-left-color: var(--primary-purple);">
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                <div>
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
+                        <div style="width: 50px; height: 50px; background: rgba(176, 38, 255, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">🏥</div>
+                        <h3 style="font-size: 1.5rem;">QA Automation Engineer</h3>
                     </div>
-                    <span class="date">Jan 2020 - Dec 2022</span>
+                    <p style="color: var(--text-gray);">LA Care Health Plan | Los Angeles, CA</p>
                 </div>
-                <ul>
-                    <li>Designed POM-based framework using Java, Selenium WebDriver, JUnit</li>
-                    <li>Implemented data-driven testing with Apache POI</li>
-                    <li>Conducted database validation using JDBC with Oracle</li>
-                    <li>Elevated test coverage 25% above organizational average</li>
-                </ul>
+                <div style="color: var(--primary-purple); font-weight: 600;">Aug 2021 - Jun 2023</div>
             </div>
+            <ul style="list-style: none; padding-left: 0;">
+                <li style="padding: 0.5rem 0; padding-left: 1.5rem; position: relative;">
+                    <span style="position: absolute; left: 0; color: var(--primary-purple);">→</span>
+                    Maintained and updated test cases for healthcare platform
+                </li>
+                <li style="padding: 0.5rem 0; padding-left: 1.5rem; position: relative;">
+                    <span style="position: absolute; left: 0; color: var(--primary-purple);">→</span>
+                    Created comprehensive test plans and automated test scripts
+                </li>
+                <li style="padding: 0.5rem 0; padding-left: 1.5rem; position: relative;">
+                    <span style="position: absolute; left: 0; color: var(--primary-purple);">→</span>
+                    Performed API testing and validation using REST services
+                </li>
+                <li style="padding: 0.5rem 0; padding-left: 1.5rem; position: relative;">
+                    <span style="position: absolute; left: 0; color: var(--primary-purple);">→</span>
+                    Collaborated with developers to identify and resolve defects
+                </li>
+            </ul>
+        </div>
 
-            <div class="experience-item">
-                <div class="experience-header">
-                    <div class="experience-title-group">
-                        <div class="company-icon">📱</div>
-                        <div>
-                            <h3>QA Automation Engineer</h3>
-                            <p class="company">Verizon | San Diego, CA</p>
-                        </div>
+        <div class="experience-card" style="animation-delay: 0.8s; border-left-color: var(--primary-cyan);">
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                <div>
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
+                        <div style="width: 50px; height: 50px; background: rgba(0, 255, 245, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">📱</div>
+                        <h3 style="font-size: 1.5rem;">Software QA Engineer</h3>
                     </div>
-                    <span class="date">Mar 2018 - Dec 2019</span>
+                    <p style="color: var(--text-gray);">Verizon | Remote</p>
                 </div>
-                <ul>
-                    <li>Developed Selenium WebDriver framework with Cucumber and TestNG</li>
-                    <li>Achieved 85% automated test coverage across platforms</li>
-                    <li>Utilized Git for version control and code reviews</li>
-                    <li>Partnered with teams to triage production defects in Jira</li>
-                </ul>
+                <div style="color: var(--primary-cyan); font-weight: 600;">Jul 2020 - Aug 2021</div>
+            </div>
+            <ul style="list-style: none; padding-left: 0;">
+                <li style="padding: 0.5rem 0; padding-left: 1.5rem; position: relative;">
+                    <span style="position: absolute; left: 0; color: var(--primary-cyan);">→</span>
+                    Developed test automation framework using industry best practices
+                </li>
+                <li style="padding: 0.5rem 0; padding-left: 1.5rem; position: relative;">
+                    <span style="position: absolute; left: 0; color: var(--primary-cyan);">→</span>
+                    Executed functional, regression, and integration testing
+                </li>
+                <li style="padding: 0.5rem 0; padding-left: 1.5rem; position: relative;">
+                    <span style="position: absolute; left: 0; color: var(--primary-cyan);">→
+                    Participated in daily standups and sprint planning meetings
+                </li>
+                <li style="padding: 0.5rem 0; padding-left: 1.5rem; position: relative;">
+                    <span style="position: absolute; left: 0; color: var(--primary-cyan);">→</span>
+                    Documented test results and tracked defects in Azure DevOps
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Technical Skills Section -->
+    <section class="expertise">
+        <h2 class="section-title">Technical Stack</h2>
+        <p class="section-subtitle">Technologies and tools I work with daily</p>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem; max-width: 900px; margin: 0 auto;">
+            <div style="background: var(--bg-card); padding: 1rem; border-radius: 15px; text-align: center; border: 1px solid rgba(0, 255, 136, 0.2); transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 10px 20px rgba(0,255,136,0.2)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                <div style="font-weight: 600; color: var(--primary-green);">TypeScript</div>
+            </div>
+            <div style="background: var(--bg-card); padding: 1rem; border-radius: 15px; text-align: center; border: 1px solid rgba(0, 212, 255, 0.2); transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 10px 20px rgba(0,212,255,0.2)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                <div style="font-weight: 600; color: var(--primary-blue);">Playwright</div>
+            </div>
+            <div style="background: var(--bg-card); padding: 1rem; border-radius: 15px; text-align: center; border: 1px solid rgba(176, 38, 255, 0.2); transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 10px 20px rgba(176,38,255,0.2)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                <div style="font-weight: 600; color: var(--primary-purple);">Salesforce</div>
+            </div>
+            <div style="background: var(--bg-card); padding: 1rem; border-radius: 15px; text-align: center; border: 1px solid rgba(0, 255, 245, 0.2); transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 10px 20px rgba(0,255,245,0.2)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                <div style="font-weight: 600; color: var(--primary-cyan);">nCino</div>
+            </div>
+            <div style="background: var(--bg-card); padding: 1rem; border-radius: 15px; text-align: center; border: 1px solid rgba(0, 255, 136, 0.2); transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 10px 20px rgba(0,255,136,0.2)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                <div style="font-weight: 600; color: var(--primary-green);">Git/GitHub</div>
+            </div>
+            <div style="background: var(--bg-card); padding: 1rem; border-radius: 15px; text-align: center; border: 1px solid rgba(0, 212, 255, 0.2); transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 10px 20px rgba(0,212,255,0.2)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                <div style="font-weight: 600; color: var(--primary-blue);">Azure DevOps</div>
+            </div>
+            <div style="background: var(--bg-card); padding: 1rem; border-radius: 15px; text-align: center; border: 1px solid rgba(176, 38, 255, 0.2); transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 10px 20px rgba(176,38,255,0.2)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                <div style="font-weight: 600; color: var(--primary-purple);">REST API</div>
+            </div>
+            <div style="background: var(--bg-card); padding: 1rem; border-radius: 15px; text-align: center; border: 1px solid rgba(0, 255, 245, 0.2); transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 10px 20px rgba(0,255,245,0.2)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                <div style="font-weight: 600; color: var(--primary-cyan);">CI/CD</div>
+            </div>
+            <div style="background: var(--bg-card); padding: 1rem; border-radius: 15px; text-align: center; border: 1px solid rgba(0, 255, 136, 0.2); transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 10px 20px rgba(0,255,136,0.2)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                <div style="font-weight: 600; color: var(--primary-green);">SOQL</div>
+            </div>
+            <div style="background: var(--bg-card); padding: 1rem; border-radius: 15px; text-align: center; border: 1px solid rgba(0, 212, 255, 0.2); transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 10px 20px rgba(0,212,255,0.2)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                <div style="font-weight: 600; color: var(--primary-blue);">JavaScript</div>
+            </div>
+            <div style="background: var(--bg-card); padding: 1rem; border-radius: 15px; text-align: center; border: 1px solid rgba(176, 38, 255, 0.2); transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 10px 20px rgba(176,38,255,0.2)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                <div style="font-weight: 600; color: var(--primary-purple);">Agile/Scrum</div>
+            </div>
+            <div style="background: var(--bg-card); padding: 1rem; border-radius: 15px; text-align: center; border: 1px solid rgba(0, 255, 245, 0.2); transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 10px 20px rgba(0,255,245,0.2)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                <div style="font-weight: 600; color: var(--primary-cyan);">Performance</div>
             </div>
         </div>
     </section>
 
-    <section class="skills-section">
-        <h2>Technical Skills</h2>
-        <p class="section-subtitle">Comprehensive expertise in modern testing technologies</p>
-
-        <div class="skills-grid">
-            <div class="skill-category">
-                <h3>Languages</h3>
-                <div class="skill-tags">
-                    <span class="skill-tag">📘 TypeScript</span>
-                    <span class="skill-tag">📙 JavaScript</span>
-                    <span class="skill-tag">☕ Java</span>
-                    <span class="skill-tag">🔷 C#</span>
-                    <span class="skill-tag">🗄️ SQL</span>
-                    <span class="skill-tag">🥒 Gherkin</span>
-                </div>
-            </div>
-
-            <div class="skill-category">
-                <h3>Test Automation</h3>
-                <div class="skill-tags">
-                    <span class="skill-tag">🎭 Playwright</span>
-                    <span class="skill-tag">🔍 Selenium</span>
-                    <span class="skill-tag">✅ JUnit</span>
-                    <span class="skill-tag">🧪 TestNG</span>
-                    <span class="skill-tag">🥒 Cucumber BDD</span>
-                    <span class="skill-tag">⚡ JMeter</span>
-                </div>
-            </div>
-
-            <div class="skill-category">
-                <h3>Framework Design</h3>
-                <div class="skill-tags">
-                    <span class="skill-tag">📄 Page Object Model</span>
-                    <span class="skill-tag">📊 Data-Driven Testing</span>
-                    <span class="skill-tag">🥒 BDD</span>
-                    <span class="skill-tag">🔧 Fixtures</span>
-                    <span class="skill-tag">⚡ Parallel Execution</span>
-                </div>
-            </div>
-
-            <div class="skill-category">
-                <h3>CI/CD & DevOps</h3>
-                <div class="skill-tags">
-                    <span class="skill-tag">☁️ Azure DevOps</span>
-                    <span class="skill-tag">🔨 Jenkins</span>
-                    <span class="skill-tag">🐙 GitHub</span>
-                    <span class="skill-tag">🦊 GitLab</span>
-                    <span class="skill-tag">📮 Postman</span>
-                    <span class="skill-tag">📋 Jira</span>
-                </div>
-            </div>
-
-            <div class="skill-category">
-                <h3>Databases</h3>
-                <div class="skill-tags">
-                    <span class="skill-tag">🐘 PostgreSQL</span>
-                    <span class="skill-tag">🔴 Oracle</span>
-                    <span class="skill-tag">🐬 MySQL</span>
-                    <span class="skill-tag">💾 SQLite</span>
-                    <span class="skill-tag">🔌 JDBC</span>
-                </div>
-            </div>
-
-            <div class="skill-category">
-                <h3>Platforms & Tools</h3>
-                <div class="skill-tags">
-                    <span class="skill-tag">☁️ Salesforce</span>
-                    <span class="skill-tag">💻 VS Code</span>
-                    <span class="skill-tag">🧠 IntelliJ</span>
-                    <span class="skill-tag">🐳 Docker</span>
-                    <span class="skill-tag">☁️ AWS</span>
-                </div>
+    <!-- Contact/CTA Section -->
+    <section class="expertise" style="text-align: center;">
+        <div style="max-width: 700px; margin: 0 auto; padding: 3rem 2rem; background: linear-gradient(135deg, rgba(0, 255, 136, 0.05), rgba(0, 212, 255, 0.05)); border-radius: 30px; border: 1px solid rgba(0, 255, 136, 0.2);">
+            <h2 style="font-size: 2.5rem; margin-bottom: 1rem; background: linear-gradient(135deg, var(--primary-green), var(--primary-cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                Let's Build Something Amazing
+            </h2>
+            <p style="color: var(--text-gray); margin-bottom: 2rem; font-size: 1.1rem;">
+                Looking for a Senior QA Automation Engineer to help deliver quality software? 
+                Let's discuss how I can contribute to your team's success.
+            </p>
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <a href="mailto:shukhrat.rustamov@email.com" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 1rem 2rem; background: var(--primary-green); color: #000; text-decoration: none; border-radius: 30px; font-weight: 600; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 10px 30px rgba(0,255,136,0.5)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                    ✉️ Email Me
+                </a>
+                <a href="https://www.linkedin.com/in/shukhrat-rustamov/" target="_blank" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 1rem 2rem; background: var(--bg-card); color: var(--text-white); text-decoration: none; border-radius: 30px; border: 1px solid var(--primary-cyan); font-weight: 600; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.borderColor=getComputedStyle(document.documentElement).getPropertyValue('--primary-cyan')" onmouseout="this.style.transform='translateY(0)'">
+                    💼 LinkedIn
+                </a>
+                <a href="https://github.com/ShukhratR" target="_blank" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 1rem 2rem; background: var(--bg-card); color: var(--text-white); text-decoration: none; border-radius: 30px; border: 1px solid var(--primary-purple); font-weight: 600; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.borderColor=getComputedStyle(document.documentElement).getPropertyValue('--primary-purple')" onmouseout="this.style.transform='translateY(0)'">
+                    🔗 GitHub
+                </a>
             </div>
         </div>
     </section>
 
-    <section id="contact" class="contact-section">
-        <h2>Let's Connect</h2>
-        <p class="section-subtitle">Available for new opportunities and collaborations</p>
-
-        <div class="contact-grid">
-            <div class="contact-card">
-                <div class="contact-icon">📧</div>
-                <h3>Email</h3>
-                <a href="mailto:shukhrat.rustamov@yahoo.com">shukhrat.rustamov@yahoo.com</a>
-            </div>
-
-            <div class="contact-card">
-                <div class="contact-icon">📱</div>
-                <h3>Phone</h3>
-                <a href="tel:+14243623020">424-362-3020</a>
-            </div>
-
-            <div class="contact-card">
-                <div class="contact-icon">💼</div>
-                <h3>LinkedIn</h3>
-                <a href="https://linkedin.com/in/shukhrat-rustamov" target="_blank">Connect on LinkedIn</a>
-            </div>
-
-            <div class="contact-card">
-                <div class="contact-icon">💻</div>
-                <h3>GitHub</h3>
-                <a href="https://github.com/ShukhratR" target="_blank">View GitHub Profile</a>
-            </div>
-        </div>
-
-        <div style="margin-top: 3rem;">
-            <p style="color: rgba(255, 255, 255, 0.6);">📍 Los Angeles, CA | 🇺🇸 U.S. Permanent Resident</p>
-        </div>
-    </section>
-
-    <footer class="footer">
-        <p>&copy; 2024 Shukhrat Rustamov. All rights reserved.</p>
+    <!-- Footer -->
+    <footer style="text-align: center; padding: 3rem 5%; border-top: 1px solid rgba(255, 255, 255, 0.1); margin-top: 5rem;">
+        <p style="color: var(--text-gray); margin-bottom: 0.5rem;">
+            © 2024 Shukhrat Rustamov. All rights reserved.
+        </p>
+        <p style="color: var(--text-gray); font-size: 0.9rem;">
+            Built with passion for quality software engineering
+        </p>
     </footer>
+
+    <!-- Smooth scroll behavior script -->
+    <script>
+        // Smooth scroll for CTA button
+        document.querySelector('.cta-button').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.querySelector('.experience').scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'start'
+            });
+        });
+
+        // Add intersection observer for fade-in animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all animated elements
+        document.querySelectorAll('.service-card, .experience-card, .company-logo').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Dynamic cursor trail effect (optional - for extra flair)
+        document.addEventListener('mousemove', (e) => {
+            if (Math.random() > 0.9) { // Only create trail 10% of the time for performance
+                const trail = document.createElement('div');
+                trail.className = 'cursor-trail';
+                trail.style.cssText = `
+                    position: fixed;
+                    width: 5px;
+                    height: 5px;
+                    background: var(--primary-green);
+                    border-radius: 50%;
+                    pointer-events: none;
+                    left: ${e.clientX}px;
+                    top: ${e.clientY}px;
+                    opacity: 0.6;
+                    z-index: 9999;
+                    animation: trailFade 1s ease-out forwards;
+                `;
+                document.body.appendChild(trail);
+                
+                setTimeout(() => trail.remove(), 1000);
+            }
+        });
+
+        // Add keyframe for cursor trail
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes trailFade {
+                to {
+                    opacity: 0;
+                    transform: scale(0);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
 </body>
 </html>
