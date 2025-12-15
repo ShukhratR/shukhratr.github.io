@@ -562,43 +562,83 @@
         .tech-item:hover p {
             color: var(--primary-green);
         }
+      /* Contact section */
+      .contact {
+        padding: 5rem 5%;
+        max-width: 1200px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 10;
+        text-align: center;
+      }
 
-        /* Contact section */
-        .contact-item {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
+      .contact-buttons {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 2rem;
+        flex-wrap: wrap;
+        margin-top: 2rem;
+      }
 
-/* Default: show icon+label, hide info */
-.contact-icon {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  transition: opacity 0.2s ease;
-}
+      .contact-btn {
+        background: var(--bg-card);
+        padding: 1.5rem 2rem;
+        border-radius: 20px;
+        text-decoration: none;
+        color: var(--text-white);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.3s ease;
+        min-width: 200px;
+      }
 
-.contact-info {
-  position: absolute;
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.2s ease, transform 0.2s ease;
-  white-space: nowrap;
-}
+      .contact-btn:hover {
+        transform: translateY(-5px);
+        border-color: var(--primary-green);
+        box-shadow: 0 10px 30px rgba(0, 255, 136, 0.2);
+      }
 
-/* On hover: hide icon, show info */
-.contact-item:hover .contact-icon {
-  opacity: 0;
-}
+      .contact-btn img {
+        width: 32px;
+        height: 32px;
+        object-fit: contain;
+        margin-right: 0.5rem;
+      }
 
-.contact-item:hover .contact-info {
-  opacity: 1;
-  transform: translateY(0);
-}
+      .contact-item {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
 
+      /* Default: show icon+label, hide info */
+      .contact-icon {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: opacity 0.2s ease;
+      }
 
+      .contact-info {
+        position: absolute;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: opacity 0.2s ease, transform 0.2s ease;
+        white-space: nowrap;
+      }
+
+      /* On hover: hide icon, show info */
+      .contact-item:hover .contact-icon {
+        opacity: 0;
+      }
+
+      .contact-item:hover .contact-info {
+        opacity: 1;
+        transform: translateY(0);
+      }
+ 
         /* Footer */
         footer {
             padding: 2rem 5%;
