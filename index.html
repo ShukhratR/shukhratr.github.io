@@ -564,48 +564,40 @@
         }
 
         /* Contact section */
-        .contact {
-            padding: 5rem 5%;
-            max-width: 800px;
-            margin: 0 auto;
-            text-align: center;
-            position: relative;
-            z-index: 10;
-        }
+        .contact-item {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
 
-        .contact-buttons {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-top: 2rem;
-        }
+/* Default: show icon+label, hide info */
+.contact-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: opacity 0.2s ease;
+}
 
-        .contact-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 1rem 2rem;
-            background: var(--bg-card);
-            color: var(--text-white);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 30px;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            font-size: 1rem;
-        }
+.contact-info {
+  position: absolute;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  white-space: nowrap;
+}
 
-        .contact-btn:hover {
-            transform: translateY(-5px);
-            border-color: var(--primary-green);
-            box-shadow: 0 10px 20px rgba(0, 255, 136, 0.2);
-        }
+/* On hover: hide icon, show info */
+.contact-item:hover .contact-icon {
+  opacity: 0;
+}
 
-        .contact-btn img {
-            width: 24px;
-            height: 24px;
-            object-fit: contain;
-        }
+.contact-item:hover .contact-info {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 
         /* Footer */
         footer {
@@ -972,7 +964,7 @@
     </div>
 </section>
 
-    <!-- Contact Section with Social Media Logos -->
+ <!-- Contact Section with Social Media Logos -->
 <section class="contact">
   <h2 class="section-title">Let's Build Something Amazing</h2>
   <p class="section-subtitle">
@@ -981,22 +973,37 @@
   </p>
   
   <div class="contact-buttons">
-    <a href="mailto:shukhrat.rustamov@email.com" class="contact-btn">
-      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg" alt="Email">
-      Email Me
+    <!-- Email -->
+    <a href="mailto:shukhrat.rustamov@yahoo.com" class="contact-btn contact-item">
+      <span class="contact-icon">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg" alt="Email">
+        <span>Email Me</span>
+      </span>
+      <span class="contact-info">shukhrat.rustamov@yahoo.com</span>
     </a>
-    <a href="https://www.linkedin.com/in/shukhrat-rustamov/" target="_blank" class="contact-btn">
-      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg" alt="LinkedIn">
-      LinkedIn
+
+    <!-- LinkedIn -->
+    <a href="https://www.linkedin.com/in/shukhrat-rustamov/" target="_blank" class="contact-btn contact-item">
+      <span class="contact-icon">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg" alt="LinkedIn">
+        <span>LinkedIn</span>
+      </span>
+      <span class="contact-info">/in/shukhrat-rustamov</span>
     </a>
-    <a href="tel:+1(424)-362-3020" class="contact-btn" title="+1 (818) 555-1234">
-      <img 
-        src="https://icons.getbootstrap.com/assets/icons/telephone.svg" 
-        alt="Phone">
-      Call Me
+
+    <!-- Phone -->
+    <a href="tel:+14243623020" class="contact-btn contact-item">
+      <span class="contact-icon">
+        <img 
+          src="https://icons.getbootstrap.com/assets/icons/telephone.svg" 
+          alt="Phone">
+        <span>Call Me</span>
+      </span>
+      <span class="contact-info">+1 (424) 362-3020</span>
     </a>
   </div>
 </section>
+
 
 
     <!-- Footer -->
