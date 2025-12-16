@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+wit<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -237,25 +237,30 @@
         /* Companies section with stagger animation */
         .companies {
         display: grid;
-                    background: #F8F8F8;
-                    border-radius: 20px;
-                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                    border-top: 2px solid var(--primary-green);
+                    border-bottom: 2px solid var(--primary-green);
             gap: 2rem;
-            padding: 3rem 5%;
             max-width: 1000px;
             margin: 0 auto;
             position: relative;
             z-index: 10;
         }
 
-        .company-logo {
-            background: #FFFFFF;            padding: 2rem;
-            border-radius: 0px;            text-align: center;
-            transition: all 0.3s ease;
+        
+        
+            .companies-title {
+                        background: var(--primary-green);
+                        color: #000;
+                        text-align: center;
+                        padding: 3rem 2rem;
+                        font-size: 2.5rem;
+                        font-weight: 600;
+                        margin: 0;
+                    }.company-log;border-radius: 0px;            text-align: center;
             animation: fadeInUp 0.6s ease backwards;
             border: 1px solid #D3D3D3;        }
 
-        .company-logo:nth-child(1) {
             animation-delay: 0.1s;
             border-color: rgba(0, 255, 136, 0.3);
         }
@@ -687,6 +692,7 @@
 
     <!-- Companies Section -->
 <section class="companies">
+        <h2 class="companies-title">Companies I've Worked With</h2>
 <div class="company-logo">
 <img src="img/cnb-logo.png" alt="City National Bank">
 <p>City National Bank</p>
