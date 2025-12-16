@@ -253,6 +253,7 @@ wit<!DOCTYPE html>
 
         .timeline-container {
             display: flex;
+                        position: relative;
             justify-content: center;
             align-items: flex-start;
             gap: 4rem;
@@ -260,11 +261,22 @@ wit<!DOCTYPE html>
             flex-wrap: wrap;
         }
 
+                .timeline-svg {
+            position: absolute;
+            top: 60px;
+            left: 0;
+            width: 100%;
+            height: 150px;
+            z-index: 0;
+            pointer-events: none;
+        }
+
         .timeline-company {
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 1rem;
+                        z-index: 1;
         }
 
         .company-circle {
@@ -698,18 +710,22 @@ wit<!DOCTYPE html>
 <section class="companies">
 <section class="companies">
         <p class="companies-subtitle">Every experience in my career has shaped my expertise</p>
-        <div class="timeline-container">
+<div class="timeline-container">
+            <!-- Timeline connecting line SVG -->
+            <svg class="timeline-svg" viewBox="0 0 1000 150" xmlns="http://www.w3.org/2000/svg">
+                <path d="M 50 75 L 950 75" stroke="#333" stroke-width="2" fill="none" stroke-dasharray="5,5"/>
+                <circle cx="120" cy="75" r="8" fill="#00FF88"/>
+                <circle cx="370" cy="75" r="8" fill="#00FF88"/>
+                <circle cx="620" cy="75" r="8" fill="#00FF88"/>
+                <circle cx="870" cy="75" r="8" fill="#00FF88"/>
+                <polygon points="965,75 950,70 950,80" fill="#00FF88"/>
+            </svg>
+            
             <div class="timeline-company">
                 <div class="company-circle">
-                    <img src="img/cnb-logo.png" alt="City National Bank">
+                    <img src="img/verizon-logo.png" alt="Verizon">
                 </div>
-                <p class="company-name">City National Bank</p>
-            </div>
-            <div class="timeline-company">
-                <div class="company-circle">
-                    <img src="img/capital-group-logo.png" alt="Capital Group">
-                </div>
-                <p class="company-name">Capital Group</p>
+                <p class="company-name">Verizon</p>
             </div>
             <div class="timeline-company">
                 <div class="company-circle">
@@ -719,15 +735,21 @@ wit<!DOCTYPE html>
             </div>
             <div class="timeline-company">
                 <div class="company-circle">
-                    <img src="img/verizon-logo.png" alt="Verizon">
+                    <img src="img/capital-group-logo.png" alt="Capital Group">
                 </div>
-                <p class="company-name">Verizon</p>
+                <p class="company-name">Capital Group</p>
+            </div>
+            <div class="timeline-company">
+                <div class="company-circle">
+                    <img src="img/cnb-logo.png" alt="City National Bank">
+                </div>
+                <p class="company-name">City National Bank</p>
             </div>
         </div>
         <div class="timeline-line">
             <span class="timeline-start">2020</span>
             <span class="timeline-end">now</span>
-        </div>
+        </div>        </div>
     </section>    
     <!-- Expertise & Services Section (4 cards with tool logos) -->
     <section class="expertise">
