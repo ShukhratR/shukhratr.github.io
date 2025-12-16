@@ -305,6 +305,7 @@ wit<!DOCTYPE html>
         .company-name {
             color: var(--text-gray);
             font-size: 0.9rem;
+                        font-weight: bold;
             text-align: center;
         }
 
@@ -712,37 +713,47 @@ wit<!DOCTYPE html>
 <div class="timeline-container">
             <!-- Timeline connecting line SVG -->
 <svg class="timeline-svg" viewBox="0 0 1000 200" xmlns="http://www.w3.org/2000/svg">
-                <!-- Contrail/smoke trail from rocket -->
-                <path d="M 50 75 Q 150 65, 250 75 T 450 75 T 650 75 T 850 75 L 920 75" 
-                      stroke="#555" stroke-width="3" fill="none" stroke-dasharray="8,6" opacity="0.6"/>
-                <path d="M 50 75 Q 150 70, 250 75 T 450 75 T 650 75 T 850 75 L 920 75" 
-                      stroke="#666" stroke-width="2" fill="none" stroke-dasharray="10,8" opacity="0.4"/>
+                <!-- Realistic contrail effect with multiple wisps -->
+                <path d="M 50 75 Q 200 70, 400 75 T 800 75 L 920 75" 
+                      stroke="#888" stroke-width="4" fill="none" opacity="0.3"/>
+                <path d="M 50 78 Q 220 73, 420 78 T 820 78 L 920 78" 
+                      stroke="#999" stroke-width="3" fill="none" opacity="0.25"/>
+                <path d="M 50 72 Q 180 67, 380 72 T 780 72 L 920 72" 
+                      stroke="#aaa" stroke-width="2" fill="none" opacity="0.2"/>
+                <path d="M 50 76 Q 210 74, 410 76 T 810 76 L 920 76" 
+                      stroke="#bbb" stroke-width="1.5" fill="none" opacity="0.15"/>
                 
-                <!-- Green dots below each company logo -->
-                <circle cx="120" cy="135" r="8" fill="#00FF88"/>
-                <circle cx="370" cy="135" r="8" fill="#00FF88"/>
-                <circle cx="620" cy="135" r="8" fill="#00FF88"/>
-                <circle cx="870" cy="135" r="8" fill="#00FF88"/>
-                
-                <!-- Rocket at the end -->
-                <g transform="translate(930, 60)">
-                    <!-- Rocket body -->
-                    <ellipse cx="0" cy="0" rx="12" ry="18" fill="#00FF88"/>
+                <!-- Realistic rocket pointing right -->
+                <g transform="translate(935, 75) rotate(90)">
+                    <!-- Main rocket body (cylinder) -->
+                    <rect x="-8" y="-25" width="16" height="40" fill="#e8e8e8" rx="2"/>
+                    <rect x="-6" y="-25" width="12" height="40" fill="#f5f5f5" rx="1"/>
+                    
+                    <!-- Nose cone (red tip) -->
+                    <path d="M -8 -25 L 0 -40 L 8 -25" fill="#cc3333"/>
+                    <path d="M -6 -25 L 0 -38 L 6 -25" fill="#dd4444"/>
+                    
                     <!-- Rocket window -->
-                    <circle cx="0" cy="-3" r="5" fill="#0A0A0A"/>
-                    <!-- Rocket nose cone -->
-                    <path d="M -12 -18 L 0 -28 L 12 -18" fill="#00FF88"/>
-                    <!-- Rocket fins -->
-                    <path d="M -12 10 L -18 18 L -12 18" fill="#00DD77"/>
-                    <path d="M 12 10 L 18 18 L 12 18" fill="#00DD77"/>
-                    <!-- Rocket flame -->
-                    <path d="M -8 18 Q -6 25, 0 28 Q 6 25, 8 18" fill="#FF8800" opacity="0.8"/>
-                    <path d="M -5 18 Q -3 23, 0 25 Q 3 23, 5 18" fill="#FFDD00" opacity="0.9"/>
+                    <circle cx="0" cy="-10" r="4" fill="#1a1a2e" opacity="0.8"/>
+                    <circle cx="0" cy="-10" r="3" fill="#16213e" opacity="0.9"/>
+                    
+                    <!-- Side stripes -->
+                    <rect x="-7" y="-5" width="14" height="2" fill="#cc3333" opacity="0.7"/>
+                    <rect x="-7" y="5" width="14" height="2" fill="#cc3333" opacity="0.7"/>
+                    
+                    <!-- Rocket fins (stabilizers) -->
+                    <path d="M -8 15 L -14 25 L -8 20" fill="#cc3333"/>
+                    <path d="M 8 15 L 14 25 L 8 20" fill="#cc3333"/>
+                    <path d="M -6 15 L -12 24 L -6 19" fill="#dd4444"/>
+                    <path d="M 6 15 L 12 24 L 6 19" fill="#dd4444"/>
+                    
+                    <!-- Rocket exhaust/flame -->
+                    <ellipse cx="0" cy="27" rx="6" ry="8" fill="#ff9500" opacity="0.9"/>
+                    <ellipse cx="0" cy="28" rx="5" ry="7" fill="#ffc400" opacity="0.8"/>
+                    <ellipse cx="0" cy="30" rx="4" ry="5" fill="#ffeb3b" opacity="0.7"/>
+                    <path d="M -3 25 Q -2 32, 0 35 Q 2 32, 3 25" fill="#ff6b00" opacity="0.6"/>
                 </g>
-            </svg>            
-            <div class="timeline-company">
-                <div class="company-circle">
-                    <img src="img/verizon-logo.png" alt="Verizon">
+            </svg>                    <img src="img/verizon-logo.png" alt="Verizon">
                 </div>
                 <p class="company-name">Verizon</p>
             </div>
