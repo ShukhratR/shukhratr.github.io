@@ -14,6 +14,12 @@ export function rbox(w, h, d, r, material) {
 // Stylized avatar of Shukhrat: dark wavy hair, full short beard, brown eyes,
 // black blazer over an off-white tee. Built in chair-local space, facing -Z.
 // ---------------------------------------------------------------------------
+export function cap(w, h, material) {
+  const m = new THREE.Mesh(new THREE.CapsuleGeometry(w / 2, Math.max(0.01, h - w), 8, 16), material);
+  m.castShadow = true; m.receiveShadow = true;
+  return m;
+}
+
 export function buildAvatar({ pose = 'sit' } = {}) {
   // Softer, lighter palette: charcoal blazer reads as "black" without crushing to pure dark
   const SKIN = 0xf1c6a2, HAIR = 0x3a2a22, BLAZER = 0x45475a, TEE = 0xfaf7ee,
@@ -27,8 +33,8 @@ export function buildAvatar({ pose = 'sit' } = {}) {
   // Legs
   [-0.27, 0.27].forEach((x) => {
     if (pose === 'stand') {
-      add(group, rbox(0.46, 1.2, 0.46, 0.2, mat(PANTS)), x, 1.85, 0);
-      add(group, rbox(0.4, 1.15, 0.4, 0.18, mat(PANTS)), x, 0.8, 0);
+      add(group, cap(0.48, 1.25, mat(PANTS)), x, 1.85, 0);
+      add(group, cap(0.42, 1.2, mat(PANTS)), x, 0.8, 0);
       add(group, rbox(0.44, 0.24, 0.72, 0.11, mat(SHOE)), x, 0.16, -0.12);
       add(group, rbox(0.45, 0.07, 0.74, 0.03, mat(SOLE)), x, 0.03, -0.12);
     } else {
@@ -56,10 +62,10 @@ export function buildAvatar({ pose = 'sit' } = {}) {
   function arm(side) {
     const shoulder = new THREE.Group();
     shoulder.position.set(side * 0.68, 3.55, 0.02);
-    add(shoulder, rbox(0.34, 0.8, 0.34, 0.16, blazer), 0, -0.36, 0);
+    add(shoulder, cap(0.36, 0.85, blazer), 0, -0.36, 0);
     const elbow = new THREE.Group();
     elbow.position.set(0, -0.72, 0);
-    add(elbow, rbox(0.3, 0.75, 0.3, 0.14, blazer), 0, -0.34, 0);
+    add(elbow, cap(0.32, 0.8, blazer), 0, -0.34, 0);
     add(elbow, new THREE.Mesh(new THREE.SphereGeometry(0.17, 16, 12), skin), 0, -0.78, 0);
     shoulder.add(elbow);
     group.add(shoulder);
@@ -71,6 +77,7 @@ export function buildAvatar({ pose = 'sit' } = {}) {
   add(group, new THREE.Mesh(new THREE.CylinderGeometry(0.17, 0.19, 0.35, 16), skin), 0, 3.82, 0);
   const head = new THREE.Group();
   head.position.set(0, 4.45, 0);
+  if (pose === 'stand') { head.scale.setScalar(1.3); head.position.y = 4.6; }
   group.add(head);
 
   const skull = add(head, new THREE.Mesh(new THREE.SphereGeometry(0.62, 40, 32), skin), 0, 0, 0);
@@ -84,8 +91,8 @@ export function buildAvatar({ pose = 'sit' } = {}) {
   // Hair: back shell, top cap, voluminous wavy front swept up
   const back = add(head, new THREE.Mesh(new THREE.SphereGeometry(0.655, 32, 24, 0, Math.PI, 0, Math.PI * 0.62), hair), 0, 0.03, 0.02);
   back.scale.set(1.02, 1.06, 0.98);
-  const cap = add(head, new THREE.Mesh(new THREE.SphereGeometry(0.665, 32, 24, 0, Math.PI * 2, 0, Math.PI * 0.3), hair), 0, 0.06, 0);
-  cap.scale.set(1.02, 1.1, 1.0);
+  const hairCap = add(head, new THREE.Mesh(new THREE.SphereGeometry(0.665, 32, 24, 0, Math.PI * 2, 0, Math.PI * 0.3), hair), 0, 0.06, 0);
+  hairCap.scale.set(1.02, 1.1, 1.0);
   // curly, messy hair: a ring of curls over the crown, fringe and sides
   const curl = new THREE.SphereGeometry(1, 14, 10);
   const curls = [];

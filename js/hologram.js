@@ -9,10 +9,13 @@ if (host) {
 function holoMaterial(uniforms) {
   return new THREE.ShaderMaterial({
     uniforms,
-    transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+    transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, clipping: true,
     vertexShader: `
+      #include <clipping_planes_pars_vertex>
       varying vec3 vN; varying vec3 vW; varying vec3 vV;
       void main() {
+        vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+        #include <clipping_planes_vertex>
         vec4 w = modelMatrix * vec4(position, 1.0);
         vW = w.xyz;
         vN = normalize(mat3(modelMatrix) * normal);
@@ -20,9 +23,11 @@ function holoMaterial(uniforms) {
         gl_Position = projectionMatrix * viewMatrix * w;
       }`,
     fragmentShader: `
+      #include <clipping_planes_pars_fragment>
       uniform float uTime; uniform vec3 uColor;
       varying vec3 vN; varying vec3 vW; varying vec3 vV;
       void main() {
+        #include <clipping_planes_fragment>
         float fres = pow(1.0 - abs(dot(normalize(vN), vV)), 2.0);
         float scan = 0.55 + 0.45 * step(0.45, fract(vW.y * 22.0 - uTime * 1.5));
         float flick = 0.92 + 0.08 * sin(uTime * 23.0);
@@ -35,11 +40,13 @@ function holoMaterial(uniforms) {
 function init() {
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 0.95;
   host.appendChild(renderer.domElement);
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
-  camera.position.set(0, 4.2, 15);
-  camera.lookAt(0, 2.6, 0);
+  camera.position.set(0, 7.5, 15);
+  camera.lookAt(0, 2.9, 0);
 
   const uniforms = { uTime: { value: 0 }, uColor: { value: new THREE.Color(0x4cc3ff) } };
   const holo = holoMaterial(uniforms);
@@ -59,8 +66,8 @@ function init() {
   ghost.group.traverse((o) => { if (o.isMesh) o.material = holo; });
   [colored, ghost].forEach((a) => { a.group.rotation.y = Math.PI; spin.add(a.group); });
 
-  scene.add(new THREE.HemisphereLight(0xffffff, 0x2a4f9a, 1.6));
-  const key = new THREE.DirectionalLight(0xffffff, 1.6);
+  scene.add(new THREE.HemisphereLight(0xfff4e6, 0x3a5fae, 1.5));
+  const key = new THREE.DirectionalLight(0xfff1dc, 2.4);
   key.position.set(3, 8, 10);
   scene.add(key);
 
@@ -87,23 +94,21 @@ function init() {
     new THREE.ShaderMaterial({
       transparent: true, depthWrite: false, side: THREE.DoubleSide, blending: THREE.AdditiveBlending,
       vertexShader: 'varying float vY; void main(){ vY = uv.y; gl_Position = projectionMatrix*modelViewMatrix*vec4(position,1.0);} ',
-      fragmentShader: 'varying float vY; void main(){ gl_FragColor = vec4(0.3,0.75,1.0, 0.22*(1.0-vY)); }',
+      uniforms: { uBeam: { value: 0 } },
+      fragmentShader: 'uniform float uBeam; varying float vY; void main(){ gl_FragColor = vec4(0.3,0.75,1.0, 0.22*(1.0-vY)*uBeam); }',
     }));
   cone.position.y = 3.3;
   scene.add(cone);
 
-  // Dotted polar floor grid
+  // Square perspective grid with dots at the intersections
+  const grid = new THREE.GridHelper(44, 22, 0x2a63c4, 0x2a63c4);
+  grid.material.transparent = true; grid.material.opacity = 0.3;
+  scene.add(grid);
   const pts = [];
-  for (let r = 3; r <= 22; r += 1.6) {
-    const n = Math.floor(r * 4);
-    for (let i = 0; i < n; i++) { const a = (i / n) * Math.PI * 2; pts.push(Math.cos(a) * r, 0, Math.sin(a) * r); }
-  }
+  for (let x = -22; x <= 22; x += 2) for (let z = -22; z <= 22; z += 2) pts.push(x, 0.01, z);
   const g = new THREE.BufferGeometry();
   g.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
-  scene.add(new THREE.Points(g, new THREE.PointsMaterial({ color: 0x6fb8ff, size: 0.07, transparent: true, opacity: 0.5 })));
-  const grid = new THREE.PolarGridHelper(22, 16, 12, 64, 0x2a63c4, 0x2a63c4);
-  grid.material.transparent = true; grid.material.opacity = 0.25;
-  scene.add(grid);
+  scene.add(new THREE.Points(g, new THREE.PointsMaterial({ color: 0x8fd0ff, size: 0.09, transparent: true, opacity: 0.7 })));
 
   function resize() {
     const w = host.clientWidth, h = host.clientHeight;
@@ -126,7 +131,7 @@ function init() {
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const seg = (p, a, b) => Math.min(1, Math.max(0, (p - a) / (b - a)));
   const ease = (x) => 1 - Math.pow(1 - x, 3);
-  const TOP = 5.8, BOTTOM = 0.55;  // avatar height range in world Y
+  const TOP = 6.4, BOTTOM = 0.55;  // avatar height range in world Y
   let progress = 0, smooth = 0;
 
   function readScroll() {
@@ -144,17 +149,18 @@ function init() {
     const t = clock.getElapsedTime();
     smooth += (progress - smooth) * (reduce || forced !== null ? 1 : 0.12);
 
-    const lift = ease(seg(smooth, 0, 0.22));
+    const lift = ease(seg(smooth, 0, 0.3));
     heroPanel.style.transform = `translateY(${-lift * 115}%) rotate(${-lift * 5}deg)`;
     heroPanel.style.visibility = lift >= 1 ? 'hidden' : '';
 
-    const scan = seg(smooth, 0.28, 0.72);            // 0 = full color, 1 = full hologram
+    const scan = seg(smooth, 0.34, 0.76);            // 0 = full color, 1 = full hologram
     const y = BOTTOM + (TOP - BOTTOM) * scan;          // scan rises from the feet up
     keepAbove.constant = -y; keepBelow.constant = y;
     scanRing.position.y = y;
+    cone.material.uniforms.uBeam.value = seg(smooth, 0.3, 0.4);
     scanRing.visible = scan > 0 && scan < 1;
     counter.textContent = String(Math.round(scan * 100)).padStart(3, '0');
-    cards.forEach((c, i) => c.classList.toggle('is-visible', smooth > 0.34 + i * 0.13));
+    cards.forEach((c, i) => c.classList.toggle('is-visible', smooth > 0.4 + i * 0.12));
 
     if (lift < 0.05) return;                           // stage hidden under the hero
     uniforms.uTime.value = t;

@@ -290,3 +290,13 @@ img { display: block; max-width: 100%; }
 .header.is-dark .nav a:hover { background: rgba(52,191,255,.25); }
 .nav a.is-active { background: var(--color-beige-700); }
 .header.is-dark .nav a.is-active { background: #2a7fd4; color: #fff; }
+
+.logo {
+  position: absolute; left: var(--space-outer);
+  width: 40px; height: 40px; border-radius: var(--radius-md);
+  display: grid; place-items: center;
+  font-family: "Space Mono", monospace; font-weight: 700; font-size: 15px;
+  background: var(--color-text-400); color: var(--color-background-400);
+  transform: rotate(-4deg); transition: background .4s var(--ease-smooth), color .4s var(--ease-smooth);
+}
+.header.is-dark .logo { background: #e1f5ff; color: #002474; }
