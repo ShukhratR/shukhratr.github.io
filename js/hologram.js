@@ -45,8 +45,8 @@ function init() {
   host.appendChild(renderer.domElement);
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
-  camera.position.set(0, 7.5, 15);
-  camera.lookAt(0, 2.9, 0);
+  camera.position.set(0, 6.8, 13);
+  camera.lookAt(0, 3.6, 0);
 
   const uniforms = { uTime: { value: 0 }, uColor: { value: new THREE.Color(0x4cc3ff) } };
   const holo = holoMaterial(uniforms);
@@ -114,7 +114,7 @@ function init() {
     const w = host.clientWidth, h = host.clientHeight;
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
-    camera.position.z = w / h < 1 ? 20 : 15;
+    camera.position.z = w / h < 1 ? 17 : 12.5;
     camera.updateProjectionMatrix();
   }
   new ResizeObserver(resize).observe(host);
@@ -123,8 +123,7 @@ function init() {
   // Story: beige hero lifts away -> avatar scanned into hologram -> cards appear
   const track = document.querySelector('.story-track');
   const heroPanel = document.querySelector('.hero');
-  const barFill = document.querySelector('.holo-bar-fill');
-  const pct = document.querySelector('.holo-pct');
+  const counter = document.querySelector('.holo-badge');
   const cards = [...document.querySelectorAll('.holo-card')];
   const header = document.querySelector('.header');
   const forcedParam = new URLSearchParams(location.search).get('p');
@@ -132,7 +131,7 @@ function init() {
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const seg = (p, a, b) => Math.min(1, Math.max(0, (p - a) / (b - a)));
   const ease = (x) => 1 - Math.pow(1 - x, 3);
-  const TOP = 6.4, BOTTOM = 0.55;  // avatar height range in world Y
+  const TOP = 6.6, BOTTOM = 0.55;  // avatar height range in world Y
   let progress = 0, smooth = 0;
 
   function readScroll() {
@@ -160,14 +159,15 @@ function init() {
     scanRing.position.y = y;
     cone.material.uniforms.uBeam.value = seg(smooth, 0.3, 0.4);
     scanRing.visible = scan > 0 && scan < 1;
-    barFill.style.width = `${scan * 100}%`;
-    pct.textContent = `${Math.round(scan * 100)}%`;
+    counter.textContent = String(Math.round(scan * 100)).padStart(3, '0');
     cards.forEach((c, i) => c.classList.toggle('is-visible', smooth > 0.4 + i * 0.12));
 
+    // turn around: back to the viewer (as at the desk) -> facing front, centered
+    const turn = ease(seg(smooth, 0.12, 0.36));
+    spin.rotation.y = Math.PI * (1 - turn) + (reduce ? 0 : Math.sin(t * 0.4) * 0.08 * turn);
     if (lift < 0.05) return;                           // stage hidden under the hero
     uniforms.uTime.value = t;
     if (!reduce) {
-      spin.rotation.y = Math.sin(t * 0.4) * 0.3;
       spin.position.y = 0.55 + Math.sin(t * 1.5) * 0.05;
     }
     renderer.render(scene, camera);
