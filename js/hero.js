@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { buildAvatar, mat, rbox } from './avatar.js';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 
 const host = document.getElementById('hero-scene');
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -18,6 +19,24 @@ if (!host || !webglOk()) {
 }
 
 // Canvas texture that looks like a code editor with test results
+function canvasTex(w, h, draw) {
+  const c = document.createElement('canvas'); c.width = w; c.height = h;
+  draw(c.getContext('2d'), w, h);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4;
+  return t;
+}
+function noteTex(bg, lines, color) {
+  return canvasTex(256, 256, (g) => {
+    g.fillStyle = bg; g.fillRect(0, 0, 256, 256);
+    g.fillStyle = color; g.textAlign = 'center';
+    lines.forEach(([txt, size], i) => { g.font = `700 ${size}px Urbanist, sans-serif`; g.fillText(txt, 128, 105 + i * 58); });
+  });
+}
+function star(g, cx, cy, r, color) {
+  g.fillStyle = color; g.beginPath();
+  for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r * 0.45 : r; g.lineTo(cx + Math.cos(a) * rr, cy + Math.sin(a) * rr); }
+  g.closePath(); g.fill();
+}
 function codeTexture(variant) {
   const c = document.createElement('canvas');
   c.width = 512; c.height = 320;
@@ -210,13 +229,15 @@ function init() {
   const board = rbox(3.2, 2.1, 0.15, 0.1, mat(0xb08f6e, { roughness: 1 }));
   board.position.set(1.8, 6.9, -3.5);
   board.castShadow = false; world.add(board);
-  [[1.1, 7.2, 0xfff3c4], [2.4, 6.7, 0xcfe3ff]].forEach(([x, y, c]) => {
-    const note = rbox(0.9, 0.9, 0.04, 0.02, mat(c));
-    note.position.set(x, y, -3.4);
-    note.rotation.z = (x - 1.8) * 0.15;
+  [[1.0, 7.25, '#fff3c4', [['✓ PASSED', 44], ['247 / 247', 34]], '#2f7d3a'],
+   [2.55, 6.65, '#cfe3ff', [['BUG #404', 44], ['fixed ✓', 34]], '#b23a3a'],
+   [1.9, 6.35, '#ffd9e0', [['CI ✓', 48], ['green', 34]], '#234ba2']].forEach(([x, y, bg, lines, ink], i) => {
+    const note = new THREE.Mesh(new THREE.PlaneGeometry(0.85, 0.85), new THREE.MeshStandardMaterial({ map: noteTex(bg, lines, ink), roughness: 0.9 }));
+    note.position.set(x, y, -3.41 + i * 0.002);
+    note.rotation.z = [0.08, -0.1, 0.05][i];
     world.add(note);
-    const pin = new THREE.Mesh(new THREE.SphereGeometry(0.13, 16, 12), mat(0xe0525a, { roughness: 0.3 }));
-    pin.position.set(x - 0.15, y + 0.3, -3.28); pin.castShadow = true; world.add(pin);
+    const pin = new THREE.Mesh(new THREE.SphereGeometry(0.11, 16, 12), mat(['#e0525a', '#3f7de0', '#f0a530'][i], { roughness: 0.3 }));
+    pin.position.set(x, y + 0.33, -3.3); pin.castShadow = true; world.add(pin);
   });
 
   // Desk props: pen cup, rubber duck (debugging mascot), speaker, grid cube
@@ -244,16 +265,80 @@ function init() {
   speaker.position.set(3.4, 3.62, -1.6); speaker.rotation.y = -0.3; world.add(speaker);
   const cone = new THREE.Mesh(new THREE.CylinderGeometry(0.26, 0.26, 0.05, 24), mat(0x3b3843));
   cone.rotation.x = Math.PI / 2; cone.position.set(3.3, 3.65, -1.28); world.add(cone);
-  const cube = rbox(0.5, 0.5, 0.5, 0.06, mat(0x6fa8ff, { roughness: 0.4 }));
-  cube.position.set(2.6, 3.43, -1.0); cube.rotation.y = 0.5; world.add(cube);
+  const faceColors = ['#e8453c', '#f28c28', '#ffffff', '#ffd23f', '#2fa84f', '#2f6fd6'];
+  const cubeMats = faceColors.map((fc) => new THREE.MeshStandardMaterial({ roughness: 0.35, map: canvasTex(192, 192, (g) => {
+    g.fillStyle = '#1b1b1f'; g.fillRect(0, 0, 192, 192);
+    for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) {
+      g.fillStyle = fc; g.beginPath(); g.roundRect(8 + c * 62, 8 + r * 62, 52, 52, 8); g.fill();
+    }
+  }) }));
+  const cube = new THREE.Mesh(new RoundedBoxGeometry(0.5, 0.5, 0.5, 3, 0.04), cubeMats);
+  cube.castShadow = true;
+  cube.position.set(2.6, 3.43, -1.0); cube.rotation.set(0, 0.5, 0); world.add(cube);
+
+  // Desk flag stand: Uzbekistan + USA
+  const uzFlag = canvasTex(300, 150, (g, w, h) => {
+    g.fillStyle = '#0099b5'; g.fillRect(0, 0, w, h / 3);
+    g.fillStyle = '#ffffff'; g.fillRect(0, h / 3, w, h / 3);
+    g.fillStyle = '#1eb53a'; g.fillRect(0, 2 * h / 3, w, h / 3);
+    g.fillStyle = '#ce1126'; g.fillRect(0, h / 3 - 3, w, 6); g.fillRect(0, 2 * h / 3 - 3, w, 6);
+    g.fillStyle = '#ffffff'; g.beginPath(); g.arc(36, 25, 17, 0, Math.PI * 2); g.fill();
+    g.fillStyle = '#0099b5'; g.beginPath(); g.arc(43, 25, 15, 0, Math.PI * 2); g.fill();
+    const rows = [[3, 0], [4, 1], [5, 2]];  // 12 stars: 3 / 4 / 5, right-aligned
+    rows.forEach(([n, r]) => { for (let i = 0; i < n; i++) star(g, 120 - i * 14, 13 + r * 13, 4.5, '#ffffff'); });
+  });
+  const usFlag = canvasTex(380, 200, (g, w, h) => {
+    for (let i = 0; i < 13; i++) { g.fillStyle = i % 2 ? '#ffffff' : '#b22234'; g.fillRect(0, i * h / 13, w, h / 13 + 1); }
+    g.fillStyle = '#3c3b6e'; g.fillRect(0, 0, w * 0.4, h * 7 / 13);
+    for (let r = 0; r < 9; r++) for (let c = 0; c < (r % 2 ? 5 : 6); c++)
+      star(g, 13 + c * 25 + (r % 2 ? 12 : 0), 9 + r * 11.7, 4, '#ffffff');
+  });
+  const stand = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.26, 0.12, 20), mat(0x6b5a48));
+  stand.position.set(3.55, 3.24, -0.45); stand.castShadow = true; world.add(stand);
+  [[uzFlag, -0.25], [usFlag, 0.25]].forEach(([tex, tilt], i) => {
+    const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 1.3, 8), mat(0xc9b28a, { metalness: 0.4, roughness: 0.4 }));
+    const flag = new THREE.Mesh(new THREE.PlaneGeometry(0.62, 0.33), new THREE.MeshStandardMaterial({ map: tex, side: THREE.DoubleSide, roughness: 0.8 }));
+    const g = new THREE.Group();
+    pole.position.y = 0.65; flag.position.set(0.32, 1.12, 0);
+    g.add(pole, flag);
+    g.position.set(3.55, 3.28, -0.45); g.rotation.set(0, 0.6 - i * 0.2, tilt);
+    world.add(g);
+  });
 
   // Picture frame on the right wall
-  const picFrame = rbox(2.6, 1.8, 0.18, 0.15, mat(0x9fbbe8));
-  picFrame.position.set(5.4, 5.7, -3.45); picFrame.castShadow = false; world.add(picFrame);
-  const art = new THREE.Mesh(new THREE.PlaneGeometry(2.1, 1.35), mat(0xe8eff9));
-  art.position.set(5.4, 5.7, -3.35); world.add(art);
-  const hill = new THREE.Mesh(new THREE.ConeGeometry(0.6, 0.8, 3), mat(0x9fbbe8));
-  hill.position.set(5.2, 5.4, -3.3); hill.scale.z = 0.2; world.add(hill);
+  const pennantTex = canvasTex(256, 512, (g, w, h) => {
+    g.fillStyle = '#ffffff'; g.fillRect(0, 0, w, h);
+    g.fillStyle = '#d4a017'; g.fillRect(0, 0, w, 26);           // gold header band
+    g.fillStyle = '#4b2a7b'; g.fillRect(0, 26, w, 10);          // purple trim
+    g.save(); g.translate(w / 2, 250); g.rotate(-Math.PI / 2);
+    g.fillStyle = '#1d2a5b'; g.textAlign = 'center';
+    g.font = '800 64px Urbanist, sans-serif'; g.fillText('HALA', 0, -10);
+    g.font = '800 64px Urbanist, sans-serif'; g.fillText('MADRID', 0, 62);
+    g.restore();
+  });
+  const pShape = new THREE.Shape();
+  pShape.moveTo(-0.65, 1.2); pShape.lineTo(0.65, 1.2); pShape.lineTo(0, -1.4); pShape.closePath();
+  const pGeo = new THREE.ShapeGeometry(pShape);
+  const uv = pGeo.attributes.uv;               // map shape coords to 0..1 UVs
+  for (let i = 0; i < uv.count; i++) {
+    const x = pGeo.attributes.position.getX(i), y = pGeo.attributes.position.getY(i);
+    uv.setXY(i, (x + 0.65) / 1.3, (y + 1.4) / 2.6);
+  }
+  const pennant = new THREE.Mesh(pGeo, new THREE.MeshStandardMaterial({ map: pennantTex, side: THREE.DoubleSide, roughness: 0.85 }));
+  pennant.position.set(5.2, 5.6, -3.42); pennant.rotation.z = 0.06; world.add(pennant);
+  const rod = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 1.6, 8), mat(0xc9b28a));
+  rod.rotation.z = Math.PI / 2; rod.position.set(5.2, 6.82, -3.4); world.add(rod);
+
+  // Football on the shelf
+  const ballTex = canvasTex(256, 128, (g, w, h) => {
+    g.fillStyle = '#ffffff'; g.fillRect(0, 0, w, h);
+    g.fillStyle = '#2d2a24';
+    [[30, 30], [95, 64], [160, 30], [225, 64], [62, 105], [190, 105], [128, 10]].forEach(([x, y]) => {
+      g.beginPath(); for (let i = 0; i < 5; i++) { const a = -Math.PI / 2 + i * 2 * Math.PI / 5; g.lineTo(x + Math.cos(a) * 14, y + Math.sin(a) * 14); } g.fill();
+    });
+  });
+  const ball = new THREE.Mesh(new THREE.SphereGeometry(0.3, 24, 18), new THREE.MeshStandardMaterial({ map: ballTex, roughness: 0.5 }));
+  ball.position.set(-1.15, 6.83, -3.15); ball.castShadow = true; world.add(ball);
 
 
   // Shadow catcher floor
