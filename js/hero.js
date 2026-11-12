@@ -204,7 +204,7 @@ function init() {
     leaf.castShadow = true;
     plant.add(leaf);
   }
-  plant.position.set(5.6, 0, 1.6);
+  plant.position.set(4.3, 0, -3.25); plant.scale.setScalar(0.85);
   world.add(plant);
 
   // Wall shelf with books
@@ -274,19 +274,25 @@ function init() {
     pencil.position.set(-2.9 + (i ? 0.08 : -0.06), 3.95, -1.9); pencil.rotation.z = tilt; pencil.castShadow = true;
     world.add(pencil);
   });
-  const duck = new THREE.Group();
-  const duckBody = new THREE.Mesh(new THREE.SphereGeometry(0.32, 20, 16), mat(0xffd23f, { roughness: 0.35 }));
-  duckBody.scale.set(1.15, 0.85, 1);
-  const duckHead = new THREE.Mesh(new THREE.SphereGeometry(0.2, 20, 16), mat(0xffd23f, { roughness: 0.35 }));
-  duckHead.position.set(0.2, 0.32, 0);
-  const beak = new THREE.Mesh(new THREE.SphereGeometry(0.1, 12, 8), mat(0xff8a1f));
-  beak.scale.set(1.3, 0.5, 0.9); beak.position.set(0.4, 0.3, 0);
-  const eyeL = new THREE.Mesh(new THREE.SphereGeometry(0.035, 8, 8), mat(0x2d2a24));
-  eyeL.position.set(0.3, 0.4, 0.12);
-  const eyeR = eyeL.clone(); eyeR.position.z = -0.12;
-  duck.add(duckBody, duckHead, beak, eyeL, eyeR);
-  duck.traverse((o) => { if (o.isMesh) o.castShadow = true; });
-  duck.position.set(-3.3, 3.43, 0.15); duck.rotation.y = 0.9; world.add(duck);
+  // Small desk robot (original design)
+  const robot = new THREE.Group();
+  const shell = mat(0xf4f1ec, { roughness: 0.35 });
+  const accent = mat(0xff8400, { roughness: 0.4 });
+  const rBody = rbox(0.5, 0.42, 0.4, 0.14, shell); rBody.position.y = 0.26;
+  const rHead = rbox(0.6, 0.44, 0.45, 0.16, shell); rHead.position.y = 0.72;
+  const face = rbox(0.46, 0.28, 0.04, 0.08, mat(0x1f1d24, { roughness: 0.2 }));
+  face.position.set(0, 0.72, 0.22);
+  const eyeGlow = new THREE.MeshBasicMaterial({ color: 0x5ee3ff });
+  [-0.1, 0.1].forEach((x) => { const e = new THREE.Mesh(new THREE.CapsuleGeometry(0.035, 0.05, 4, 8), eyeGlow); e.position.set(x, 0.73, 0.245); robot.add(e); });
+  const ant = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.22, 8), mat(0x8a8790));
+  ant.position.y = 1.04;
+  const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.05, 12, 10), accent);
+  bulb.position.y = 1.17;
+  [-1, 1].forEach((sd) => { const a = new THREE.Mesh(new THREE.CapsuleGeometry(0.05, 0.16, 4, 8), accent); a.position.set(sd * 0.3, 0.26, 0); a.rotation.z = sd * 0.35; robot.add(a); });
+  const chest = new THREE.Mesh(new THREE.CircleGeometry(0.06, 16), accent); chest.position.set(0, 0.28, 0.205);
+  robot.add(rBody, rHead, face, ant, bulb, chest);
+  robot.traverse((o) => { if (o.isMesh && o.material !== eyeGlow) o.castShadow = true; });
+  robot.position.set(-3.2, 3.17, 0.1); robot.rotation.y = 0.5; world.add(robot);
   const speaker = rbox(0.8, 0.9, 0.6, 0.1, mat(0xf0a530));
   speaker.position.set(3.4, 3.62, -1.6); speaker.rotation.y = -0.3; world.add(speaker);
   const cone = new THREE.Mesh(new THREE.CylinderGeometry(0.26, 0.26, 0.05, 24), mat(0x3b3843));
