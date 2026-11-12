@@ -123,7 +123,8 @@ function init() {
   // Story: beige hero lifts away -> avatar scanned into hologram -> cards appear
   const track = document.querySelector('.story-track');
   const heroPanel = document.querySelector('.hero');
-  const counter = document.querySelector('.holo-badge');
+  const barFill = document.querySelector('.holo-bar-fill');
+  const pct = document.querySelector('.holo-pct');
   const cards = [...document.querySelectorAll('.holo-card')];
   const header = document.querySelector('.header');
   const forcedParam = new URLSearchParams(location.search).get('p');
@@ -159,7 +160,8 @@ function init() {
     scanRing.position.y = y;
     cone.material.uniforms.uBeam.value = seg(smooth, 0.3, 0.4);
     scanRing.visible = scan > 0 && scan < 1;
-    counter.textContent = String(Math.round(scan * 100)).padStart(3, '0');
+    barFill.style.width = `${scan * 100}%`;
+    pct.textContent = `${Math.round(scan * 100)}%`;
     cards.forEach((c, i) => c.classList.toggle('is-visible', smooth > 0.4 + i * 0.12));
 
     if (lift < 0.05) return;                           // stage hidden under the hero

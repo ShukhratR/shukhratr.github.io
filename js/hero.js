@@ -66,11 +66,11 @@ function init() {
   const scene = new THREE.Scene();
 
   // Isometric-ish orthographic camera
-  const frustum = 11.5;
+  const frustum = 8.4;
   const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 100);
   const camBase = new THREE.Vector3(14, 11, 14);
   camera.position.copy(camBase);
-  const target = new THREE.Vector3(0.4, 3.2, 0);
+  const target = new THREE.Vector3(1.0, 4.3, -0.6);
   camera.lookAt(target);
 
   // Lights
@@ -156,11 +156,13 @@ function init() {
   const back = rbox(1.8, 2, 0.25, 0.12, chairMat);
   back.position.set(0, 3.2, 0.85);
   back.rotation.x = -0.1;
-  const post = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 1.5, 12), mat(0x8a8790, { metalness: 0.6, roughness: 0.3 }));
-  post.position.y = 1.2;
-  const foot = rbox(1.6, 0.12, 1.6, 0.06, mat(0x8a8790, { metalness: 0.6, roughness: 0.3 }));
-  foot.position.y = 0.4;
-  chair.add(seat, back, post, foot);
+  chair.add(seat, back);
+  const metal = mat(0xa9a7ae, { metalness: 0.6, roughness: 0.3 });
+  [-0.75, 0.75].forEach((x) => {
+    const runner = rbox(0.1, 0.1, 1.9, 0.05, metal); runner.position.set(x, 0.3, 0); chair.add(runner);
+    const leg = rbox(0.1, 1.75, 0.1, 0.05, metal); leg.position.set(x, 1.15, -0.5); leg.rotation.x = 0.35; chair.add(leg);
+  });
+  const bar = rbox(1.6, 0.1, 0.1, 0.05, metal); bar.position.set(0, 0.3, 0.92); chair.add(bar);
   chair.position.set(0.2, 0, 1.6);
   chair.rotation.y = 0.25;
   world.add(chair);
@@ -176,7 +178,7 @@ function init() {
   const leafMat = mat(0x76c043, { roughness: 0.5 });
   for (let i = 0; i < 7; i++) {
     const leaf = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 12), leafMat);
-    leaf.scale.set(0.45, 1.6, 0.18);
+    leaf.scale.set(0.6, 2.2, 0.2);
     const a = (i / 7) * Math.PI * 2;
     leaf.position.set(Math.cos(a) * 0.35, 2.0, Math.sin(a) * 0.35);
     leaf.rotation.set(Math.sin(a) * 0.5, 0, -Math.cos(a) * 0.5);
@@ -199,40 +201,52 @@ function init() {
   // Pin board
   const board = rbox(3.2, 2.1, 0.15, 0.1, mat(0xb08f6e, { roughness: 1 }));
   board.position.set(1.8, 7.9, -3.5);
-  world.add(board);
+  board.castShadow = false; world.add(board);
   [[1.1, 8.2, 0xfff3c4], [2.4, 7.7, 0xcfe3ff]].forEach(([x, y, c]) => {
     const note = rbox(0.9, 0.9, 0.04, 0.02, mat(c));
     note.position.set(x, y, -3.4);
     note.rotation.z = (x - 1.8) * 0.15;
     world.add(note);
+    const pin = new THREE.Mesh(new THREE.SphereGeometry(0.13, 16, 12), mat(0xe0525a, { roughness: 0.3 }));
+    pin.position.set(x - 0.15, y + 0.3, -3.28); pin.castShadow = true; world.add(pin);
   });
 
-  // The bug (QA mascot) crawling on the desk
-  const bug = new THREE.Group();
-  const bugBody = new THREE.Mesh(new THREE.SphereGeometry(0.32, 20, 16), mat(0xe8453c, { roughness: 0.35 }));
-  bugBody.scale.set(1, 0.6, 1.25);
-  const bugHead = new THREE.Mesh(new THREE.SphereGeometry(0.17, 16, 12), mat(0x2d2a24));
-  bugHead.position.set(0, 0.02, 0.4);
-  bug.add(bugBody, bugHead);
-  for (let i = 0; i < 3; i++) {
-    const dot = new THREE.Mesh(new THREE.SphereGeometry(0.06, 8, 8), mat(0x2d2a24));
-    dot.position.set(i === 1 ? 0 : (i - 1) * 0.15, 0.19, -0.1 + i * 0.12);
-    bug.add(dot);
-  }
-  bug.traverse((o) => { if (o.isMesh) o.castShadow = true; });
-  bug.position.set(-2.6, 3.3, -0.65);
-  world.add(bug);
+  // Desk props: pen cup, rubber duck (debugging mascot), speaker, grid cube
+  const cup = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.25, 0.6, 24), mat(0xd9c6ad));
+  cup.position.set(-2.9, 3.47, -1.9); cup.castShadow = true; world.add(cup);
+  [[0x8fc7e8, 0.12], [0xe8707a, -0.15]].forEach(([c, tilt], i) => {
+    const pencil = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 1.0, 8), mat(c));
+    pencil.position.set(-2.9 + (i ? 0.08 : -0.06), 3.95, -1.9); pencil.rotation.z = tilt; pencil.castShadow = true;
+    world.add(pencil);
+  });
+  const duck = new THREE.Group();
+  const duckBody = new THREE.Mesh(new THREE.SphereGeometry(0.32, 20, 16), mat(0xffd23f, { roughness: 0.35 }));
+  duckBody.scale.set(1.15, 0.85, 1);
+  const duckHead = new THREE.Mesh(new THREE.SphereGeometry(0.2, 20, 16), mat(0xffd23f, { roughness: 0.35 }));
+  duckHead.position.set(0.2, 0.32, 0);
+  const beak = new THREE.Mesh(new THREE.SphereGeometry(0.1, 12, 8), mat(0xff8a1f));
+  beak.scale.set(1.3, 0.5, 0.9); beak.position.set(0.4, 0.3, 0);
+  const eyeL = new THREE.Mesh(new THREE.SphereGeometry(0.035, 8, 8), mat(0x2d2a24));
+  eyeL.position.set(0.3, 0.4, 0.12);
+  const eyeR = eyeL.clone(); eyeR.position.z = -0.12;
+  duck.add(duckBody, duckHead, beak, eyeL, eyeR);
+  duck.traverse((o) => { if (o.isMesh) o.castShadow = true; });
+  duck.position.set(-3.3, 3.43, -0.8); duck.rotation.y = 0.9; world.add(duck);
+  const speaker = rbox(0.8, 0.9, 0.6, 0.1, mat(0xf0a530));
+  speaker.position.set(3.4, 3.62, -1.6); speaker.rotation.y = -0.3; world.add(speaker);
+  const cone = new THREE.Mesh(new THREE.CylinderGeometry(0.26, 0.26, 0.05, 24), mat(0x3b3843));
+  cone.rotation.x = Math.PI / 2; cone.position.set(3.3, 3.65, -1.28); world.add(cone);
+  const cube = rbox(0.5, 0.5, 0.5, 0.06, mat(0x6fa8ff, { roughness: 0.4 }));
+  cube.position.set(2.6, 3.43, -1.0); cube.rotation.y = 0.5; world.add(cube);
 
-  // Magnifying glass hovering above the bug
-  const glass = new THREE.Group();
-  const ring = new THREE.Mesh(new THREE.TorusGeometry(0.45, 0.07, 12, 32), mat(0x234ba2, { roughness: 0.3 }));
-  const lens = new THREE.Mesh(new THREE.CircleGeometry(0.45, 32), new THREE.MeshStandardMaterial({ color: 0xcfe9ff, transparent: true, opacity: 0.35, roughness: 0.05 }));
-  const handle = rbox(0.13, 0.75, 0.13, 0.05, mat(0x2d2a24));
-  handle.position.set(0.48, -0.48, 0); handle.rotation.z = Math.PI / 4;
-  glass.add(ring, lens, handle);
-  glass.position.set(-2.6, 4.3, -0.65);
-  glass.rotation.x = -Math.PI / 2.4;
-  world.add(glass);
+  // Picture frame on the right wall
+  const picFrame = rbox(2.6, 1.8, 0.18, 0.15, mat(0x9fbbe8));
+  picFrame.position.set(5.4, 6.4, -3.45); picFrame.castShadow = false; world.add(picFrame);
+  const art = new THREE.Mesh(new THREE.PlaneGeometry(2.1, 1.35), mat(0xe8eff9));
+  art.position.set(5.4, 6.4, -3.35); world.add(art);
+  const hill = new THREE.Mesh(new THREE.ConeGeometry(0.6, 0.8, 3), mat(0x9fbbe8));
+  hill.position.set(5.2, 6.1, -3.3); hill.scale.z = 0.2; world.add(hill);
+
 
   // Shadow catcher floor
   const floor = new THREE.Mesh(new THREE.PlaneGeometry(40, 40), new THREE.ShadowMaterial({ opacity: 0.12 }));
@@ -251,7 +265,7 @@ function init() {
     const f = wide ? frustum * 1.25 : Math.max(frustum * 1.1, frustum * 0.95 / aspect);
     frame0.halfW = f * aspect / 2;
     frame0.halfH = f / 2;
-    frame0.offX = wide ? -frame0.halfW * 0.38 : 0;
+    frame0.offX = wide ? -frame0.halfW * 0.3 : 0;
     frame0.offY = wide ? 0 : frame0.halfH * 0.28;
     applyFrustum(0);
   }
@@ -293,14 +307,6 @@ function init() {
     avatar.animate(reduceMotion ? 0 : t, 0, 0);
 
     if (!reduceMotion) {
-      // bug wanders in a small loop; glass follows
-      const bx = -2.6 + Math.sin(t * 0.6) * 0.7;
-      const bz = -1.1 + Math.cos(t * 0.6) * 0.45;
-      bug.rotation.y = Math.atan2(Math.cos(t * 0.6) * 0.9, -Math.sin(t * 0.6) * 0.4);
-      bug.position.x = bx; bug.position.z = bz;
-      glass.position.x += (bx - glass.position.x) * 0.04;
-      glass.position.z += (bz - glass.position.z) * 0.04;
-      glass.position.y = 4.3 + Math.sin(t * 2) * 0.1;
       plant.rotation.z = Math.sin(t * 0.8) * 0.02;
       monitors[1].material.emissiveIntensity = 0.5 + Math.sin(t * 3) * 0.05;
     }
