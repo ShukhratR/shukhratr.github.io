@@ -1,0 +1,48 @@
+:root {
+  --ease-smooth: cubic-bezier(.6, 0, .25, 1);
+  --ease-out: cubic-bezier(.25, .46, .45, .94);
+
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-xxl: 48px;
+
+  --font-size-xs: 12px;
+  --font-size-sm: 14px;
+  --font-size-md: 16px;
+  --font-size-lg: 18px;
+  --font-size-title-xs: 22px;
+  --font-size-title-sm: 28px;
+  --font-size-title-md: 44px;
+  --font-size-title-lg: 56px;
+  --font-size-title-xl: 72px;
+
+  --space-xxs: 4px;
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space-md: 18px;
+  --space-lg: 28px;
+  --space-xl: 36px;
+  --space-xxl: 48px;
+  --space-xxxl: 64px;
+  --space-outer: 32px;
+
+  --line-height-copy: 1.3;
+  --line-height-title: 1.1;
+
+  --color-text-400: #2d2a24;
+  --color-text-300: #5f5646;
+  --color-beige-700: rgb(223, 209, 188);
+  --color-beige-600: rgb(233, 222, 208);
+  --color-beige-500: rgb(241, 229, 213);
+  --color-background-400: #f5efe6;
+  --color-orange-400: #ff8400;
+  --color-white-400: #ffffff;
+  --color-dark-blue-600: #234ba2;
+  --color-dark-blue-400: #002474;
+}
+
+@media (max-width: 480px) {
+  :root { --space-outer: 16px; }
+}

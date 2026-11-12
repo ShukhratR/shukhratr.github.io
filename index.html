@@ -1,1211 +1,244 @@
-wit<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shukhrat Rustamov | Senior QA Automation Engineer</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary-green: #00FF88;
-            --primary-blue: #00D4FF;
-            --primary-purple: #B026FF;
-            --primary-cyan: #00FFF5;
-            --bg-dark: #0A0A0A;
-            --bg-card: #141414;
-            --text-white: #FFFFFF;
-            --text-gray: #A0A0A0;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            /* Sky gradient background with radial sphere effect */
-            background: radial-gradient(ellipse at center, 
-                rgba(20, 20, 60, 1) 0%,
-                rgba(15, 15, 45, 1) 25%,
-                rgba(10, 10, 30, 1) 50%,
-                rgba(5, 5, 15, 1) 75%,
-                rgba(0, 0, 0, 1) 100%
-            );
-            background-attachment: fixed;
-            color: var(--text-white);
-            line-height: 1.6;
-            overflow-x: hidden;
-            position: relative;
-        }
-
-        /* Static stars in the sky */
-        .star {
-            position: fixed;
-            width: 2px;
-            height: 2px;
-            background: white;
-            border-radius: 50%;
-            box-shadow: 0 0 2px rgba(255, 255, 255, 0.8);
-            opacity: 0.8;
-            animation: twinkle 3s infinite;
-        }
-
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.8; }
-            50% { opacity: 0.3; }
-        }
-
-        /* Shooting star animation - only some stars will shoot */
-        .star.shooting {
-            animation: shoot 3s linear;
-            opacity: 1;
-        }
-
-        @keyframes shoot {
-            0% {
-                transform: translateX(0) translateY(0);
-                opacity: 1;
-            }
-            70% {
-                opacity: 1;
-            }
-            100% {
-                transform: translateX(-300px) translateY(300px);
-                opacity: 0;
-            }
-        }
-
-        .star.shooting::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            right: 0;
-            height: 1px;
-            width: 50px;
-            background: linear-gradient(90deg, rgba(255, 255, 255, 0.8), transparent);
-            transform: translateY(-50%);
-        }
-
-        /* Header with slide-in animation */
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 2rem 5%;
-            animation: slideDown 0.8s ease;
-            position: relative;
-            z-index: 10;
-        }
-
-        @keyframes slideDown {
-            from {
-                transform: translateY(-100px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .avatar {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            animation: fadeIn 1s ease 0.3s both;
-        }
-
-        .avatar-circle {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary-green), var(--primary-cyan));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #000;
-            animation: pulse 3s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% {
-                transform: scale(1);
-                box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
-            }
-            50% {
-                transform: scale(1.05);
-                box-shadow: 0 0 40px rgba(0, 255, 136, 0.8);
-            }
-        }
-
-        .status-badge {
-            padding: 0.5rem 1.5rem;
-            border-radius: 25px;
-            background: rgba(0, 255, 136, 0.1);
-            border: 1px solid var(--primary-green);
-            color: var(--primary-green);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            animation: glow 2s ease-in-out infinite;
-        }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--primary-green);
-            border-radius: 50%;
-            animation: blink 2s ease-in-out infinite;
-        }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
-
-        /* Hero section with fade-in */
-        .hero {
-            text-align: center;
-            padding: 5rem 5% 3rem;
-            animation: fadeIn 1s ease 0.5s both;
-            position: relative;
-            z-index: 10;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        h1 {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, var(--text-white), var(--primary-green));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: textShine 3s ease-in-out infinite;
-        }
-
-        @keyframes textShine {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
-
-        .subtitle {
-            font-size: 1.2rem;
-            color: var(--text-gray);
-            max-width: 800px;
-            margin: 0 auto 2rem;
-        }
-
-        .cta-button {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 1rem 2rem;
-            background: var(--primary-green);
-            color: #000;
-            border: none;
-            border-radius: 30px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            animation: bounce 2s ease-in-out infinite;
-            text-decoration: none;
-        }
-
-        .cta-button:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.5);
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-        /* Companies section with stagger animation */
-        .companies {
-            padding: 5rem 5%;
-            max-width: 1200px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 10;
-            text-align: center;
-        }
-
-        .companies-subtitle {
-            color: var(--text-gray);
-            font-size: 1.1rem;
-            margin-bottom: 3rem;
-            text-align: center;
-        }
-
-        .timeline-container {
-            display: flex;
-                    flex-direction: row;
-                        position: relative;
-            justify-content: center;
-            align-items: flex-start;
-            gap: 4rem;
-            margin: 2rem 0;
-        flex-wrap: nowrap;        }
-
-                .timeline-svg {
-            position: absolute;
-    top: 220px;
-                        left: 0;
-            width: 100%;
-            height: 200px;            z-index: 0;
-            pointer-events: none;
-        }
-
-        .timeline-company {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1rem;
-                        z-index: 1;
-        }
-
-        .company-circle {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            background: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 255, 136, 0.1);
-        }
-
-        .company-circle:hover {
-            transform: translateY(-5px) scale(1.05);
-            box-shadow: 0 8px 25px rgba(0, 255, 136, 0.3);
-        }
-
-        .company-circle img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-
-        .company-name {
-            color: var(--text-gray);
-            font-size: 0.9rem;
-                        font-weight: bold;
-            text-align: center;
-                    margin-bottom: 2rem;
-        }
-
-        .timeline-line {
-            margin-top: 2rem;
-            color: var(--text-gray);
-            font-size: 0.85rem;
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .timeline-start,
-        .timeline-end {
-            padding: 0.5rem 1rem;
-            background: rgba(0, 255, 136, 0.1);
-            border-radius: 20px;
-        }/* Expertise section with color variations */
-        .expertise {
-            padding: 5rem 5%;
-            max-width: 1200px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 10;
-        }
-
-        .section-title {
-            font-size: 3rem;
-            text-align: center;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, var(--primary-green), var(--primary-cyan));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .section-subtitle {
-            text-align: center;
-            color: var(--text-gray);
-            margin-bottom: 3rem;
-        }
-
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-        }
-
-        .service-card {
-            background: var(--bg-card);
-            padding: 2rem;
-            border-radius: 20px;
-            transition: all 0.3s ease;
-            animation: fadeInUp 0.8s ease backwards;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .service-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary-green), var(--primary-cyan));
-            transform: scaleX(0);
-            transition: transform 0.3s ease;
-        }
-
-        .service-card:nth-child(1) {
-            animation-delay: 0.2s;
-            border: 1px solid rgba(0, 255, 136, 0.2);
-        }
-
-        .service-card:nth-child(2) {
-            animation-delay: 0.4s;
-            border: 1px solid rgba(0, 212, 255, 0.2);
-        }
-
-        .service-card:nth-child(3) {
-            animation-delay: 0.6s;
-            border: 1px solid rgba(176, 38, 255, 0.2);
-        }
-
-        .service-card:nth-child(4) {
-            animation-delay: 0.8s;
-            border: 1px solid rgba(0, 255, 245, 0.2);
-        }
-
-        .service-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-        }
-
-        .service-card:hover::before {
-            transform: scaleX(1);
-        }
-
-        .service-icon {
-            width: 60px;
-            height: 60px;
-            background: rgba(0, 255, 136, 0.1);
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            margin-bottom: 1.5rem;
-            transition: all 0.3s ease;
-        }
-
-        .service-card:nth-child(1) .service-icon {
-            background: rgba(0, 255, 136, 0.1);
-        }
-
-        .service-card:nth-child(2) .service-icon {
-            background: rgba(0, 212, 255, 0.1);
-        }
-
-        .service-card:nth-child(3) .service-icon {
-            background: rgba(176, 38, 255, 0.1);
-        }
-
-        .service-card:nth-child(4) .service-icon {
-            background: rgba(0, 255, 245, 0.1);
-        }
-
-        .service-card:hover .service-icon {
-            transform: rotate(360deg) scale(1.1);
-        }
-
-        .service-icon img {
-            width: 40px;
-            height: 40px;
-            object-fit: contain;
-        }
-
-        .service-title {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-        }
-
-        /* Experience section */
-        .experience {
-            padding: 5rem 5%;
-            max-width: 1200px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 10;
-        }
-
-        .experience-card {
-            background: var(--bg-card);
-            padding: 2rem;
-            border-radius: 20px;
-            margin-bottom: 2rem;
-            border-left: 4px solid var(--primary-green);
-            transition: all 0.3s ease;
-            animation: slideInLeft 0.8s ease backwards;
-        }
-
-        @keyframes slideInLeft {
-            from {
-                opacity: 0;
-                transform: translateX(-50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        .experience-card:hover {
-            transform: translateX(10px);
-            box-shadow: -10px 0 30px rgba(0, 255, 136, 0.2);
-        }
-
-        .experience-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .experience-logo {
-            width: 50px;
-            height: 50px;
-            object-fit: contain;
-            margin-bottom: 1rem;
-        }
-
-        .experience-date {
-            color: var(--primary-green);
-            font-weight: 600;
-        }
-
-        .experience-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .experience-card p {
-            color: var(--text-gray);
-            margin-bottom: 1rem;
-        }
-
-        .experience-card ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .experience-card li {
-            color: var(--text-gray);
-            margin-bottom: 0.5rem;
-            padding-left: 1.5rem;
-            position: relative;
-        }
-
-        .experience-card li::before {
-            content: '→';
-            position: absolute;
-            left: 0;
-            color: var(--primary-green);
-        }
-
-        /* Tech Stack section with smaller logos */
-        .tech-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 1.5rem;
-            padding: 2rem 0;
-        }
-
-        .tech-item {
-            background: var(--bg-card);
-            padding: 1rem;
-            border-radius: 15px;
-            text-align: center;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            animation: fadeInUp 0.6s ease backwards;
-        }
-
-        .tech-item:hover {
-            transform: translateY(-10px) scale(1.05);
-            box-shadow: 0 15px 30px rgba(0, 255, 136, 0.2);
-            border-color: rgba(0, 255, 136, 0.5);
-        }
-
-        .tech-item img {
-            width: 40px;
-            height: 40px;
-            object-fit: contain;
-            margin-bottom: 0.5rem;
-            filter: brightness(1.2);
-            transition: all 0.3s ease;
-        }
-
-        .tech-item:hover img {
-            transform: scale(1.1);
-            filter: brightness(1.5);
-        }
-
-        .tech-item p {
-            font-size: 0.75rem;
-            color: var(--text-gray);
-            margin: 0;
-            font-weight: 500;
-        }
-
-        .tech-item:hover p {
-            color: var(--primary-green);
-        }
-      /* Contact section */
-      .contact {
-        padding: 5rem 5%;
-        max-width: 1200px;
-        margin: 0 auto;
-        position: relative;
-        z-index: 10;
-        text-align: center;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shukhrat Rustamov | Senior QA Automation Engineer</title>
+  <meta name="description" content="Shukhrat Rustamov — Senior QA Automation Engineer & SDET specializing in Playwright TypeScript, CI/CD and Salesforce banking platforms.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@700&family=Urbanist:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/style.css">
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
       }
-
-      .contact-buttons {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 2rem;
-        flex-wrap: wrap;
-        margin-top: 2rem;
-      }
-
-      .contact-btn {
-        background: var(--bg-card);
-        padding: 1.5rem 2rem;
-        border-radius: 20px;
-        text-decoration: none;
-        color: var(--text-white);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        transition: all 0.3s ease;
-        min-width: 200px;
-      }
-
-      .contact-btn:hover {
-        transform: translateY(-5px);
-        border-color: var(--primary-green);
-        box-shadow: 0 10px 30px rgba(0, 255, 136, 0.2);
-      }
-
-      .contact-btn img {
-        width: 32px;
-        height: 32px;
-        object-fit: contain;
-        margin-right: 0.5rem;
-      }
-
-      .contact-item {
-        position: relative;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-      }
-
-      /* Default: show icon+label, hide info */
-      .contact-icon {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        transition: opacity 0.2s ease;
-      }
-      
-        /* Footer */
-        footer {
-            padding: 2rem 5%;
-            text-align: center;
-            color: var(--text-gray);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            position: relative;
-            z-index: 10;
-        }
-
-        /* Responsive design */
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2.5rem;
-            }
-
-            .companies {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .services-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .tech-grid {
-                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-            }
-        }
-    </style>
+    }
+  </script>
 </head>
 <body>
-    <!-- Static stars in the sky (100+ stars) - JavaScript will create these -->
-    <div id="stars-container"></div>
 
-    <!-- Header -->
-    <header>
-        <div class="avatar">
-            <div class="avatar-circle">SR</div>
-            <div>
-                <h2 style="margin: 0; font-size: 1.2rem;">Shukhrat Rustamov</h2>
-                <p style="margin: 0; color: var(--text-gray); font-size: 0.9rem;">QA Automation Engineer</p>
-            </div>
-        </div>
-        <div class="status-badge">
-            <span class="status-dot"></span>
-            Available for Projects
-        </div>
-    </header>
+  <header class="header">
+    <nav class="nav" aria-label="Main">
+      <a href="#about">About</a>
+      <a href="#experience">Experience</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <a class="btn-pill" href="#contact">Get in touch</a>
+  </header>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="status-badge" style="display: inline-flex; margin-bottom: 2rem;">
-            <span class="status-dot"></span>
-            Available for Projects
-        </div>
-        
-        <h1>Senior QA Automation<br>Engineer & SDET</h1>
-        
-        <p class="subtitle">
-            Specializing in Playwright TypeScript frameworks, CI/CD automation, and Salesforce-based banking platforms. 
-            7+ years of expertise delivering fast, stable test automation.
-        </p>
-        
-        <button class="cta-button">→ Explore My Work</button>
+  <main>
+    <!-- Hero -->
+    <section class="hero" aria-label="Intro">
+      <div>
+        <h1 class="hero-title">Shukhrat<br>Rustamov<br><span class="tag">QA Automation</span></h1>
+        <p class="hero-intro">Senior QA Automation Engineer &amp; SDET. I hunt bugs so your users never meet them.</p>
+      </div>
+      <div class="hero-scene" id="hero-scene" role="img" aria-label="3D illustration of a desk with two monitors showing code and test results, and a small bug under a magnifying glass">
+        <div class="hero-fallback" aria-hidden="true">🐞</div>
+      </div>
+      <span class="scroll-hint">Scroll ↓</span>
     </section>
 
-    <!-- Companies Section -->
-<section class="companies">
-<section class="companies">
-        <p class="companies-subtitle">Every experience in my career has shaped my expertise</p>
-<div class="timeline-container">
-            <!-- Timeline connecting line SVG -->
-<svg class="timeline-svg" viewBox="0 0 1000 200" xmlns="http://www.w3.org/2000/svg">
-                <!-- Realistic contrail effect with multiple wisps -->
-                <path d="M 50 75 Q 200 70, 400 75 T 800 75 L 920 75" 
-                      stroke="#888" stroke-width="4" fill="none" opacity="0.3"/>
-                <path d="M 50 78 Q 220 73, 420 78 T 820 78 L 920 78" 
-                      stroke="#999" stroke-width="3" fill="none" opacity="0.25"/>
-                <path d="M 50 72 Q 180 67, 380 72 T 780 72 L 920 72" 
-                      stroke="#aaa" stroke-width="2" fill="none" opacity="0.2"/>
-                <path d="M 50 76 Q 210 74, 410 76 T 810 76 L 920 76" 
-                      stroke="#bbb" stroke-width="1.5" fill="none" opacity="0.15"/>
-                
-                <!-- Realistic rocket pointing right -->
-                <g transform="translate(935, 75) rotate(90)">
-                    <!-- Main rocket body (cylinder) -->
-                    <rect x="-8" y="-25" width="16" height="40" fill="#e8e8e8" rx="2"/>
-                    <rect x="-6" y="-25" width="12" height="40" fill="#f5f5f5" rx="1"/>
-                    
-                    <!-- Nose cone (red tip) -->
-                    <path d="M -8 -25 L 0 -40 L 8 -25" fill="#cc3333"/>
-                    <path d="M -6 -25 L 0 -38 L 6 -25" fill="#dd4444"/>
-                    
-                    <!-- Rocket window -->
-                    <circle cx="0" cy="-10" r="4" fill="#1a1a2e" opacity="0.8"/>
-                    <circle cx="0" cy="-10" r="3" fill="#16213e" opacity="0.9"/>
-                    
-                    <!-- Side stripes -->
-                    <rect x="-7" y="-5" width="14" height="2" fill="#cc3333" opacity="0.7"/>
-                    <rect x="-7" y="5" width="14" height="2" fill="#cc3333" opacity="0.7"/>
-                    
-                    <!-- Rocket fins (stabilizers) -->
-                    <path d="M -8 15 L -14 25 L -8 20" fill="#cc3333"/>
-                    <path d="M 8 15 L 14 25 L 8 20" fill="#cc3333"/>
-                    <path d="M -6 15 L -12 24 L -6 19" fill="#dd4444"/>
-                    <path d="M 6 15 L 12 24 L 6 19" fill="#dd4444"/>
-                    
-                    <!-- Rocket exhaust/flame -->
-                    <ellipse cx="0" cy="27" rx="6" ry="8" fill="#ff9500" opacity="0.9"/>
-                    <ellipse cx="0" cy="28" rx="5" ry="7" fill="#ffc400" opacity="0.8"/>
-                    <ellipse cx="0" cy="30" rx="4" ry="5" fill="#ffeb3b" opacity="0.7"/>
-                    <path d="M -3 25 Q -2 32, 0 35 Q 2 32, 3 25" fill="#ff6b00" opacity="0.6"/>
-                </g>
-            </svg>
-        <div class="timeline-company">
-            <div class="company-circle">
-                <img src="img/verizon-logo.png" alt="Verizon">
-                </div>
-                <p class="company-name">Verizon</p>
-            </div>
-            <div class="timeline-company">
-                <div class="company-circle">
-                    <img src="img/lacare-logo.png" alt="LA Care">
-                </div>
-                <p class="company-name">LA Care</p>
-            </div>
-            <div class="timeline-company">
-                <div class="company-circle">
-                    <img src="img/capital-group-logo.png" alt="Capital Group">
-                </div>
-                <p class="company-name">Capital Group</p>
-            </div>
-            <div class="timeline-company">
-                <div class="company-circle">
-                    <img src="img/cnb-logo.png" alt="City National Bank">
-                </div>
-                <p class="company-name">City National Bank</p>
-            </div>
-    </section>    
-    <!-- Expertise & Services Section (4 cards with tool logos) -->
-    <section class="expertise">
-        <h2 class="section-title">Expertise & Services</h2>
-        <p class="section-subtitle">Building robust test automation solutions for enterprise applications</p>
-        
-        <div class="services-grid">
-            <div class="service-card">
-                <div class="service-icon">
-                    <img src="https://playwright.dev/img/playwright-logo.svg" alt="Test Automation">
-                </div>
-                <h3 class="service-title">Test Automation</h3>
-            <p>Designed and maintained Playwright TypeScript automation framework with Page Object Model, achieving 30% improvement in maintainability through modular architecture.</p>            </div>
-
-            <div class="service-card">
-                <div class="service-icon">
-                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/azure/azure-original.svg" alt="CI/CD Integration">
-                </div>
-                <h3 class="service-title">CI/CD Integration</h3>
-            <p>Integrated automated test suites into Azure DevOps and Jenkins pipelines, optimizing test execution and maintaining 90% on-time release rate with distributed teams.</p>            </div>
-
-            <div class="service-card">
-                <div class="service-icon">
-                    <img src="https://cdn.worldvectorlogo.com/logos/salesforce-2.svg" alt="Salesforce Testing">
-                </div>
-                <h3 class="service-title">Salesforce Testing</h3>
-            <p>Specialized in Salesforce-based banking platforms (nCino) with extensive experience in regression, end-to-end, and performance testing for enterprise financial applications.</p>            </div>
-
-            <div class="service-card">
-                <div class="service-icon">
-                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" alt="Java Development">                </div>
-                <h3 class="service-title">Java Development</h3>
-                <p>Expert in TypeScript development for test automation frameworks, creating type-safe, maintainable code with modern ES6+ features and best practices.</p>
-            </div>
-
-                <div class="service-card">
-            <div class="service-icon">
-                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postman/postman-original.svg" alt="API/Postman Automation">
-            </div>
-            <h3 class="service-title">API/Postman Automation</h3>
-            <p>Building and executing comprehensive API test suites using Postman, creating automated collection runs, and integrating API testing into CI/CD pipelines for robust backend validation.</p>
+    <!-- About -->
+    <section class="section" id="about">
+      <div class="container">
+        <div class="section-heading reveal">
+          <span class="tag">About</span>
+          <h2>Quality, automated.</h2>
         </div>
-
-        <div class="service-card">
-            <div class="service-icon">
-                <img src="https://cdn-icons-png.flaticon.com/512/4436/4436481.png" alt="Team Leadership">            </div>
-            <h3 class="service-title">Team Leadership</h3>
-            <p
-                    </div>>Leading and mentoring QA teams, establishing testing best practices, coordinating cross-functional collaboration, and driving quality initiatives across development lifecycle.</p>
+        <div class="about-grid">
+          <div class="about-text reveal">
+            <p>I specialize in Playwright TypeScript frameworks, CI/CD automation, and Salesforce-based banking platforms.</p>
+            <p>For 7+ years I've delivered fast, stable test automation for enterprise teams in banking, finance, healthcare and telecom. I design frameworks people actually like maintaining, and I wire them into pipelines so every release ships with confidence.</p>
+          </div>
+          <div class="stats reveal">
+            <div class="stat"><b>7+</b><span>Years in QA automation</span></div>
+            <div class="stat"><b>30%</b><span>Better maintainability after the Playwright migration</span></div>
+            <div class="stat"><b>90%</b><span>On-time release rate</span></div>
+            <div class="stat"><b>4</b><span>Enterprise companies</span></div>
+          </div>
         </div>
+      </div>
     </section>
 
-    <!-- Professional Experience Section -->
-    <section class="experience">
-        <h2 class="section-title">Professional Experience</h2>
-        <p class="section-subtitle">Building quality software at leading companies</p>
-
-        <div class="experience-card">
-            <img src="img/cnb-logo.png" alt="City National Bank" class="experience-logo">
-            <div class="experience-header">
-                <h3>QA Automation Engineer</h3>
-                <span class="experience-date">June 2024 - Present</span>
-            </div>
-            <p>City National Bank | Los Angeles, CA</p>
-            <ul>
-                <li>Designed Playwright TypeScript framework for Salesforce banking platform</li>
-                <li>Led migration from C# Selenium to Playwright, improving maintainability 30%</li>
-                <li>Built test suites integrated into Azure DevOps pipelines</li>
-                <li>Maintained 90% on-time release rate with distributed teams</li>
-            </ul>
+    <!-- Experience (project-card grid) -->
+    <section class="section" id="experience">
+      <div class="container">
+        <div class="section-heading reveal">
+          <span class="tag">Selected</span>
+          <h2>Experience</h2>
         </div>
-
-        <div class="experience-card">
-            <img src="img/capital-group-logo.png" alt="Capital Group" class="experience-logo">
-            <div class="experience-header">
-                <h3>Software Test Engineer</h3>
-                <span class="experience-date">Jun 2023 - Jun 2024</span>
+        <div class="cards">
+          <article class="card reveal">
+            <div class="card-media c-1">
+              <img src="img/cnb-logo.png" alt="City National Bank logo">
+              <span class="card-arrow" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
             </div>
-            <p>Capital Group | Los Angeles, CA</p>
+            <h3>City National Bank</h3>
+            <p class="card-sub">QA Automation Engineer · Los Angeles</p>
+            <p class="card-date">Jun 2024 – Present</p>
             <ul>
-                <li>Created regression suite for loan booking process in nCino platform</li>
-                <li>Developed data-driven E2E scenarios using TypeScript and Playwright</li>
-                <li>Enhanced framework stability and code quality standards</li>
-                <li>Collaborated with cross-functional teams in Agile environment</li>
+              <li>Designed a Playwright TypeScript framework for the Salesforce banking platform</li>
+              <li>Led the migration from C# Selenium to Playwright, improving maintainability by 30%</li>
+              <li>Integrated the suites into Azure DevOps pipelines</li>
             </ul>
-        </div>
-
-        <div class="experience-card">
-            <img src="img/lacare-logo.png" alt="LA Care" class="experience-logo">
-            <div class="experience-header">
-                <h3>QA Automation Engineer</h3>
-                <span class="experience-date">Aug 2021 - Jun 2023</span>
+          </article>
+          <article class="card reveal">
+            <div class="card-media c-2">
+              <img src="img/capital-group-logo.png" alt="Capital Group logo">
+              <span class="card-arrow" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
             </div>
-            <p>LA Care Health Plan | Los Angeles, CA</p>
+            <h3>Capital Group</h3>
+            <p class="card-sub">Software Test Engineer · Los Angeles</p>
+            <p class="card-date">Jun 2023 – Jun 2024</p>
             <ul>
-                <li>Maintained and updated test cases for healthcare platform</li>
-                <li>Created comprehensive test plans and automated test scripts</li>
-                <li>Performed API testing and validation using REST services</li>
-                <li>Collaborated with developers to identify and resolve defects</li>
+              <li>Built the regression suite for nCino loan booking</li>
+              <li>Wrote data-driven E2E scenarios in Playwright</li>
+              <li>Made the framework more stable and raised code-quality standards</li>
             </ul>
-        </div>
-
-        <div class="experience-card">
-            <img src="img/verizon-logo.png" alt="Verizon" class="experience-logo">
-            <div class="experience-header">
-                <h3>Software QA Engineer</h3>
-                <span class="experience-date">Jul 2020 - Aug 2021</span>
+          </article>
+          <article class="card reveal">
+            <div class="card-media c-3">
+              <img src="img/lacare-logo.png" alt="LA Care Health Plan logo">
+              <span class="card-arrow" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
             </div>
-            <p>Verizon | Remote</p>
+            <h3>LA Care Health Plan</h3>
+            <p class="card-sub">QA Automation Engineer · Los Angeles</p>
+            <p class="card-date">Aug 2021 – Jun 2023</p>
             <ul>
-                <li>Developed test automation framework using industry best practices</li>
-                <li>Executed functional, regression, and integration testing</li>
-                <li>Participated in daily standups and sprint planning meetings</li>
-                <li>Documented test results and tracked defects in Azure DevOps</li>
+              <li>Wrote test plans and automated scripts for the healthcare platform</li>
+              <li>Tested and validated REST APIs</li>
+              <li>Worked with developers to find and fix defects</li>
             </ul>
+          </article>
+          <article class="card reveal">
+            <div class="card-media c-4">
+              <img src="img/verizon-logo.png" alt="Verizon logo">
+              <span class="card-arrow" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            </div>
+            <h3>Verizon</h3>
+            <p class="card-sub">Software QA Engineer · Remote</p>
+            <p class="card-date">Jul 2020 – Aug 2021</p>
+            <ul>
+              <li>Developed a test automation framework</li>
+              <li>Ran functional, regression and integration testing</li>
+              <li>Tracked defects in Azure DevOps</li>
+            </ul>
+          </article>
+          <a class="card card-empty reveal" href="#contact">
+            <div class="card-media" aria-hidden="true">+</div>
+            <h3>Your team next?</h3>
+            <p class="card-sub">Open to new opportunities</p>
+          </a>
         </div>
+      </div>
     </section>
-   <!-- Technical Stack Section (All tools with smaller logos) -->
-<section class="expertise">
-    <h2 class="section-title">Technical Stack</h2>
-    <p class="section-subtitle">Technologies and tools I work with daily</p>
-    
-    <div class="tech-grid">
-        <!-- Existing items -->
-        <div class="tech-item">
-            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" alt="TypeScript">
-            <p>TypeScript</p>
-        </div>
 
-        <div class="tech-item">
-            <img src="https://playwright.dev/img/playwright-logo.svg" alt="Playwright">
-            <p>Playwright</p>
+    <!-- Expertise -->
+    <section class="section" id="expertise">
+      <div class="container">
+        <div class="section-heading reveal">
+          <span class="tag">What I do</span>
+          <h2>Expertise</h2>
         </div>
+        <div class="skills">
+          <div class="skill reveal">
+            <div class="skill-icon"><img src="https://playwright.dev/img/playwright-logo.svg" alt=""></div>
+            <h3>Test Automation</h3>
+            <p>I design and maintain Playwright TypeScript frameworks with the Page Object Model, built from modular parts that are easy to maintain.</p>
+          </div>
+          <div class="skill reveal">
+            <div class="skill-icon"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/azuredevops/azuredevops-original.svg" alt=""></div>
+            <h3>CI/CD Integration</h3>
+            <p>I run test suites in Azure DevOps and Jenkins pipelines and keep them fast enough for distributed teams to ship on time.</p>
+          </div>
+          <div class="skill reveal">
+            <div class="skill-icon"><img src="https://cdn.worldvectorlogo.com/logos/salesforce-2.svg" alt=""></div>
+            <h3>Salesforce Testing</h3>
+            <p>I run regression, end-to-end and performance testing on nCino and other Salesforce banking platforms.</p>
+          </div>
+          <div class="skill reveal">
+            <div class="skill-icon"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postman/postman-original.svg" alt=""></div>
+            <h3>API Automation</h3>
+            <p>I build API test suites with Postman and REST Assured and run them in CI to validate the backend.</p>
+          </div>
+          <div class="skill reveal">
+            <div class="skill-icon"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" alt=""></div>
+            <h3>Java &amp; TypeScript</h3>
+            <p>I write type-safe, maintainable automation code with modern language features and solid engineering practices.</p>
+          </div>
+          <div class="skill reveal">
+            <div class="skill-icon"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jira/jira-original.svg" alt=""></div>
+            <h3>Team Leadership</h3>
+            <p>I mentor QA engineers, set testing best practices and lead quality work across teams.</p>
+          </div>
+        </div>
+      </div>
+    </section>
 
-        <div class="tech-item">
-            <img src="https://cdn.worldvectorlogo.com/logos/salesforce-2.svg" alt="Salesforce">
-            <p>Salesforce</p>
+    <!-- Stack -->
+    <section class="section" id="stack">
+      <div class="container">
+        <div class="section-heading reveal">
+          <span class="tag">Toolbox</span>
+          <h2>Tech stack</h2>
         </div>
+        <ul class="chips reveal" role="list">
+          <li class="chip">TypeScript</li><li class="chip">Playwright</li><li class="chip">Salesforce / nCino</li>
+          <li class="chip">JavaScript</li><li class="chip">Java</li><li class="chip">C#</li>
+          <li class="chip">Selenium WebDriver / Grid</li><li class="chip">Cucumber</li><li class="chip">JUnit</li>
+          <li class="chip">REST Assured</li><li class="chip">Postman</li><li class="chip">Apache JMeter</li>
+          <li class="chip">Hoverfly</li><li class="chip">Appium</li><li class="chip">Sauce Labs</li>
+          <li class="chip">Azure DevOps</li><li class="chip">Jenkins</li><li class="chip">Git</li>
+          <li class="chip">Node.js</li><li class="chip">NPM</li><li class="chip">Maven</li>
+          <li class="chip">AWS</li><li class="chip">Jira</li><li class="chip">PostgreSQL</li>
+          <li class="chip">Oracle DB</li><li class="chip">MySQL</li><li class="chip">SQLite</li>
+          <li class="chip">DBeaver</li><li class="chip">VS Code</li><li class="chip">IntelliJ IDEA</li>
+          <li class="chip">Eclipse</li><li class="chip">Android Studio</li>
+        </ul>
+      </div>
+    </section>
+  </main>
 
-        <div class="tech-item">
-            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="JavaScript">
-            <p>JavaScript</p>
+  <footer class="footer-wrap" id="contact">
+    <div class="container">
+      <div class="contact reveal">
+        <h2>Let's work<br>together!</h2>
+        <p class="section-lead">Need a Senior QA Automation Engineer to help your team ship quality software? Let's talk.</p>
+        <div class="socials">
+          <a href="mailto:shukhrat.rustamov@yahoo.com">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+            Mail
+          </a>
+          <a href="https://www.linkedin.com/in/shukhrat-rustamov/" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9.5h4V21H3zM9.5 9.5h3.8v1.6h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.1c0-1.22-.02-2.78-1.7-2.78-1.7 0-1.96 1.33-1.96 2.7V21h-4z"/></svg>
+            LinkedIn
+          </a>
+          <a href="https://github.com/shukhratr" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.08 2.91.83.09-.65.35-1.08.63-1.33-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.56 9.56 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.74c0 .27.18.58.69.48A10 10 0 0 0 12 2z"/></svg>
+            GitHub
+          </a>
+          <a href="tel:+14243623020">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.13.96.36 1.9.7 2.8a2 2 0 0 1-.45 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.45c.9.34 1.84.57 2.8.7a2 2 0 0 1 1.7 2z"/></svg>
+            +1 (424) 362-3020
+          </a>
         </div>
-
-        <div class="tech-item">
-            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/azuredevops/azuredevops-original.svg" alt="Azure DevOps">
-            <p>Azure DevOps</p>
-        </div>
-        
-        <div class="tech-item">
-            <img src="https://www.selenium.dev/images/selenium_logo_square_green.png" alt="Selenium WebDriver">
-            <p>Selenium WebDriver/Grid</p>
-        </div>
-        
-        <div class="tech-item">
-            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jenkins/jenkins-original.svg" alt="Jenkins">
-            <p>Jenkins</p>
-        </div>
-        
-        <div class="tech-item">
-            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" alt="Git">
-            <p>Git</p>
-        </div>
-        
-        <div class="tech-item">
-            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg" alt="VS Code">
-            <p>VS Code</p>
-        </div>
-        
-        <div class="tech-item">
-            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postman/postman-original.svg" alt="Postman">
-            <p>Postman</p>
-        </div>
-
-        <div class="tech-item">
-            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" alt="Node.js">
-            <p>Node.js</p>
-        </div>
-
-        <div class="tech-item">
-            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/npm/npm-original-wordmark.svg" alt="NPM">
-            <p>NPM</p>
-        </div>
-
-        <div class="tech-item">
-            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jira/jira-original.svg" alt="Jira">
-            <p>Jira</p>
-        </div>
-        
-        <div class="tech-item">
-            <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/cucumber/cucumber-plain.svg" alt="Cucumber">
-            <p>Cucumber</p>
-        </div>
-
-        <div class="tech-item">
-            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" alt="Java">
-            <p>Java</p>
-        </div>
-
-        <div class="tech-item">
-            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/csharp/csharp-original.svg" alt="C#">
-            <p>C#</p>
-        </div>
-
-        <div class="tech-item">
-            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/junit/junit-original.svg" alt="JUnit">
-            <p>JUnit</p>
-        </div>
-        
-        <div class="tech-item">
-            <img src="https://jmeter.apache.org/images/jmeter_square.svg"
-             alt="Apache JMeter">
-            <p>Apache JMeter</p>
-        </div>
-
-
-        <div class="tech-item">
-            <img src="https://rest-assured.io/img/logo-transparent.png" alt="REST Assured">
-            <p>REST Assured</p>
-        </div>
-
-        <div class="tech-item">
-            <img src="https://cdn-icons-png.flaticon.com/512/5457/5457374.png" alt="Hoverfly">
-            <p>Hoverfly</p>
-        </div>
-
-        <div class="tech-item">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/5/52/Apache_Maven_logo.svg" alt="Apache Maven">
-            <p>Apache Maven</p>
-        </div>
-
-        <div class="tech-item">
-            <img src="https://worldvectorlogo.com/logos/appium.svg"
-             alt="Appium">
-            <p>Appium</p>
-        </div>
-
-
-        <div class="tech-item">
-            <img src="https://worldvectorlogo.com/logos/sauce-labs.svg" alt="Sauce Labs">
-            <p>Sauce Labs</p>
-        </div>
-
-        <div class="tech-item">
-            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/androidstudio/androidstudio-original.svg" alt="Android Studio">
-            <p>Android Studio</p>
-        </div>
-        
-        <div class="tech-item">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/9/93/Amazon_Web_Services_Logo.svg" alt="AWS">
-            <p>AWS</p>
-        </div>
-
-        <div class="tech-item">
-            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/intellij/intellij-original.svg" alt="IntelliJ IDEA">
-            <p>IntelliJ IDEA</p>
-        </div>
-
-        <div class="tech-item">
-            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/eclipse/eclipse-original.svg" alt="Eclipse">
-            <p>Eclipse</p>
-        </div>
-
-        <!-- Databases & tools -->
-        <div class="tech-item">
-            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg" alt="PostgreSQL">
-            <p>PostgreSQL</p>
-        </div>
-
-        <div class="tech-item">
-            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/oracle/oracle-original.svg" alt="Oracle Database">
-            <p>Oracle DB</p>
-        </div>
-
-        <div class="tech-item">
-            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" alt="MySQL">
-            <p>MySQL</p>
-        </div>
-
-        <div class="tech-item">
-            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sqlite/sqlite-original.svg" alt="SQLite">
-            <p>SQLite</p>
-        </div>
-
-        <div class="tech-item">
-            <img src="https://dbeaver.io/wp-content/uploads/2015/09/beaver-head.png" alt="DBeaver">
-            <p>DBeaver</p>
-        </div>
+      </div>
+      <div class="footer-bottom">
+        <button class="to-top" type="button" aria-label="Back to top">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
+        </button>
+        <p>Built with a passion for quality software</p>
+        <p>© <span id="year">2026</span> Shukhrat Rustamov</p>
+      </div>
     </div>
-</section>
+  </footer>
 
- <!-- Contact Section with Social Media Logos -->
-<section class="contact">
-  <h2 class="section-title">Let's Build Something Amazing</h2>
-  <p class="section-subtitle">
-    Looking for a Senior QA Automation Engineer to help deliver quality software? 
-    Let's discuss how I can contribute to your team's success.
-  </p>
-  <div class="contact-buttons">
-      
-         <!-- Email -->
-      <a href="mailto:shukhrat.rustamov@yahoo.com" class="contact-btn contact-item">
-        <span class="contact-icon">
-        <img src="https://uxwing.com/wp-content/themes/uxwing/download/communication-chat-call/purple-mail-icon.svg" alt="Mail">
-        <span>Mail</span>
-        </span>
-      </a>
-      
-         <!-- LinkedIn -->
-      <a href="https://www.linkedin.com/in/shukhrat-rustamov/" target="_blank" class="contact-btn contact-item">
-        <span class="contact-icon">
-          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg" alt="LinkedIn">
-          <span>LinkedIn</span>
-        </span>
-      </a>
-
-         <!-- Phone -->
-      <a href="tel:+14243623020" class="contact-btn contact-item">
-        <span class="contact-icon">
-          <img 
-          src="https://icons.getbootstrap.com/assets/icons/telephone.svg" 
-          alt="Phone"
-          style="filter: brightness(0) saturate(100%) invert(88%) sepia(18%) saturate(3610%) hue-rotate(85deg) brightness(102%) contrast(101%);">
-          <span>+1 (424) 362-3020</span>
-        </span>
-      </a>
-
-
-    <!-- Footer -->
-    <footer>
-        <p>© 2024 Shukhrat Rustamov. All rights reserved.</p>
-        <p style="margin-top: 0.5rem; font-size: 0.9rem;">Built with passion for quality software engineering</p>
-    </footer>
-    <script>
-        // Create static stars in the sky
-        function createStars() {
-            const starsContainer = document.getElementById('stars-container');
-            const numberOfStars = 150; // More stars for a fuller sky
-
-            for (let i = 0; i < numberOfStars; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                
-                // Random position
-                star.style.top = `${Math.random() * 100}%`;
-                star.style.left = `${Math.random() * 100}%`;
-                
-                // Random delay for twinkling
-                star.style.animationDelay = `${Math.random() * 3}s`;
-                
-                // Random size variation
-                const size = Math.random() * 2 + 1;
-                star.style.width = `${size}px`;
-                star.style.height = `${size}px`;
-                
-                starsContainer.appendChild(star);
-            }
-        }
-
-        // Make some stars shoot occasionally
-        function makeStarsShoot() {
-            const stars = document.querySelectorAll('.star');
-            
-            setInterval(() => {
-                // Pick 1-3 random stars to shoot
-                const numberOfShootingStars = Math.floor(Math.random() * 3) + 1;
-                
-                for (let i = 0; i < numberOfShootingStars; i++) {
-                    const randomStar = stars[Math.floor(Math.random() * stars.length)];
-                    
-                    // Skip if already shooting
-                    if (randomStar.classList.contains('shooting')) continue;
-                    
-                    // Add shooting class
-                    randomStar.classList.add('shooting');
-                    
-                    // Remove after animation completes
-                    setTimeout(() => {
-                        randomStar.classList.remove('shooting');
-                    }, 3000);
-                }
-            }, 2000); // Shoot stars every 2 seconds
-        }
-
-        // Initialize stars when page loads
-        window.addEventListener('DOMContentLoaded', () => {
-            createStars();
-            
-            // Wait a bit before starting shooting animations
-            setTimeout(makeStarsShoot, 1000);
-        });
-
-        // Smooth scroll for CTA button
-        document.addEventListener('DOMContentLoaded', function() {
-            const ctaButton = document.querySelector('.cta-button');
-            if (ctaButton) {
-                ctaButton.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    document.querySelector('.experience').scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                });
-            }
-        });
-
-        // Add intersection observer for fade-in animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                }
-            });
-        }, observerOptions);
-
-        // Observe all animated elements
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.service-card, .experience-card, .company-logo, .tech-item').forEach(el => {
-                observer.observe(el);
-            });
-        });
-    </script>
+  <script src="js/main.js" defer></script>
+  <script type="module" src="js/hero.js"></script>
 </body>
 </html>
