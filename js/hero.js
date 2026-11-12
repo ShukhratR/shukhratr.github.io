@@ -278,70 +278,19 @@ function init() {
   let visible = true;
   new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(host);
 
-  // Scroll progress through the sticky hero track (0 → 1)
-  const track = document.querySelector('.hero-track');
-  const fadeEls = document.querySelectorAll('[data-hero-fade]');
-  const bubble = document.querySelector('.hero-bubble');
-  let progress = 0, smooth = 0;
-  function readScroll() {
-    if (!track) return;
-    const r = track.getBoundingClientRect();
-    const span = r.height - window.innerHeight;
-    progress = span > 0 ? Math.min(1, Math.max(0, -r.top / span)) : 0;
-    if (forced !== null) progress = forced;
-  }
-  const forcedParam = new URLSearchParams(location.search).get('p');
-  const forced = forcedParam !== null ? Number(forcedParam) : null;
-  window.addEventListener('scroll', readScroll, { passive: true });
-  readScroll();
-
-  const ease = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
-  const seg = (p, a, b) => Math.min(1, Math.max(0, (p - a) / (b - a)));
-  const headPos = new THREE.Vector3();
   const parallax = { x: 0, y: 0 };
-  const lookAt = new THREE.Vector3();
-  const CHAIR_START = 0.25, CHAIR_END = -2.25;
-
   const clock = new THREE.Clock();
   function frame() {
     requestAnimationFrame(frame);
     if (!visible) return;
     const t = clock.getElapsedTime();
-
-    smooth += (progress - smooth) * (reduceMotion || forced !== null ? 1 : 0.08);
-    const pZoom = ease(seg(smooth, 0.05, 0.75));
-    const pTurn = ease(seg(smooth, 0.3, 0.8));
-    const pWave = seg(smooth, 0.8, 0.95);
-
-    // chair swivels toward the viewer
-    chair.rotation.y = CHAIR_START + (CHAIR_END - CHAIR_START) * pTurn;
-    chair.position.z = 1.6 + pTurn * 0.9;
-
-    // camera zooms toward the avatar's head
-    avatar.head.getWorldPosition(headPos);
-    lookAt.copy(target).lerp(headPos.setY(headPos.y - 0.2), pZoom);
-    camera.zoom = 1 + pZoom * 1.3;
-    applyFrustum(pZoom);
-
     if (!reduceMotion) {
       parallax.x += (pointer.x - parallax.x) * 0.05;
       parallax.y += (pointer.y - parallax.y) * 0.05;
     }
-    camera.position.set(
-      camBase.x + parallax.x * 1.2 + (lookAt.x - target.x),
-      camBase.y - parallax.y * 0.8 + (lookAt.y - target.y),
-      camBase.z + (lookAt.z - target.z)
-    );
-    camera.lookAt(lookAt);
-
-    // DOM overlays
-    fadeEls.forEach((el) => {
-      el.style.opacity = String(1 - seg(smooth, 0.05, 0.35));
-      el.style.transform = `translateY(${-seg(smooth, 0.05, 0.35) * 40}px)`;
-    });
-    if (bubble) bubble.classList.toggle('is-visible', pWave > 0.2);
-
-    avatar.animate(reduceMotion ? 0 : t, pTurn, pWave);
+    camera.position.set(camBase.x + parallax.x * 1.2, camBase.y - parallax.y * 0.8, camBase.z);
+    camera.lookAt(target);
+    avatar.animate(reduceMotion ? 0 : t, 0, 0);
 
     if (!reduceMotion) {
       // bug wanders in a small loop; glass follows

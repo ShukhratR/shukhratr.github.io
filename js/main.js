@@ -19,3 +19,15 @@ document.querySelector('.to-top')?.addEventListener('click', () => {
 });
 
 document.getElementById('year').textContent = new Date().getFullYear();
+
+// Highlight the nav link for the section in view
+const navLinks = [...document.querySelectorAll('.nav a')];
+const targets = navLinks.map((a) => document.querySelector(a.getAttribute('href')));
+function setActive() {
+  let current = -1;
+  targets.forEach((el, i) => { if (el && el.getBoundingClientRect().top <= innerHeight * 0.4) current = i; });
+  if (scrollY < innerHeight * 0.3) current = -1;   // nothing active on the intro
+  navLinks.forEach((a, i) => a.classList.toggle('is-active', i === current));
+}
+addEventListener('scroll', setActive, { passive: true });
+setActive();

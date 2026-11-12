@@ -86,42 +86,53 @@ export function buildAvatar({ pose = 'sit' } = {}) {
   back.scale.set(1.02, 1.06, 0.98);
   const cap = add(head, new THREE.Mesh(new THREE.SphereGeometry(0.665, 32, 24, 0, Math.PI * 2, 0, Math.PI * 0.3), hair), 0, 0.06, 0);
   cap.scale.set(1.02, 1.1, 1.0);
-  // swept-up quiff: one smooth volume across the front + a softer crown wave
-  const quiff = add(head, new THREE.Mesh(new THREE.SphereGeometry(0.42, 32, 20), hair), 0.04, 0.52, -0.22);
-  quiff.scale.set(1.45, 0.62, 1.05);
-  quiff.rotation.set(-0.35, 0, 0.08);
-  const crown = add(head, new THREE.Mesh(new THREE.SphereGeometry(0.4, 32, 20), hair), -0.02, 0.6, 0.12);
-  crown.scale.set(1.4, 0.5, 1.2);
-  // sideburns
-  [-1, 1].forEach((s) => add(head, rbox(0.08, 0.38, 0.22, 0.04, hair), s * 0.6, 0.12, -0.08));
+  // curly, messy hair: a ring of curls over the crown, fringe and sides
+  const curl = new THREE.SphereGeometry(1, 14, 10);
+  const curls = [];
+  for (let i = 0; i < 26; i++) {               // crown + top
+    const a = (i / 26) * Math.PI * 2, r = 0.32 + (i % 3) * 0.1;
+    curls.push([Math.cos(a) * r, 0.5 + (i % 2) * 0.06 + (0.42 - r) * 0.5, Math.sin(a) * r + 0.04, 0.16 + (i % 4) * 0.02]);
+  }
+  for (let i = 0; i < 9; i++) {                // fringe falling on the forehead
+    const x = -0.44 + i * 0.11;
+    curls.push([x, 0.38 - Math.abs(x) * 0.25 + (i % 2) * 0.04, -0.5 + Math.abs(x) * 0.35, 0.12 + (i % 3) * 0.02]);
+  }
+  for (let i = 0; i < 10; i++) {               // sides + back, over the ears
+    const s2 = i % 2 ? 1 : -1, k = Math.floor(i / 2);
+    curls.push([s2 * 0.6, 0.28 - k * 0.07, -0.05 + k * 0.12, 0.15]);
+  }
+  curls.forEach(([x, y, z, r], i) => {
+    const c = add(head, new THREE.Mesh(curl, hair), x, y, z);
+    c.scale.set(r * 1.15, r * 0.95, r);
+    c.rotation.set(i * 0.7, i * 1.3, 0);
+  });
 
-  // Beard: lower-front shell + chin volume, mustache
-  const beard = add(head, new THREE.Mesh(new THREE.SphereGeometry(0.64, 32, 24, Math.PI, Math.PI, Math.PI * 0.6, Math.PI * 0.37), hair), 0, -0.02, 0.02);
-  beard.scale.set(1.0, 1.05, 1.0);
-  const chin = add(head, new THREE.Mesh(new THREE.SphereGeometry(0.3, 20, 16), hair), 0, -0.5, -0.32);
-  chin.scale.set(1.25, 0.8, 0.9);
-  const stache = add(head, rbox(0.38, 0.08, 0.1, 0.04, hair), 0, -0.2, -0.6);
-  stache.rotation.x = 0.2;
-  // smile (lip line inside the beard)
-  const lip = new THREE.Mesh(new THREE.TorusGeometry(0.075, 0.016, 8, 16, Math.PI), mat(0xb8705f));
-  lip.rotation.set(0, Math.PI, Math.PI);
-  add(head, lip, 0, -0.27, -0.62);
+  // Happy open smile (clean-shaven)
+  const mouth = new THREE.Mesh(new THREE.CircleGeometry(0.13, 24, Math.PI, Math.PI), mat(0x7a2e2a, { roughness: 0.4 }));
+  mouth.rotation.y = Math.PI; mouth.scale.set(1.15, 0.85, 1);
+  add(head, mouth, 0, -0.24, -0.6);
+  const teeth = new THREE.Mesh(new THREE.PlaneGeometry(0.24, 0.04), new THREE.MeshBasicMaterial({ color: 0xffffff }));
+  teeth.rotation.y = Math.PI;
+  add(head, teeth, 0, -0.26, -0.605);
+  const lip = new THREE.Mesh(new THREE.TorusGeometry(0.15, 0.018, 8, 20, Math.PI), mat(0xc77a68));
+  lip.rotation.set(0, Math.PI, Math.PI); lip.scale.set(1, 0.75, 1);
+  add(head, lip, 0, -0.235, -0.6);
 
   // Face: eyes, brows, nose, mole
   const eyeMat = mat(0x3a2418, { roughness: 0.2 });
   const shine = new THREE.MeshBasicMaterial({ color: 0xffffff });
   [-1, 1].forEach((s) => {
     const eye = add(head, new THREE.Mesh(new THREE.SphereGeometry(0.075, 16, 12), eyeMat), s * 0.21, 0.04, -0.57);
-    eye.scale.set(1, 0.8, 0.6);
+    eye.scale.set(1, 0.62, 0.6);
     add(head, new THREE.Mesh(new THREE.SphereGeometry(0.022, 8, 8), shine), s * 0.21 + 0.025, 0.07, -0.615);
-    const brow = add(head, rbox(0.24, 0.065, 0.06, 0.03, hair), s * 0.22, 0.2, -0.56);
+    const brow = add(head, rbox(0.25, 0.07, 0.06, 0.03, hair), s * 0.22, 0.22, -0.56);
     brow.rotation.z = s * -0.08;
   });
   add(head, new THREE.Mesh(new THREE.SphereGeometry(0.09, 16, 12), skin), 0, -0.05, -0.59).scale.set(0.9, 1.15, 0.7);
   add(head, new THREE.Mesh(new THREE.SphereGeometry(0.02, 8, 8), mat(0x6b4632)), 0.3, -0.1, -0.55);
   // cheek blush
   [-1, 1].forEach((s) => {
-    const blush = add(head, new THREE.Mesh(new THREE.CircleGeometry(0.09, 16), new THREE.MeshBasicMaterial({ color: 0xf0a088, transparent: true, opacity: 0.35 })), s * 0.33, -0.08, -0.535);
+    const blush = add(head, new THREE.Mesh(new THREE.CircleGeometry(0.09, 16), new THREE.MeshBasicMaterial({ color: 0xf0a088, transparent: true, opacity: 0.5 })), s * 0.33, -0.1, -0.535);
     blush.rotation.y = Math.PI + s * -0.5;
     blush.castShadow = false;
   });

@@ -8,7 +8,7 @@ Static GitHub Pages site for Shukhrat Rustamov (Senior QA Automation Engineer). 
 - `css/style.css` — every component style; hologram styles are at the bottom (`.holo*`)
 - `js/avatar.js` — `buildAvatar({pose:'sit'|'stand'})`, plus the shared `mat()` / `rbox()` helpers
 - `js/hero.js` — desk scene and the scroll-driven camera, chair swivel and wave (`.hero-track` is 320vh, `.hero` is sticky)
-- `js/hologram.js` — hologram section: standing avatar with a shader material, pedestal and grid
+- `js/hologram.js` — scroll story controller for `.story-track` (520vh) and sticky `.stage`: the hero panel lifts away, a clip-plane scan turns the colour avatar into a hologram, the 000→100 counter, card reveals and the dark header
 - `js/main.js` — scroll reveal (`.reveal`), back-to-top, footer year
 - `img/` — company logos; `img/me.glb` (planned) is a realistic avatar that replaces `buildAvatar` when present
 
@@ -47,5 +47,5 @@ Defaults if not given: keep existing content, decide mobile layout yourself, pus
     --enable-unsafe-swiftshader --virtual-time-budget=9000 --hide-scrollbars --window-size=1440,900 \
     --screenshot=<scratchpad>/shot.png "http://localhost:8765/?p=0"
   ```
-  - `?p=0..1` forces the hero scroll progress (0 = typing, 1 = turned and waving).
+  - `?p=0..1` forces the story progress (0 = hero, ~0.2 = stage revealed, ~0.5 = mid-scan, 1 = full hologram).
   - To check sections below the hero, use a temporary copy of `index.html` with `.hero-track` removed, then delete it.

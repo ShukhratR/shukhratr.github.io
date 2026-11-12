@@ -44,13 +44,31 @@ function init() {
   const uniforms = { uTime: { value: 0 }, uColor: { value: new THREE.Color(0x4cc3ff) } };
   const holo = holoMaterial(uniforms);
 
-  const avatar = buildAvatar({ pose: 'stand' });
-  avatar.group.traverse((o) => { if (o.isMesh) { o.material = holo; o.castShadow = false; } });
-  avatar.group.rotation.y = Math.PI; // face the camera (avatar faces -Z)
+  renderer.localClippingEnabled = true;
+  const scanY = { value: 0 };
+  const keepAbove = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+  const keepBelow = new THREE.Plane(new THREE.Vector3(0, -1, 0), 0);
+  holo.clippingPlanes = [keepBelow];
+
   const spin = new THREE.Group();
-  spin.add(avatar.group);
   spin.position.y = 0.55;
   scene.add(spin);
+  const colored = buildAvatar({ pose: 'stand' });
+  colored.group.traverse((o) => { if (o.isMesh) { o.material = o.material.clone(); o.material.clippingPlanes = [keepAbove]; } });
+  const ghost = buildAvatar({ pose: 'stand' });
+  ghost.group.traverse((o) => { if (o.isMesh) o.material = holo; });
+  [colored, ghost].forEach((a) => { a.group.rotation.y = Math.PI; spin.add(a.group); });
+
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x2a4f9a, 1.6));
+  const key = new THREE.DirectionalLight(0xffffff, 1.6);
+  key.position.set(3, 8, 10);
+  scene.add(key);
+
+  // bright scan ring that travels with the clip plane
+  const scanRing = new THREE.Mesh(new THREE.TorusGeometry(1.25, 0.03, 8, 64),
+    new THREE.MeshBasicMaterial({ color: 0xbff0ff, transparent: true, blending: THREE.AdditiveBlending }));
+  scanRing.rotation.x = Math.PI / 2;
+  scene.add(scanRing);
 
   // Pedestal + glowing ring + light cone
   const ped = new THREE.Mesh(new THREE.CylinderGeometry(2.1, 2.3, 0.55, 64),
@@ -97,20 +115,52 @@ function init() {
   new ResizeObserver(resize).observe(host);
   resize();
 
-  let visible = false;
-  new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(host);
+  // Story: beige hero lifts away -> avatar scanned into hologram -> cards appear
+  const track = document.querySelector('.story-track');
+  const heroPanel = document.querySelector('.hero');
+  const counter = document.querySelector('.holo-badge');
+  const cards = [...document.querySelectorAll('.holo-card')];
+  const header = document.querySelector('.header');
+  const forcedParam = new URLSearchParams(location.search).get('p');
+  const forced = forcedParam !== null ? Number(forcedParam) : null;
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const seg = (p, a, b) => Math.min(1, Math.max(0, (p - a) / (b - a)));
+  const ease = (x) => 1 - Math.pow(1 - x, 3);
+  const TOP = 5.8, BOTTOM = 0.55;  // avatar height range in world Y
+  let progress = 0, smooth = 0;
+
+  function readScroll() {
+    const r = track.getBoundingClientRect();
+    const span = r.height - window.innerHeight;
+    progress = forced ?? (span > 0 ? Math.min(1, Math.max(0, -r.top / span)) : 0);
+    header.classList.toggle('is-dark', r.top < -window.innerHeight * 0.3 && r.bottom > 80);
+  }
+  window.addEventListener('scroll', readScroll, { passive: true });
+  readScroll();
+
   const clock = new THREE.Clock();
   (function frame() {
     requestAnimationFrame(frame);
-    if (!visible) return;
     const t = clock.getElapsedTime();
+    smooth += (progress - smooth) * (reduce || forced !== null ? 1 : 0.12);
+
+    const lift = ease(seg(smooth, 0, 0.22));
+    heroPanel.style.transform = `translateY(${-lift * 115}%) rotate(${-lift * 5}deg)`;
+    heroPanel.style.visibility = lift >= 1 ? 'hidden' : '';
+
+    const scan = seg(smooth, 0.28, 0.72);            // 0 = full color, 1 = full hologram
+    const y = BOTTOM + (TOP - BOTTOM) * scan;          // scan rises from the feet up
+    keepAbove.constant = -y; keepBelow.constant = y;
+    scanRing.position.y = y;
+    scanRing.visible = scan > 0 && scan < 1;
+    counter.textContent = String(Math.round(scan * 100)).padStart(3, '0');
+    cards.forEach((c, i) => c.classList.toggle('is-visible', smooth > 0.34 + i * 0.13));
+
+    if (lift < 0.05) return;                           // stage hidden under the hero
     uniforms.uTime.value = t;
     if (!reduce) {
-      const r = host.getBoundingClientRect();
-      const p = 1 - (r.top + r.height) / (window.innerHeight + r.height); // 0..1 through viewport
-      spin.rotation.y = Math.sin(t * 0.4) * 0.35 + (p - 0.5) * 1.2;
-      spin.position.y = 0.55 + Math.sin(t * 1.5) * 0.06;
+      spin.rotation.y = Math.sin(t * 0.4) * 0.3;
+      spin.position.y = 0.55 + Math.sin(t * 1.5) * 0.05;
     }
     renderer.render(scene, camera);
   })();
