@@ -72,7 +72,7 @@ export function buildAvatar({ pose = 'sit' } = {}) {
   add(group, new THREE.Mesh(new THREE.CylinderGeometry(0.17, 0.19, 0.35, 16), skin), 0, 3.82, 0);
   const head = new THREE.Group();
   head.position.set(0, 4.45, 0);
-  if (pose === 'stand') { head.scale.setScalar(1.42); head.position.y = 4.7; }
+  head.scale.setScalar(1.42); head.position.y = 4.7;
   group.add(head);
 
   const skull = add(head, new THREE.Mesh(new THREE.SphereGeometry(0.62, 40, 32), skin), 0, 0, 0);

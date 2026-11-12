@@ -66,11 +66,11 @@ function init() {
   const scene = new THREE.Scene();
 
   // Isometric-ish orthographic camera
-  const frustum = 8.4;
+  const frustum = 7.4;
   const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 100);
   const camBase = new THREE.Vector3(14, 11, 14);
   camera.position.copy(camBase);
-  const target = new THREE.Vector3(1.0, 4.3, -0.6);
+  const target = new THREE.Vector3(1.2, 4.7, -0.6);
   camera.lookAt(target);
 
   // Lights
@@ -190,27 +190,27 @@ function init() {
 
   // Wall shelf with books
   const shelf = rbox(2.4, 0.15, 0.8, 0.05, woodMat);
-  shelf.position.set(-2.4, 7.4, -3.2);
+  shelf.position.set(-2.4, 6.4, -3.2);
   world.add(shelf);
   [0xff8400, 0x234ba2, 0xf7d36a, 0xe9ded0].forEach((c, i) => {
     const book = rbox(0.3, 0.9 - (i % 2) * 0.15, 0.6, 0.04, mat(c));
-    book.position.set(-3.3 + i * 0.36, 7.9 - (i % 2) * 0.07, -3.2);
+    book.position.set(-3.3 + i * 0.36, 6.9 - (i % 2) * 0.07, -3.2);
     world.add(book);
   });
 
   // Cactus in a white pot on the shelf
   const cpot = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.26, 0.45, 20), mat(0xffffff, { roughness: 0.3 }));
-  cpot.position.set(-1.65, 7.7, -3.2); cpot.castShadow = true; world.add(cpot);
+  cpot.position.set(-1.65, 6.7, -3.2); cpot.castShadow = true; world.add(cpot);
   const cactus = new THREE.Mesh(new THREE.CapsuleGeometry(0.17, 0.35, 6, 12), mat(0x7cc24a));
-  cactus.position.set(-1.65, 8.15, -3.2); world.add(cactus);
+  cactus.position.set(-1.65, 7.15, -3.2); world.add(cactus);
   const arm = new THREE.Mesh(new THREE.CapsuleGeometry(0.09, 0.15, 6, 10), mat(0x7cc24a));
-  arm.position.set(-1.45, 8.2, -3.2); arm.rotation.z = -0.6; world.add(arm);
+  arm.position.set(-1.45, 7.2, -3.2); arm.rotation.z = -0.6; world.add(arm);
 
   // Pin board
   const board = rbox(3.2, 2.1, 0.15, 0.1, mat(0xb08f6e, { roughness: 1 }));
-  board.position.set(1.8, 7.9, -3.5);
+  board.position.set(1.8, 6.9, -3.5);
   board.castShadow = false; world.add(board);
-  [[1.1, 8.2, 0xfff3c4], [2.4, 7.7, 0xcfe3ff]].forEach(([x, y, c]) => {
+  [[1.1, 7.2, 0xfff3c4], [2.4, 6.7, 0xcfe3ff]].forEach(([x, y, c]) => {
     const note = rbox(0.9, 0.9, 0.04, 0.02, mat(c));
     note.position.set(x, y, -3.4);
     note.rotation.z = (x - 1.8) * 0.15;
@@ -239,7 +239,7 @@ function init() {
   const eyeR = eyeL.clone(); eyeR.position.z = -0.12;
   duck.add(duckBody, duckHead, beak, eyeL, eyeR);
   duck.traverse((o) => { if (o.isMesh) o.castShadow = true; });
-  duck.position.set(-3.3, 3.43, -0.8); duck.rotation.y = 0.9; world.add(duck);
+  duck.position.set(-3.3, 3.43, 0.15); duck.rotation.y = 0.9; world.add(duck);
   const speaker = rbox(0.8, 0.9, 0.6, 0.1, mat(0xf0a530));
   speaker.position.set(3.4, 3.62, -1.6); speaker.rotation.y = -0.3; world.add(speaker);
   const cone = new THREE.Mesh(new THREE.CylinderGeometry(0.26, 0.26, 0.05, 24), mat(0x3b3843));
@@ -249,11 +249,11 @@ function init() {
 
   // Picture frame on the right wall
   const picFrame = rbox(2.6, 1.8, 0.18, 0.15, mat(0x9fbbe8));
-  picFrame.position.set(5.4, 6.4, -3.45); picFrame.castShadow = false; world.add(picFrame);
+  picFrame.position.set(5.4, 5.7, -3.45); picFrame.castShadow = false; world.add(picFrame);
   const art = new THREE.Mesh(new THREE.PlaneGeometry(2.1, 1.35), mat(0xe8eff9));
-  art.position.set(5.4, 6.4, -3.35); world.add(art);
+  art.position.set(5.4, 5.7, -3.35); world.add(art);
   const hill = new THREE.Mesh(new THREE.ConeGeometry(0.6, 0.8, 3), mat(0x9fbbe8));
-  hill.position.set(5.2, 6.1, -3.3); hill.scale.z = 0.2; world.add(hill);
+  hill.position.set(5.2, 5.4, -3.3); hill.scale.z = 0.2; world.add(hill);
 
 
   // Shadow catcher floor

@@ -320,3 +320,4 @@ img { display: block; max-width: 100%; }
 @keyframes pulse-wave { 50% { opacity: .5; } }
 .header.is-dark .sound-toggle { background: rgba(0,36,116,.85); color: #e1f5ff; }
 @media (max-width: 840px) { .sound-toggle { right: var(--space-outer); } }
+.visually-hidden { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
