@@ -26,6 +26,17 @@ The user usually sends three things together: a full-page screenshot, pasted CSS
 - Don't crawl the link. Use the screenshot first, and fetch the link only if something is unclear, such as scroll behavior.
 - Compare your result against the user's screenshot at the same width.
 
+### Request checklist (ask only for items that are missing and actually block the work)
+```
+Section: <which one; replace or add>
+Text:    <real copy, numbers, links, dates>
+Assets:  <files dropped in img/>
+Motion:  <scroll/hover/animation behavior>
+Mobile:  <specifics, or "your call">
+Push:    <yes / preview first>
+```
+Defaults if not given: keep existing content, decide mobile layout yourself, push to `main`.
+
 ## Workflow (token-saving)
 - Make small, targeted edits. Don't re-read large files you already know; grep for what you need.
 - No subagents. Keep replies short.
