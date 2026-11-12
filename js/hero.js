@@ -217,6 +217,40 @@ function init() {
     world.add(book);
   });
 
+  // Second shelf: gold trophy cup with a "HALA MADRID" plaque
+  const shelf2 = rbox(1.7, 0.15, 0.8, 0.05, woodMat);
+  shelf2.position.set(-4.5, 5.4, -3.2); world.add(shelf2);
+  const gold = mat(0xe6b422, { metalness: 0.85, roughness: 0.25 });
+  const trophy = new THREE.Group();
+  const cupPts = [];
+  for (let i = 0; i <= 12; i++) { const t = i / 12; cupPts.push(new THREE.Vector2(0.06 + Math.sin(t * Math.PI * 0.5) * 0.32, t * 0.55)); }
+  const cupMesh = new THREE.Mesh(new THREE.LatheGeometry(cupPts, 32), gold);
+  cupMesh.position.y = 0.55;
+  const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.09, 0.3, 16), gold);
+  stem.position.y = 0.42;
+  [-1, 1].forEach((sd) => {
+    const handle = new THREE.Mesh(new THREE.TorusGeometry(0.13, 0.025, 8, 20, Math.PI), gold);
+    handle.position.set(sd * 0.36, 0.85, 0); handle.rotation.z = sd > 0 ? -Math.PI / 2 : Math.PI / 2;
+    trophy.add(handle);
+  });
+  const base1 = rbox(0.42, 0.12, 0.42, 0.03, mat(0x2d2a24));
+  base1.position.y = 0.06;
+  const base2 = rbox(0.3, 0.18, 0.3, 0.03, mat(0x2d2a24));
+  base2.position.y = 0.21;
+  trophy.add(cupMesh, stem, base1, base2);
+  trophy.traverse((o) => { if (o.isMesh) o.castShadow = true; });
+  trophy.position.set(-4.5, 5.48, -3.15);
+  world.add(trophy);
+  const plaqueTex = canvasTex(512, 96, (g, w, h) => {
+    g.fillStyle = '#1d2a5b'; g.fillRect(0, 0, w, h);
+    g.strokeStyle = '#d4a017'; g.lineWidth = 6; g.strokeRect(6, 6, w - 12, h - 12);
+    g.fillStyle = '#e6b422'; g.textAlign = 'center'; g.font = '800 54px Urbanist, sans-serif';
+    g.fillText('HALA MADRID', w / 2, 66);
+  });
+  const plaque = new THREE.Mesh(new THREE.PlaneGeometry(1.25, 0.24), new THREE.MeshStandardMaterial({ map: plaqueTex, roughness: 0.6 }));
+  plaque.position.set(-4.5, 5.2, -2.79);
+  world.add(plaque);
+
   // Pin board
   const board = rbox(3.2, 2.1, 0.15, 0.1, mat(0xb08f6e, { roughness: 1 }));
   board.position.set(1.8, 6.9, -3.5);
