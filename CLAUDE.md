@@ -3,13 +3,14 @@
 Static GitHub Pages site for Shukhrat Rustamov (Senior QA Automation Engineer). The style follows david-hckh.com: beige look, 3D hero, blue hologram About section. No build step; pushing to `main` deploys.
 
 ## Structure
-- `index.html` — all page content (hero track → hologram → about-more → experience → expertise → stack → footer)
+- `index.html` — all page content (story track [hologram stage under the hero panel] → experience → expertise → stack → footer)
 - `css/tokens.css` — design tokens (colors, spacing, radii, type scale, easing). Use these and never hard-code new values.
 - `css/style.css` — every component style; hologram styles are at the bottom (`.holo*`)
 - `js/avatar.js` — `buildAvatar({pose:'sit'|'stand'})`, plus the shared `mat()` / `rbox()` helpers
-- `js/hero.js` — desk scene and the scroll-driven camera, chair swivel and wave (`.hero-track` is 320vh, `.hero` is sticky)
+- `js/hero.js` — desk scene with idle typing and mouse parallax (no scroll logic)
 - `js/hologram.js` — scroll story controller for `.story-track` (520vh) and sticky `.stage`: the hero panel lifts away, a clip-plane scan turns the colour avatar into a hologram, the 000→100 counter, card reveals and the dark header
-- `js/main.js` — scroll reveal (`.reveal`), back-to-top, footer year
+- `js/main.js` — scroll reveal (`.reveal`), back-to-top, footer year, active nav link
+- `tools/scroll.mjs` — real-scroll screenshots through the DevTools protocol (needs Node 22+)
 - `img/` — company logos; `img/me.glb` (planned) is a realistic avatar that replaces `buildAvatar` when present
 
 ## Standards
@@ -48,4 +49,6 @@ Defaults if not given: keep existing content, decide mobile layout yourself, pus
     --screenshot=<scratchpad>/shot.png "http://localhost:8765/?p=0"
   ```
   - `?p=0..1` forces the story progress (0 = hero, ~0.2 = stage revealed, ~0.5 = mid-scan, 1 = full hologram).
-  - To check sections below the hero, use a temporary copy of `index.html` with `.hero-track` removed, then delete it.
+  - For real scrolling, or to compare against a reference site, use the same scroll positions on both:
+    `node tools/scroll.mjs <url> <scratchpad> <prefix> 0 700 1400 2100 2800`, then shrink the shots with `sips -Z 480` before viewing them.
+    Plain `--screenshot` can't capture scrolled positions.
