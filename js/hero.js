@@ -174,6 +174,9 @@ function init() {
   chair.rotation.y = 0.25;
   world.add(chair);
 
+  const avatar = buildAvatar();
+  chair.add(avatar.group);
+
   // Plant
   const plant = new THREE.Group();
   const pot = new THREE.Mesh(new THREE.CylinderGeometry(0.8, 0.6, 1.3, 28), mat(0xe9ded0));
@@ -226,7 +229,7 @@ function init() {
     bug.add(dot);
   }
   bug.traverse((o) => { if (o.isMesh) o.castShadow = true; });
-  bug.position.set(-1.2, 3.3, 0);
+  bug.position.set(-2.6, 3.3, -0.65);
   world.add(bug);
 
   // Magnifying glass hovering above the bug
@@ -236,7 +239,7 @@ function init() {
   const handle = rbox(0.13, 0.75, 0.13, 0.05, mat(0x2d2a24));
   handle.position.set(0.48, -0.48, 0); handle.rotation.z = Math.PI / 4;
   glass.add(ring, lens, handle);
-  glass.position.set(-1.2, 4.3, 0);
+  glass.position.set(-2.6, 4.3, -0.65);
   glass.rotation.x = -Math.PI / 2.4;
   world.add(glass);
 
@@ -251,13 +254,25 @@ function init() {
     const w = host.clientWidth, h = host.clientHeight;
     renderer.setSize(w, h, false);
     const aspect = w / h;
-    const f = aspect < 1 ? frustum / aspect * 0.85 : frustum;
-    camera.left = -f * aspect / 2 * 1.15;
-    camera.right = f * aspect / 2 * 1.15;
-    camera.top = f / 2 * 1.15;
-    camera.bottom = -f / 2 * 1.15;
+    const wide = aspect >= 1.1;
+    // Full-bleed canvas: on wide screens the scene sits on the right,
+    // on tall screens it sits below the text. Offsets ease to 0 when zoomed.
+    const f = wide ? frustum * 1.25 : Math.max(frustum * 1.1, frustum * 0.95 / aspect);
+    frame0.halfW = f * aspect / 2;
+    frame0.halfH = f / 2;
+    frame0.offX = wide ? -frame0.halfW * 0.38 : 0;
+    frame0.offY = wide ? 0 : frame0.halfH * 0.28;
+    applyFrustum(0);
+  }
+  function applyFrustum(z) {
+    const k = 1 - z;
+    camera.left = -frame0.halfW + frame0.offX * k;
+    camera.right = frame0.halfW + frame0.offX * k;
+    camera.top = frame0.halfH + frame0.offY * k;
+    camera.bottom = -frame0.halfH + frame0.offY * k;
     camera.updateProjectionMatrix();
   }
+  const frame0 = { halfW: 1, halfH: 1, offX: 0, offY: 0 };
   new ResizeObserver(resize).observe(host);
   resize();
 
@@ -272,21 +287,75 @@ function init() {
   let visible = true;
   new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(host);
 
+  // Scroll progress through the sticky hero track (0 → 1)
+  const track = document.querySelector('.hero-track');
+  const fadeEls = document.querySelectorAll('[data-hero-fade]');
+  const bubble = document.querySelector('.hero-bubble');
+  let progress = 0, smooth = 0;
+  function readScroll() {
+    if (!track) return;
+    const r = track.getBoundingClientRect();
+    const span = r.height - window.innerHeight;
+    progress = span > 0 ? Math.min(1, Math.max(0, -r.top / span)) : 0;
+    if (forced !== null) progress = forced;
+  }
+  const forcedParam = new URLSearchParams(location.search).get('p');
+  const forced = forcedParam !== null ? Number(forcedParam) : null;
+  window.addEventListener('scroll', readScroll, { passive: true });
+  readScroll();
+
+  const ease = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
+  const seg = (p, a, b) => Math.min(1, Math.max(0, (p - a) / (b - a)));
+  const headPos = new THREE.Vector3();
+  const parallax = { x: 0, y: 0 };
+  const lookAt = new THREE.Vector3();
+  const CHAIR_START = 0.25, CHAIR_END = -2.25;
+
   const clock = new THREE.Clock();
   function frame() {
     requestAnimationFrame(frame);
     if (!visible) return;
     const t = clock.getElapsedTime();
-    if (!reduceMotion) {
-      const tx = camBase.x + pointer.x * 1.2;
-      const ty = camBase.y - pointer.y * 0.8;
-      camera.position.x += (tx - camera.position.x) * 0.05;
-      camera.position.y += (ty - camera.position.y) * 0.05;
-      camera.lookAt(target);
 
+    smooth += (progress - smooth) * (reduceMotion || forced !== null ? 1 : 0.08);
+    const pZoom = ease(seg(smooth, 0.05, 0.75));
+    const pTurn = ease(seg(smooth, 0.3, 0.8));
+    const pWave = seg(smooth, 0.8, 0.95);
+
+    // chair swivels toward the viewer
+    chair.rotation.y = CHAIR_START + (CHAIR_END - CHAIR_START) * pTurn;
+    chair.position.z = 1.6 + pTurn * 0.9;
+
+    // camera zooms toward the avatar's head
+    avatar.head.getWorldPosition(headPos);
+    lookAt.copy(target).lerp(headPos.setY(headPos.y - 0.2), pZoom);
+    camera.zoom = 1 + pZoom * 1.3;
+    applyFrustum(pZoom);
+
+    if (!reduceMotion) {
+      parallax.x += (pointer.x - parallax.x) * 0.05;
+      parallax.y += (pointer.y - parallax.y) * 0.05;
+    }
+    camera.position.set(
+      camBase.x + parallax.x * 1.2 + (lookAt.x - target.x),
+      camBase.y - parallax.y * 0.8 + (lookAt.y - target.y),
+      camBase.z + (lookAt.z - target.z)
+    );
+    camera.lookAt(lookAt);
+
+    // DOM overlays
+    fadeEls.forEach((el) => {
+      el.style.opacity = String(1 - seg(smooth, 0.05, 0.35));
+      el.style.transform = `translateY(${-seg(smooth, 0.05, 0.35) * 40}px)`;
+    });
+    if (bubble) bubble.classList.toggle('is-visible', pWave > 0.2);
+
+    avatar.animate(reduceMotion ? 0 : t, pTurn, pWave);
+
+    if (!reduceMotion) {
       // bug wanders in a small loop; glass follows
-      const bx = -1.2 + Math.sin(t * 0.6) * 0.9;
-      const bz = -0.1 + Math.cos(t * 0.6) * 0.4;
+      const bx = -2.6 + Math.sin(t * 0.6) * 0.7;
+      const bz = -1.1 + Math.cos(t * 0.6) * 0.45;
       bug.rotation.y = Math.atan2(Math.cos(t * 0.6) * 0.9, -Math.sin(t * 0.6) * 0.4);
       bug.position.x = bx; bug.position.z = bz;
       glass.position.x += (bx - glass.position.x) * 0.04;
@@ -298,4 +367,140 @@ function init() {
     renderer.render(scene, camera);
   }
   frame();
+}
+
+// ---------------------------------------------------------------------------
+// Stylized avatar of Shukhrat: dark wavy hair, full short beard, brown eyes,
+// black blazer over an off-white tee. Built in chair-local space, facing -Z.
+// ---------------------------------------------------------------------------
+function buildAvatar() {
+  const SKIN = 0xe9b893, HAIR = 0x1d1714, BLAZER = 0x1e1e24, TEE = 0xf1eee3,
+        PANTS = 0x34343c, SHOE = 0xf4f1ec, SOLE = 0x2d2a24;
+  const skin = mat(SKIN, { roughness: 0.55 });
+  const hair = mat(HAIR, { roughness: 0.85 });
+  const blazer = mat(BLAZER, { roughness: 0.7 });
+  const group = new THREE.Group();
+  const add = (parent, mesh, x, y, z) => { mesh.position.set(x, y, z); mesh.castShadow = true; parent.add(mesh); return mesh; };
+
+  // Legs
+  [-0.27, 0.27].forEach((x) => {
+    add(group, rbox(0.44, 0.4, 1.25, 0.18, mat(PANTS)), x, 2.45, -0.45);
+    add(group, rbox(0.38, 1.9, 0.38, 0.17, mat(PANTS)), x, 1.5, -1.0);
+    add(group, rbox(0.42, 0.22, 0.7, 0.1, mat(SHOE)), x, 0.5, -1.12);
+    add(group, rbox(0.43, 0.07, 0.72, 0.03, mat(SOLE)), x, 0.38, -1.12);
+  });
+
+  // Torso: blazer + tee
+  add(group, rbox(1.2, 1.35, 0.75, 0.32, blazer), 0, 3.05, 0.05);
+  add(group, rbox(0.42, 1.05, 0.08, 0.04, mat(TEE)), 0, 3.15, -0.31);
+  // lapels
+  [-1, 1].forEach((s) => {
+    const lapel = add(group, rbox(0.16, 0.8, 0.06, 0.03, mat(0x111116)), s * 0.27, 3.2, -0.33);
+    lapel.rotation.z = s * 0.28;
+  });
+  // tee collar
+  const collar = new THREE.Mesh(new THREE.TorusGeometry(0.2, 0.05, 8, 20), mat(TEE));
+  collar.rotation.x = Math.PI / 2;
+  add(group, collar, 0, 3.72, 0);
+
+  // Arms (shoulder pivot -> elbow pivot)
+  function arm(side) {
+    const shoulder = new THREE.Group();
+    shoulder.position.set(side * 0.68, 3.55, 0.02);
+    add(shoulder, rbox(0.34, 0.8, 0.34, 0.16, blazer), 0, -0.36, 0);
+    const elbow = new THREE.Group();
+    elbow.position.set(0, -0.72, 0);
+    add(elbow, rbox(0.3, 0.75, 0.3, 0.14, blazer), 0, -0.34, 0);
+    add(elbow, new THREE.Mesh(new THREE.SphereGeometry(0.17, 16, 12), skin), 0, -0.78, 0);
+    shoulder.add(elbow);
+    group.add(shoulder);
+    return { shoulder, elbow };
+  }
+  const armL = arm(-1), armR = arm(1);
+
+  // Neck + head
+  add(group, new THREE.Mesh(new THREE.CylinderGeometry(0.17, 0.19, 0.35, 16), skin), 0, 3.82, 0);
+  const head = new THREE.Group();
+  head.position.set(0, 4.45, 0);
+  group.add(head);
+
+  const skull = add(head, new THREE.Mesh(new THREE.SphereGeometry(0.62, 40, 32), skin), 0, 0, 0);
+  skull.scale.set(1, 1.06, 0.96);
+  // ears
+  [-1, 1].forEach((s) => {
+    const ear = add(head, new THREE.Mesh(new THREE.SphereGeometry(0.13, 16, 12), skin), s * 0.6, 0.0, 0.02);
+    ear.scale.set(0.5, 1, 0.8);
+  });
+
+  // Hair: back shell, top cap, voluminous wavy front swept up
+  const back = add(head, new THREE.Mesh(new THREE.SphereGeometry(0.655, 32, 24, 0, Math.PI, 0, Math.PI * 0.62), hair), 0, 0.03, 0.02);
+  back.scale.set(1.02, 1.06, 0.98);
+  const cap = add(head, new THREE.Mesh(new THREE.SphereGeometry(0.665, 32, 24, 0, Math.PI * 2, 0, Math.PI * 0.3), hair), 0, 0.06, 0);
+  cap.scale.set(1.02, 1.1, 1.0);
+  [[-0.3, 0.5, -0.3, 0.26], [0.0, 0.6, -0.33, 0.28], [0.3, 0.52, -0.28, 0.25],
+   [-0.42, 0.38, -0.08, 0.22], [0.44, 0.4, -0.06, 0.22], [0.12, 0.66, -0.05, 0.27]]
+    .forEach(([x, y, z, r]) => {
+      const tuft = add(head, new THREE.Mesh(new THREE.SphereGeometry(r, 16, 12), hair), x, y, z);
+      tuft.scale.set(1.15, 0.7, 1);
+    });
+  // sideburns
+  [-1, 1].forEach((s) => add(head, rbox(0.08, 0.38, 0.22, 0.04, hair), s * 0.6, 0.12, -0.08));
+
+  // Beard: lower-front shell + chin volume, mustache
+  const beard = add(head, new THREE.Mesh(new THREE.SphereGeometry(0.64, 32, 24, Math.PI, Math.PI, Math.PI * 0.6, Math.PI * 0.37), hair), 0, -0.02, 0.02);
+  beard.scale.set(1.0, 1.05, 1.0);
+  const chin = add(head, new THREE.Mesh(new THREE.SphereGeometry(0.3, 20, 16), hair), 0, -0.5, -0.32);
+  chin.scale.set(1.25, 0.8, 0.9);
+  const stache = add(head, rbox(0.38, 0.08, 0.1, 0.04, hair), 0, -0.2, -0.6);
+  stache.rotation.x = 0.2;
+  // smile (lip line inside the beard)
+  const lip = new THREE.Mesh(new THREE.TorusGeometry(0.075, 0.016, 8, 16, Math.PI), mat(0xb8705f));
+  lip.rotation.set(0, Math.PI, Math.PI);
+  add(head, lip, 0, -0.27, -0.62);
+
+  // Face: eyes, brows, nose, mole
+  const eyeMat = mat(0x3a2418, { roughness: 0.2 });
+  const shine = new THREE.MeshBasicMaterial({ color: 0xffffff });
+  [-1, 1].forEach((s) => {
+    const eye = add(head, new THREE.Mesh(new THREE.SphereGeometry(0.075, 16, 12), eyeMat), s * 0.21, 0.04, -0.57);
+    eye.scale.set(1, 0.8, 0.6);
+    add(head, new THREE.Mesh(new THREE.SphereGeometry(0.022, 8, 8), shine), s * 0.21 + 0.025, 0.07, -0.615);
+    const brow = add(head, rbox(0.24, 0.065, 0.06, 0.03, hair), s * 0.22, 0.2, -0.56);
+    brow.rotation.z = s * -0.08;
+  });
+  add(head, new THREE.Mesh(new THREE.SphereGeometry(0.09, 16, 12), skin), 0, -0.05, -0.59).scale.set(0.9, 1.15, 0.7);
+  add(head, new THREE.Mesh(new THREE.SphereGeometry(0.02, 8, 8), mat(0x6b4632)), 0.3, -0.1, -0.55);
+  // cheek blush
+  [-1, 1].forEach((s) => {
+    const blush = add(head, new THREE.Mesh(new THREE.CircleGeometry(0.09, 16), new THREE.MeshBasicMaterial({ color: 0xf0a088, transparent: true, opacity: 0.35 })), s * 0.33, -0.08, -0.535);
+    blush.rotation.y = Math.PI + s * -0.5;
+    blush.castShadow = false;
+  });
+
+  function animate(t, turn, wave) {
+    // Typing pose blends into a relaxed pose as the chair turns
+    const typeAmt = 1 - turn;
+    [armL, armR].forEach((a, i) => {
+      const tap = Math.sin(t * 14 + i * 1.7) * 0.06 * typeAmt;
+      a.shoulder.rotation.x = 0.85 * typeAmt + 0.35 * turn + tap;
+      a.shoulder.rotation.z = (i ? -1 : 1) * (0.08 + 0.1 * turn);
+      a.elbow.rotation.x = 0.75 * typeAmt + 1.1 * turn;
+    });
+    // Wave with the right hand
+    if (wave > 0) {
+      const w = Math.min(1, wave * 1.5);
+      armR.shoulder.rotation.x += (-0.2 - armR.shoulder.rotation.x) * w;
+      armR.shoulder.rotation.z = 0.3 + 2.0 * w;
+      armR.elbow.rotation.x = 0;
+      armR.elbow.rotation.z = (0.6 + Math.sin(t * 9) * 0.35) * w;
+    } else {
+      armR.elbow.rotation.z = 0;
+    }
+    // Head: small typing nod, then a friendly tilt toward the viewer
+    head.rotation.x = Math.sin(t * 1.3) * 0.04 * typeAmt - 0.08 * turn;
+    head.rotation.z = Math.sin(t * 0.7) * 0.03 + 0.12 * wave;
+    head.rotation.y = Math.sin(t * 0.5) * 0.08 * typeAmt;
+  }
+
+  return { group, head, animate };
 }
