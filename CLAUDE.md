@@ -19,6 +19,13 @@ Static GitHub Pages site for Shukhrat Rustamov (Senior QA Automation Engineer). 
 - Accessibility: semantic landmarks, alt text, `aria-label` on canvases, visible focus states.
 - Commits end with the `Co-Authored-By` line. The user has approved pushing to `main`.
 
+## How requests arrive
+The user usually sends three things together: a full-page screenshot, pasted CSS (computed styles or variables) and a link to a reference site.
+- Treat the screenshot as the target layout and the pasted CSS as exact values; add new values to `tokens.css`.
+- Recreate the style and structure with the user's own content. Never copy the reference site's assets, artwork, models or text.
+- Don't crawl the link. Use the screenshot first, and fetch the link only if something is unclear, such as scroll behavior.
+- Compare your result against the user's screenshot at the same width.
+
 ## Workflow (token-saving)
 - Make small, targeted edits. Don't re-read large files you already know; grep for what you need.
 - No subagents. Keep replies short.
