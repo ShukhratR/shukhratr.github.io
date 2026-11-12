@@ -39,7 +39,7 @@ img { display: block; max-width: 100%; }
 }
 .nav a:hover { background: var(--color-beige-700); }
 .btn-pill {
-  position: absolute; right: var(--space-outer);
+  position: absolute; right: calc(var(--space-outer) + 52px);
   background: var(--color-orange-400); color: var(--color-white-400);
   font-size: var(--font-size-xs); font-weight: 700; text-transform: uppercase;
   padding: 9px 18px; border-radius: 999px;
@@ -305,3 +305,18 @@ img { display: block; max-width: 100%; }
   transform: rotate(-4deg); transition: background .4s var(--ease-smooth), color .4s var(--ease-smooth);
 }
 .header.is-dark .logo { background: #e1f5ff; color: #002474; }
+
+.sound-toggle {
+  position: absolute; right: var(--space-outer);
+  width: 40px; height: 40px; border-radius: 50%; border: 0; cursor: pointer;
+  display: grid; place-items: center;
+  background: var(--color-beige-700); color: var(--color-text-400);
+  transition: background .4s var(--ease-smooth), color .4s var(--ease-smooth), transform .3s var(--ease-smooth);
+}
+.sound-toggle:hover { transform: scale(1.06); }
+.sound-toggle svg { width: 20px; height: 20px; }
+.sound-toggle .wave { opacity: .25; transition: opacity .3s; }
+.sound-toggle.is-on .wave { opacity: 1; animation: pulse-wave 1.6s ease-in-out infinite; }
+@keyframes pulse-wave { 50% { opacity: .5; } }
+.header.is-dark .sound-toggle { background: rgba(0,36,116,.85); color: #e1f5ff; }
+@media (max-width: 840px) { .sound-toggle { right: var(--space-outer); } }

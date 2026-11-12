@@ -111,7 +111,7 @@ function init() {
   });
 
   // Monitors
-  const frameMat = mat(0x3b3843, { roughness: 0.35 });
+  const frameMat = mat(0x4a4458, { roughness: 0.35 });
   const monitors = [];
   [[-1.6, 0.25, 0], [1.6, -0.25, 1]].forEach(([x, rot, v]) => {
     const g = new THREE.Group();
@@ -197,6 +197,14 @@ function init() {
     book.position.set(-3.3 + i * 0.36, 7.9 - (i % 2) * 0.07, -3.2);
     world.add(book);
   });
+
+  // Cactus in a white pot on the shelf
+  const cpot = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.26, 0.45, 20), mat(0xffffff, { roughness: 0.3 }));
+  cpot.position.set(-1.65, 7.7, -3.2); cpot.castShadow = true; world.add(cpot);
+  const cactus = new THREE.Mesh(new THREE.CapsuleGeometry(0.17, 0.35, 6, 12), mat(0x7cc24a));
+  cactus.position.set(-1.65, 8.15, -3.2); world.add(cactus);
+  const arm = new THREE.Mesh(new THREE.CapsuleGeometry(0.09, 0.15, 6, 10), mat(0x7cc24a));
+  arm.position.set(-1.45, 8.2, -3.2); arm.rotation.z = -0.6; world.add(arm);
 
   // Pin board
   const board = rbox(3.2, 2.1, 0.15, 0.1, mat(0xb08f6e, { roughness: 1 }));
