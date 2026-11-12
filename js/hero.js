@@ -217,14 +217,6 @@ function init() {
     world.add(book);
   });
 
-  // Cactus in a white pot on the shelf
-  const cpot = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.26, 0.45, 20), mat(0xffffff, { roughness: 0.3 }));
-  cpot.position.set(-1.65, 6.7, -3.2); cpot.castShadow = true; world.add(cpot);
-  const cactus = new THREE.Mesh(new THREE.CapsuleGeometry(0.17, 0.35, 6, 12), mat(0x7cc24a));
-  cactus.position.set(-1.65, 7.15, -3.2); world.add(cactus);
-  const arm = new THREE.Mesh(new THREE.CapsuleGeometry(0.09, 0.15, 6, 10), mat(0x7cc24a));
-  arm.position.set(-1.45, 7.2, -3.2); arm.rotation.z = -0.6; world.add(arm);
-
   // Pin board
   const board = rbox(3.2, 2.1, 0.15, 0.1, mat(0xb08f6e, { roughness: 1 }));
   board.position.set(1.8, 6.9, -3.5);
@@ -294,14 +286,14 @@ function init() {
       star(g, 13 + c * 25 + (r % 2 ? 12 : 0), 9 + r * 11.7, 4, '#ffffff');
   });
   const stand = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.26, 0.12, 20), mat(0x6b5a48));
-  stand.position.set(3.55, 3.24, -0.45); stand.castShadow = true; world.add(stand);
+  stand.position.set(-1.6, 6.53, -3.15); stand.castShadow = true; world.add(stand);
   [[uzFlag, -0.25], [usFlag, 0.25]].forEach(([tex, tilt], i) => {
     const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 1.3, 8), mat(0xc9b28a, { metalness: 0.4, roughness: 0.4 }));
     const flag = new THREE.Mesh(new THREE.PlaneGeometry(0.62, 0.33), new THREE.MeshStandardMaterial({ map: tex, side: THREE.DoubleSide, roughness: 0.8 }));
     const g = new THREE.Group();
     pole.position.y = 0.65; flag.position.set(0.32, 1.12, 0);
     g.add(pole, flag);
-    g.position.set(3.55, 3.28, -0.45); g.rotation.set(0, 0.6 - i * 0.2, tilt);
+    g.position.set(-1.6, 6.57, -3.15); g.rotation.set(0, 0.25 - i * 0.5, tilt);
     world.add(g);
   });
 
@@ -313,7 +305,7 @@ function init() {
     g.save(); g.translate(w / 2, 250); g.rotate(-Math.PI / 2);
     g.fillStyle = '#1d2a5b'; g.textAlign = 'center';
     g.font = '800 64px Urbanist, sans-serif'; g.fillText('HALA', 0, -10);
-    g.font = '800 64px Urbanist, sans-serif'; g.fillText('MADRID', 0, 62);
+    g.fillText('MADRID', 0, 62);
     g.restore();
   });
   const pShape = new THREE.Shape();
@@ -329,16 +321,7 @@ function init() {
   const rod = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 1.6, 8), mat(0xc9b28a));
   rod.rotation.z = Math.PI / 2; rod.position.set(5.2, 6.82, -3.4); world.add(rod);
 
-  // Football on the shelf
-  const ballTex = canvasTex(256, 128, (g, w, h) => {
-    g.fillStyle = '#ffffff'; g.fillRect(0, 0, w, h);
-    g.fillStyle = '#2d2a24';
-    [[30, 30], [95, 64], [160, 30], [225, 64], [62, 105], [190, 105], [128, 10]].forEach(([x, y]) => {
-      g.beginPath(); for (let i = 0; i < 5; i++) { const a = -Math.PI / 2 + i * 2 * Math.PI / 5; g.lineTo(x + Math.cos(a) * 14, y + Math.sin(a) * 14); } g.fill();
-    });
-  });
-  const ball = new THREE.Mesh(new THREE.SphereGeometry(0.3, 24, 18), new THREE.MeshStandardMaterial({ map: ballTex, roughness: 0.5 }));
-  ball.position.set(-1.15, 6.83, -3.15); ball.castShadow = true; world.add(ball);
+
 
 
   // Shadow catcher floor
