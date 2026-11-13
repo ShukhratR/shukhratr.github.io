@@ -48,6 +48,32 @@ function init() {
     r.model.rotation.y = 0;
     r.model.position.x = AVATAR_X;
     scene.add(r.model);
+    // Smartphone: attach to whichever hand is raised to the ear once the call animation is underway
+    const phone = new THREE.Group();
+    const body = rbox(0.12, 0.24, 0.02, 0.012, mat(0x1c1c21, { roughness: 0.3, metalness: 0.4 }));
+    const glass = new THREE.Mesh(new THREE.PlaneGeometry(0.105, 0.215), mat(0x2a3550, { roughness: 0.05, metalness: 0.2 }));
+    glass.position.z = 0.011;
+    const cam = new THREE.Mesh(new THREE.CircleGeometry(0.008, 12), mat(0x050505)); cam.position.set(0.03, 0.09, -0.011); cam.rotation.y = Math.PI;
+    phone.add(body, glass, cam);
+    phone.traverse((o) => { if (o.isMesh) o.castShadow = true; });
+    phone.scale.setScalar(2.1);                          // world-sized: ~0.5 units tall, like a real phone in his hand
+    phone.visible = false;
+    scene.add(phone);
+    const L = r.bone('lefthand'), R = r.bone('righthand'), H = r.bone('head');
+    const _h = new THREE.Vector3();
+    // each frame: the phone rides in whichever hand is raised (the call hand)
+    phoneTick = () => {
+      if (!L || !R) return;
+      L.getWorldPosition(_l); R.getWorldPosition(_r);
+      H.getWorldPosition(_h);
+      const dl = _l.distanceTo(_h), dr = _r.distanceTo(_h);
+      if (!phoneHand && Math.min(dl, dr) < 1.2) phoneHand = dl < dr ? L : R;   // the hand that comes up to the ear
+      if (!phoneHand) return;
+      phone.visible = true;
+      phoneHand.getWorldPosition(phone.position);
+      phoneHand.getWorldQuaternion(phone.quaternion);
+      phone.translateY(0.22); phone.translateZ(0.06);
+    };
   });
 
   // QA props
@@ -88,6 +114,8 @@ function init() {
   });
 
   let robotStart = null;
+  let phoneTick = null, phoneHand = null;
+  const _l = new THREE.Vector3(), _r = new THREE.Vector3();
   // parking spot: the floor point under the bottom-left of the section (below the links)
   const parkPoint = new THREE.Vector3();
   const findPark = () => {
@@ -110,6 +138,7 @@ function init() {
     if (!visible) return;
     const t = clock.getElapsedTime();
     if (rigged) rigged.update(Math.min(0.05, t - (frame.last ?? t))); frame.last = t;
+    if (phoneTick) phoneTick();
     if (!reduce) {
       avatar.head.rotation.y = Math.sin(t * 0.6) * 0.15;
       avatar.head.rotation.z = Math.sin(t * 0.8) * 0.04;
