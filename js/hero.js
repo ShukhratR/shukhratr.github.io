@@ -174,11 +174,32 @@ function init() {
   }
 
   // Keyboard + mouse
-  const kb = rbox(2.2, 0.1, 0.7, 0.05, mat(0xeeeeee));
-  kb.position.set(0, 3.22, 0.0);
+  const kb = new THREE.Group();
+  kb.add(rbox(2.9, 0.09, 0.95, 0.04, mat(0xc9ccd2, { metalness: 0.6, roughness: 0.35 })));   // aluminium base
+  const keyGeo = new RoundedBoxGeometry(0.15, 0.06, 0.15, 2, 0.025);
+  const keyMat = mat(0x2b2d33, { roughness: 0.6 }), keyAlt = mat(0x4a4d55, { roughness: 0.6 });
+  const keys = new THREE.InstancedMesh(keyGeo, keyMat, 15 * 5);
+  const kAlt = new THREE.InstancedMesh(new RoundedBoxGeometry(1.0, 0.06, 0.15, 2, 0.025), keyAlt, 1);   // space bar
+  const m4 = new THREE.Matrix4(); let ki = 0;
+  for (let r = 0; r < 5; r++) for (let c = 0; c < 15; c++) {
+    if (r === 4 && c > 4 && c < 11) continue;
+    m4.makeTranslation(-1.26 + c * 0.18 + (r % 2) * 0.04, 0.07, -0.34 + r * 0.17); keys.setMatrixAt(ki++, m4);
+  }
+  keys.count = ki;
+  m4.makeTranslation(0.0, 0.07, 0.34); kAlt.setMatrixAt(0, m4);
+  kb.add(keys, kAlt);
+  kb.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+  kb.position.set(0, 3.2, 0.0);
   world.add(kb);
-  const mouse = rbox(0.3, 0.12, 0.45, 0.12, mat(0xeeeeee));
-  mouse.position.set(1.3, 3.23, 0.1);
+  const mouse = new THREE.Group();
+  const mShell = new THREE.Mesh(new THREE.SphereGeometry(0.2, 32, 20), mat(0x2b2d33, { roughness: 0.4 }));
+  mShell.scale.set(0.85, 0.42, 1.25);
+  const wheel = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.03, 16), mat(0x8a8d95, { metalness: 0.5 }));
+  wheel.rotation.z = Math.PI / 2; wheel.position.set(0, 0.08, -0.1);
+  const split = new THREE.Mesh(new THREE.BoxGeometry(0.006, 0.02, 0.18), mat(0x111214)); split.position.set(0, 0.085, -0.16);
+  mouse.add(mShell, wheel, split);
+  mouse.traverse((o) => { if (o.isMesh) o.castShadow = true; });
+  mouse.position.set(2.4, 3.22, 0.1);
   world.add(mouse);
 
   const familyTex = new THREE.TextureLoader().load('img/family.jpg');
@@ -252,8 +273,8 @@ function init() {
       const deskTop = 3.2;
       const lowest = Math.min(L.y, R.y);
       r.model.position.y += deskTop + 0.12 - lowest;          // hands rest just above the keys
-      kb.position.set((L.x + R.x) / 2, 3.22, (L.z + R.z) / 2);
-      mouseBase.set(R.x + 1.25, 3.23, R.z + 0.15);
+      kb.position.set((L.x + R.x) / 2, 3.2, (L.z + R.z) / 2 + 0.05);
+      mouseBase.set((L.x + R.x) / 2 + 2.2, 3.22, (L.z + R.z) / 2 + 0.1);
     };
     setTimeout(calibrate, 1200);
   });
@@ -286,40 +307,6 @@ function init() {
     world.add(book);
   });
 
-  // Bengal kitten in a loaf pose (styled after Shukhrat's cat): tan coat, dark rosettes, striped tail, green-gold eyes
-  const bengalTex = canvasTex(512, 256, (g, w, h) => {
-    const grd = g.createLinearGradient(0, 0, 0, h); grd.addColorStop(0, '#8a6a45'); grd.addColorStop(0.6, '#b8925f'); grd.addColorStop(1, '#e2c9a0');
-    g.fillStyle = grd; g.fillRect(0, 0, w, h);
-    for (let i = 0; i < 120; i++) {
-      const x = Math.random() * w, y = Math.random() * h * 0.8, r = 5 + Math.random() * 9;
-      g.fillStyle = '#2b1d12'; g.beginPath(); g.ellipse(x, y, r * 1.5, r * 0.8, Math.random() * 0.6 - 0.3, 0, Math.PI * 2); g.fill();
-      g.fillStyle = '#7a5530'; g.beginPath(); g.ellipse(x, y, r * 0.7, r * 0.35, 0, 0, Math.PI * 2); g.fill();
-    }
-  });
-  const stripeTex = canvasTex(256, 64, (g, w, h) => {
-    g.fillStyle = '#b8925f'; g.fillRect(0, 0, w, h);
-    g.fillStyle = '#2b1d12'; for (let x = 10; x < w; x += 34) g.fillRect(x, 0, 14, h);
-  });
-  const fur = new THREE.MeshStandardMaterial({ map: bengalTex, roughness: 0.85 });
-  const tailFur = new THREE.MeshStandardMaterial({ map: stripeTex, roughness: 0.85 });
-  const cat = new THREE.Group();
-  const catBody = new THREE.Mesh(new THREE.SphereGeometry(0.5, 32, 20), fur); catBody.scale.set(1.25, 0.62, 0.8); catBody.position.y = 0.3;
-  const catHead = new THREE.Mesh(new THREE.SphereGeometry(0.27, 24, 18), fur); catHead.position.set(0.6, 0.5, 0); catHead.scale.set(0.9, 0.95, 1);
-  const muzzle = new THREE.Mesh(new THREE.SphereGeometry(0.11, 16, 12), mat(0xe8d2b0)); muzzle.position.set(0.82, 0.43, 0); muzzle.scale.set(0.7, 0.7, 1.1);
-  const catNose = new THREE.Mesh(new THREE.SphereGeometry(0.03, 8, 6), mat(0xd77a7a)); catNose.position.set(0.9, 0.48, 0);
-  cat.add(catBody, catHead, muzzle, catNose);
-  [-1, 1].forEach((sd) => {
-    const ear = new THREE.Mesh(new THREE.ConeGeometry(0.1, 0.22, 12), fur); ear.position.set(0.55, 0.78, sd * 0.15); ear.rotation.x = sd * 0.35; cat.add(ear);
-    const eye = new THREE.Mesh(new THREE.SphereGeometry(0.055, 14, 10), mat(0x9a9a3a, { roughness: 0.15 })); eye.position.set(0.8, 0.56, sd * 0.11); eye.scale.set(0.5, 1, 1); cat.add(eye);
-    const pupil = new THREE.Mesh(new THREE.SphereGeometry(0.025, 8, 8), mat(0x111111)); pupil.position.set(0.83, 0.56, sd * 0.11); cat.add(pupil);
-    const paw = new THREE.Mesh(new THREE.SphereGeometry(0.09, 12, 10), fur); paw.position.set(0.62, 0.08, sd * 0.14); paw.scale.set(1.4, 0.7, 1); cat.add(paw);
-  });
-  const tail = new THREE.Mesh(new THREE.TorusGeometry(0.42, 0.07, 10, 24, Math.PI * 0.9), tailFur);
-  tail.rotation.set(Math.PI / 2, 0, Math.PI * 0.55); tail.position.set(-0.1, 0.08, 0.05);
-  cat.add(tail);
-  cat.traverse((o) => { if (o.isMesh) o.castShadow = true; });
-  cat.position.set(-3.3, 0.2, 2.5); cat.rotation.y = -0.9; cat.scale.setScalar(0.95);   // kitten-sized
-  world.add(cat);
 
   // Framed family picture on the wall
   const wallFrame = rbox(1.2, 1.7, 0.12, 0.05, mat(0xd9b27c));
@@ -522,7 +509,7 @@ function init() {
   };
   addEventListener('scroll', readScroll, { passive: true }); readScroll();
   const CHAIR_START = 0.25, CHAIR_END = -2.3;
-  const mouseBase = new THREE.Vector3(1.3, 3.23, 0.1);
+  const mouseBase = new THREE.Vector3(2.4, 3.22, 0.1);
   const ikTargets = { left: new THREE.Vector3(), right: new THREE.Vector3(), mouse: new THREE.Vector3() };
   const parallax = { x: 0, y: 0 };
   const clock = new THREE.Clock();
@@ -541,11 +528,10 @@ function init() {
     const turnTarget = Math.min(1, Math.max(0, scrollP / 0.14));
     turnSmooth += (turnTarget - turnSmooth) * (forcedP !== null ? 1 : 0.1);
     const turn = turnSmooth * turnSmooth * (3 - 2 * turnSmooth);
-    chair.rotation.y = CHAIR_START - Math.PI * 2 * turn;          // one full spin, back to the desk
-    chair.position.z = 1.25 + Math.sin(turn * Math.PI) * 1.0;      // roll back while spinning, clear of the desk
+
     // world-space hand targets -> chair-local space for the IK
     const ma = rigged ? 0 : avatar.mouseAmt;
-    mouse.position.set(mouseBase.x + (Math.sin(t * 2.1) * 0.12 + Math.sin(t * 5.3) * 0.03) * ma, 3.23, mouseBase.z + Math.cos(t * 1.7) * 0.1 * ma);
+    mouse.position.set(mouseBase.x + (Math.sin(t * 2.1) * 0.12 + Math.sin(t * 5.3) * 0.03) * ma, 3.22, mouseBase.z + Math.cos(t * 1.7) * 0.1 * ma);
     chair.updateMatrixWorld();
     ikTargets.left.set(-0.4, 3.3, 0.0); chair.worldToLocal(ikTargets.left);
     ikTargets.right.set(0.4, 3.3, 0.0); chair.worldToLocal(ikTargets.right);
@@ -553,7 +539,6 @@ function init() {
     avatar.animate(reduceMotion ? 0 : t, ikTargets);
     if (!reduceMotion) {
       updateNotes(t); updateMessage(t);
-      catBody.scale.y = 0.62 + Math.sin(t * 1.6) * 0.015;
       steam.forEach((p, i) => {
         const k = ((t * 0.5 + i / 3) % 1);
         p.position.set(-3 + Math.sin(t * 2 + i) * 0.06, 3.7 + k * 0.7, -0.6 + Math.cos(t * 1.5 + i) * 0.05);

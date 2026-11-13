@@ -21,8 +21,8 @@ function init() {
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
-  camera.position.set(1.5, 4.6, 15);
-  camera.lookAt(1.2, 3.0, 0);
+  camera.position.set(-0.6, 4.4, 13.5);
+  camera.lookAt(-0.8, 3.0, 0);
 
   scene.add(new THREE.HemisphereLight(0xfff6ea, 0xd8c3a5, 1.5));
   const sun = new THREE.DirectionalLight(0xffffff, 2.1);
@@ -48,41 +48,29 @@ function init() {
   });
 
   // QA props
-  const clip = new THREE.Group();
-  const board = rbox(1.5, 2.0, 0.08, 0.06, mat(0xb08f6e));
-  const sheet = new THREE.Mesh(new THREE.PlaneGeometry(1.3, 1.7), new THREE.MeshStandardMaterial({ map: tex(260, 340, (g, w, h) => {
-    g.fillStyle = '#fff'; g.fillRect(0, 0, w, h);
-    g.fillStyle = '#2d2a24'; g.font = '700 26px Urbanist, sans-serif'; g.fillText('Test run', 22, 44);
-    ['Login flow', 'Checkout', 'Loan booking', 'API contract', 'Regression'].forEach((t, i) => {
-      g.fillStyle = '#2fa84f'; g.font = '700 26px sans-serif'; g.fillText('✓', 22, 96 + i * 50);
-      g.fillStyle = '#5f5646'; g.font = '500 22px Urbanist, sans-serif'; g.fillText(t, 58, 96 + i * 50);
-    });
-  }) }));
-  sheet.position.z = 0.05;
-  const clamp = rbox(0.6, 0.18, 0.12, 0.04, mat(0x9a9aa2, { metalness: 0.6, roughness: 0.3 })); clamp.position.y = 0.95;
-  clip.add(board, sheet, clamp);
-  clip.position.set(3.4, 1.05, 0.6); clip.rotation.set(-0.25, -0.35, 0.05);
-  clip.traverse((o) => { if (o.isMesh) o.castShadow = true; });
-  scene.add(clip);
-
-  const mug = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.28, 0.65, 24), mat(0xff8400, { roughness: 0.4 }));
-  mug.position.set(4.6, 0.33, 1.6); mug.castShadow = true; scene.add(mug);
-  const handle = new THREE.Mesh(new THREE.TorusGeometry(0.16, 0.05, 8, 16), mat(0xff8400));
-  handle.position.set(4.95, 0.35, 1.6); scene.add(handle);
-
   // little robot buddy
   const robot = new THREE.Group();
   const shell = mat(0xf4f1ec, { roughness: 0.35 }), accent = mat(0xff8400);
-  const b = rbox(0.8, 0.7, 0.6, 0.2, shell); b.position.y = 0.4;
-  const h = rbox(0.95, 0.7, 0.7, 0.25, shell); h.position.y = 1.15;
-  const face = rbox(0.75, 0.45, 0.05, 0.12, mat(0x1f1d24)); face.position.set(0, 1.15, 0.34);
+  const b = rbox(0.8, 0.7, 0.6, 0.2, shell); b.position.y = 0.55;
+  const h = rbox(0.95, 0.7, 0.7, 0.25, shell); h.position.y = 1.25;
+  const face = rbox(0.75, 0.45, 0.05, 0.12, mat(0x1f1d24)); face.position.set(0, 1.25, 0.34);
   const eyeMat = new THREE.MeshBasicMaterial({ color: 0x5ee3ff });
-  [-0.16, 0.16].forEach((x) => { const e = new THREE.Mesh(new THREE.CapsuleGeometry(0.05, 0.08, 4, 8), eyeMat); e.position.set(x, 1.17, 0.37); robot.add(e); });
-  const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.08, 12, 10), accent); bulb.position.y = 1.75;
-  const ant = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.3, 8), mat(0x8a8790)); ant.position.y = 1.6;
+  const eyes = [-0.16, 0.16].map((x) => { const e = new THREE.Mesh(new THREE.CapsuleGeometry(0.05, 0.08, 4, 8), eyeMat); e.position.set(x, 1.27, 0.37); robot.add(e); return e; });
+  const arms = [-1, 1].map((sd) => {                                // arms with hands
+    const pivot = new THREE.Group(); pivot.position.set(sd * 0.46, 0.62, 0);
+    const upper = new THREE.Mesh(new THREE.CapsuleGeometry(0.07, 0.3, 4, 10), accent); upper.position.y = -0.2;
+    const hand = new THREE.Mesh(new THREE.SphereGeometry(0.1, 14, 10), shell); hand.position.y = -0.42;
+    pivot.add(upper, hand); pivot.rotation.z = sd * 0.35; robot.add(pivot); return pivot;
+  });
+  [-1, 1].forEach((sd) => {                                          // wheels
+    const w = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.16, 0.12, 20), mat(0x2b2d33)); w.rotation.z = Math.PI / 2; w.position.set(sd * 0.36, 0.16, 0); robot.add(w);
+    const hub = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.13, 12), accent); hub.rotation.z = Math.PI / 2; hub.position.set(sd * 0.36, 0.16, 0); robot.add(hub);
+  });
+  const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.08, 12, 10), accent); bulb.position.y = 1.85;
+  const ant = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.3, 8), mat(0x8a8790)); ant.position.y = 1.7;
   robot.add(b, h, face, bulb, ant);
   robot.traverse((o) => { if (o.isMesh && o.material !== eyeMat) o.castShadow = true; });
-  robot.position.set(-2.6, 0, 1.2); robot.rotation.y = 0.5; scene.add(robot);
+  robot.position.set(-2.4, 0, 1.4); robot.rotation.y = 0.45; robot.scale.setScalar(1.15); scene.add(robot);
 
   // scattered bug reports on the floor
   [[-1.8, 2.6, 0.4, '#fff3c4'], [2.2, 2.9, -0.3, '#ffffff'], [-3.6, 0.2, 0.9, '#cfe3ff'], [5.4, -0.6, 0.2, '#ffffff']].forEach(([x, z, r, c]) => {
@@ -114,7 +102,9 @@ function init() {
       avatar.head.rotation.y = Math.sin(t * 0.6) * 0.15;
       avatar.head.rotation.z = Math.sin(t * 0.8) * 0.04;
       avatar.group.position.y = Math.sin(t * 1.6) * 0.03;      // breathing
-      robot.rotation.y = 0.5 + Math.sin(t * 0.9) * 0.2;
+      robot.rotation.y = 0.45 + Math.sin(t * 0.9) * 0.2;
+      const blink = (t % 3.2) < 0.14 ? 0.12 : 1; eyes.forEach((e) => { e.scale.y = blink; });
+      arms[0].rotation.z = -0.35 - Math.sin(t * 1.8) * 0.15; arms[1].rotation.z = 0.35 + Math.sin(t * 1.8 + 1) * 0.15;
       bulb.material.emissive?.setHex(Math.sin(t * 4) > 0 ? 0x552200 : 0x000000);
     }
     renderer.render(scene, camera);
