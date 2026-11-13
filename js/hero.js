@@ -149,7 +149,8 @@ function init() {
     const base = rbox(0.9, 0.08, 0.6, 0.04, frameMat);
     base.position.set(0, -1.62, 0);
     g.add(base);
-    g.position.set(x, 4.85, -2.2);
+    g.position.set(x, 4.55, -2.2);
+    g.scale.setScalar(0.8);
     g.rotation.y = rot;
     world.add(g);
     monitors.push(screen);
@@ -163,51 +164,56 @@ function init() {
   mouse.position.set(1.3, 3.23, 0.1);
   world.add(mouse);
 
-  // Blue coffee cup on a saucer, with coffee and a wisp of steam
-  const coffee = new THREE.Group();
-  const blue = mat(0x2f6fd6, { roughness: 0.3 });
-  const saucer = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.36, 0.05, 32), mat(0xffffff, { roughness: 0.3 }));
-  saucer.position.y = 0.025;
-  const cupBody = new THREE.Mesh(new THREE.CylinderGeometry(0.27, 0.21, 0.42, 32, 1, true), blue);
-  cupBody.position.y = 0.26;
-  const cupBase = new THREE.Mesh(new THREE.CircleGeometry(0.21, 32), blue);
-  cupBase.rotation.x = -Math.PI / 2; cupBase.position.y = 0.055;
-  const brew = new THREE.Mesh(new THREE.CircleGeometry(0.25, 32), mat(0x4a2a17, { roughness: 0.15 }));
-  brew.rotation.x = -Math.PI / 2; brew.position.y = 0.42;
-  const cupHandle = new THREE.Mesh(new THREE.TorusGeometry(0.12, 0.035, 10, 20), blue);
-  cupHandle.position.set(0.3, 0.27, 0);
-  coffee.add(saucer, cupBody, cupBase, brew, cupHandle);
-  coffee.traverse((o) => { if (o.isMesh) o.castShadow = true; });
-  coffee.position.set(-3, 3.2, -0.6); coffee.rotation.y = 0.6;
-  world.add(coffee);
-  const steamMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.35, depthWrite: false });
-  const steam = [0, 1, 2].map((i) => {
-    const puff = new THREE.Mesh(new THREE.SphereGeometry(0.07 + i * 0.02, 12, 10), steamMat.clone());
-    world.add(puff); return puff;
-  });
+  // Family photo in a small standing desk frame
+  const familyTex = new THREE.TextureLoader().load('img/family.jpg');
+  familyTex.colorSpace = THREE.SRGBColorSpace;
+  const deskFrame = new THREE.Group();
+  const df = rbox(0.62, 0.86, 0.06, 0.03, mat(0x2d2a24));
+  const dPhoto = new THREE.Mesh(new THREE.PlaneGeometry(0.52, 0.76), new THREE.MeshStandardMaterial({ map: familyTex, roughness: 0.7 }));
+  dPhoto.position.z = 0.035;
+  const easel = rbox(0.06, 0.6, 0.06, 0.02, mat(0x2d2a24)); easel.position.set(0, -0.12, -0.18); easel.rotation.x = -0.45;
+  deskFrame.add(df, dPhoto, easel);
+  deskFrame.traverse((o) => { if (o.isMesh) o.castShadow = true; });
+  deskFrame.position.set(-3.0, 3.62, -0.9); deskFrame.rotation.set(-0.12, 0.55, 0);
+  world.add(deskFrame);
 
   // Chair
   const chair = new THREE.Group();
-  const chairMat = mat(0xf4f1ec, { roughness: 0.5 });
-  const seat = rbox(1.8, 0.3, 1.7, 0.14, chairMat);
-  seat.position.y = 2.1;
-  const back = rbox(1.8, 2, 0.25, 0.12, chairMat);
-  back.position.set(0, 3.2, 0.85);
-  back.rotation.x = -0.1;
-  chair.add(seat, back);
-  const metal = mat(0xa9a7ae, { metalness: 0.6, roughness: 0.3 });
-  [-0.75, 0.75].forEach((x) => {
-    const runner = rbox(0.1, 0.1, 1.9, 0.05, metal); runner.position.set(x, 0.3, 0); chair.add(runner);
-    const leg = rbox(0.1, 1.75, 0.1, 0.05, metal); leg.position.set(x, 1.15, -0.5); leg.rotation.x = 0.35; chair.add(leg);
+  const leather = mat(0x1f1f24, { roughness: 0.55 });
+  const accentC = mat(0xff8400, { roughness: 0.45 });
+  const seat = rbox(1.8, 0.32, 1.7, 0.16, leather); seat.position.y = 2.1;
+  [-0.82, 0.82].forEach((x) => {                         // seat side bolsters
+    const bol = rbox(0.22, 0.3, 1.6, 0.1, leather); bol.position.set(x, 2.3, 0); chair.add(bol);
   });
-  const bar = rbox(1.6, 0.1, 0.1, 0.05, metal); bar.position.set(0, 0.3, 0.92); chair.add(bar);
+  const back = rbox(1.6, 2.9, 0.3, 0.2, leather); back.position.set(0, 3.75, 0.88); back.rotation.x = -0.12;
+  [-0.72, 0.72].forEach((x) => {                         // backrest wings + orange racing stripes
+    const wing = rbox(0.24, 2.6, 0.4, 0.1, leather); wing.position.set(x, 3.6, 0.82); wing.rotation.x = -0.12; chair.add(wing);
+    const stripe = rbox(0.12, 2.5, 0.05, 0.02, accentC); stripe.position.set(x * 0.55, 3.75, 0.71); stripe.rotation.x = -0.12; chair.add(stripe);
+  });
+  const pillow = rbox(0.9, 0.35, 0.22, 0.12, accentC); pillow.position.set(0, 4.8, 0.86); pillow.rotation.x = -0.12;
+  const lumbar = rbox(0.9, 0.35, 0.22, 0.12, accentC); lumbar.position.set(0, 2.75, 0.74);
+  [-1, 1].forEach((sd) => {                              // armrests
+    const post = rbox(0.12, 0.6, 0.12, 0.04, leather); post.position.set(sd * 0.98, 2.5, 0.15); chair.add(post);
+    const pad = rbox(0.24, 0.1, 0.8, 0.05, leather); pad.position.set(sd * 0.98, 2.82, 0.1); chair.add(pad);
+  });
+  const metal = mat(0x8a8790, { metalness: 0.7, roughness: 0.3 });
+  const gas = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.12, 1.3, 16), metal); gas.position.y = 1.3; chair.add(gas);
+  for (let i = 0; i < 5; i++) {                          // 5-star base with casters
+    const a5 = i / 5 * Math.PI * 2;
+    const arm = rbox(0.14, 0.1, 1.0, 0.04, leather);
+    arm.position.set(Math.sin(a5) * 0.5, 0.45, Math.cos(a5) * 0.5); arm.rotation.y = a5; chair.add(arm);
+    const wheel = new THREE.Mesh(new THREE.SphereGeometry(0.11, 12, 10), leather);
+    wheel.position.set(Math.sin(a5) * 0.95, 0.2, Math.cos(a5) * 0.95); chair.add(wheel);
+  }
+  chair.add(seat, back, pillow, lumbar);
+  chair.traverse((o) => { if (o.isMesh) o.castShadow = true; });
   chair.position.set(0.2, 0, 1.25);
   chair.rotation.y = 0.25;
   world.add(chair);
 
   const avatar = buildAvatar();
   chair.add(avatar.group);
-  let rigged = null;   // real avatar from img/avatar/me.glb (+ Mixamo "typing"), if provided
+  let rigged = null, layers = null;   // real avatar from img/avatar/me.glb (+ Mixamo "typing"), if provided
   loadRiggedAvatar({ height: 6.6, animation: 'typing', pose: 'sit' }).then((r) => {
     if (!r) return;
     rigged = r;
@@ -215,8 +221,10 @@ function init() {
     r.model.rotation.y = Math.PI;        // model faces +Z, the desk is at -Z
     r.model.position.set(0, -1.2, -0.15); // drop the hips onto the seat
     chair.add(r.model);
+    layers = r.seated();
     // after the typing loop has run briefly, line the keyboard + mouse up under the real hands
-    setTimeout(() => {
+    const calibrate = () => {
+      if (turnSmooth > 0.05) { setTimeout(calibrate, 800); return; }   // only while facing the desk
       chair.updateMatrixWorld(true);
       const L = r.bonePosition('lefthand'), R = r.bonePosition('righthand');
       if (!L || !R) return;
@@ -224,8 +232,9 @@ function init() {
       const lowest = Math.min(L.y, R.y);
       r.model.position.y += deskTop + 0.12 - lowest;          // hands rest just above the keys
       kb.position.set((L.x + R.x) / 2, 3.22, (L.z + R.z) / 2);
-      mouseBase.set(R.x + 0.85, 3.23, R.z + 0.1);
-    }, 1200);
+      mouseBase.set(R.x + 1.25, 3.23, R.z + 0.15);
+    };
+    setTimeout(calibrate, 1200);
   });
 
   // Plant
@@ -256,39 +265,39 @@ function init() {
     world.add(book);
   });
 
-  // Second shelf: gold trophy cup with a "HALA MADRID" plaque
-  const shelf2 = rbox(1.7, 0.15, 0.8, 0.05, woodMat);
-  shelf2.position.set(5.2, 5.4, -3.2); world.add(shelf2);
-  const gold = mat(0xe6b422, { metalness: 0.85, roughness: 0.25 });
-  const trophy = new THREE.Group();
-  const cupPts = [];
-  for (let i = 0; i <= 12; i++) { const t = i / 12; cupPts.push(new THREE.Vector2(0.06 + Math.sin(t * Math.PI * 0.5) * 0.32, t * 0.55)); }
-  const cupMesh = new THREE.Mesh(new THREE.LatheGeometry(cupPts, 32), gold);
-  cupMesh.position.y = 0.55;
-  const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.09, 0.3, 16), gold);
-  stem.position.y = 0.42;
+  // Sleeping Bengal cat, curled up on the rug
+  const bengalTex = canvasTex(256, 128, (g, w, h) => {
+    const grd = g.createLinearGradient(0, 0, 0, h); grd.addColorStop(0, '#d98a3a'); grd.addColorStop(1, '#f3c27a');
+    g.fillStyle = grd; g.fillRect(0, 0, w, h);
+    for (let i = 0; i < 70; i++) {                       // rosette spots
+      const x = Math.random() * w, y = Math.random() * h * 0.85, r = 4 + Math.random() * 6;
+      g.fillStyle = '#5a3418'; g.beginPath(); g.ellipse(x, y, r * 1.3, r, Math.random() * 3, 0, Math.PI * 2); g.fill();
+      g.fillStyle = '#b8682a'; g.beginPath(); g.ellipse(x, y, r * 0.6, r * 0.45, 0, 0, Math.PI * 2); g.fill();
+    }
+  });
+  const fur = new THREE.MeshStandardMaterial({ map: bengalTex, roughness: 0.85 });
+  const cat = new THREE.Group();
+  const catBody = new THREE.Mesh(new THREE.SphereGeometry(0.55, 32, 20), fur); catBody.scale.set(1.25, 0.55, 0.9); catBody.position.y = 0.3;
+  const catHead = new THREE.Mesh(new THREE.SphereGeometry(0.28, 24, 18), fur); catHead.position.set(0.55, 0.32, 0.38); catHead.scale.set(1, 0.85, 0.95);
   [-1, 1].forEach((sd) => {
-    const handle = new THREE.Mesh(new THREE.TorusGeometry(0.13, 0.025, 8, 20, Math.PI), gold);
-    handle.position.set(sd * 0.36, 0.85, 0); handle.rotation.z = sd > 0 ? -Math.PI / 2 : Math.PI / 2;
-    trophy.add(handle);
+    const ear = new THREE.Mesh(new THREE.ConeGeometry(0.09, 0.18, 12), fur);
+    ear.position.set(0.55 + sd * 0.12, 0.55, 0.36); ear.rotation.z = -sd * 0.3; cat.add(ear);
+    const eye = new THREE.Mesh(new THREE.TorusGeometry(0.045, 0.012, 6, 12, Math.PI), mat(0x2d2a24));
+    eye.position.set(0.55 + sd * 0.1, 0.35, 0.62); eye.rotation.z = Math.PI; cat.add(eye);   // closed, sleepy eyes
   });
-  const base1 = rbox(0.42, 0.12, 0.42, 0.03, mat(0x2d2a24));
-  base1.position.y = 0.06;
-  const base2 = rbox(0.3, 0.18, 0.3, 0.03, mat(0x2d2a24));
-  base2.position.y = 0.21;
-  trophy.add(cupMesh, stem, base1, base2);
-  trophy.traverse((o) => { if (o.isMesh) o.castShadow = true; });
-  trophy.position.set(5.2, 5.48, -3.15);
-  world.add(trophy);
-  const plaqueTex = canvasTex(512, 96, (g, w, h) => {
-    g.fillStyle = '#1d2a5b'; g.fillRect(0, 0, w, h);
-    g.strokeStyle = '#d4a017'; g.lineWidth = 6; g.strokeRect(6, 6, w - 12, h - 12);
-    g.fillStyle = '#e6b422'; g.textAlign = 'center'; g.font = '800 54px Urbanist, sans-serif';
-    g.fillText('HALA MADRID', w / 2, 66);
-  });
-  const plaque = new THREE.Mesh(new THREE.PlaneGeometry(1.25, 0.24), new THREE.MeshStandardMaterial({ map: plaqueTex, roughness: 0.6 }));
-  plaque.position.set(5.2, 5.2, -2.79);
-  world.add(plaque);
+  const nose = new THREE.Mesh(new THREE.SphereGeometry(0.03, 8, 6), mat(0xd77a7a)); nose.position.set(0.55, 0.28, 0.66);
+  const tail = new THREE.Mesh(new THREE.TorusGeometry(0.5, 0.08, 10, 24, Math.PI * 1.2), fur);
+  tail.rotation.x = Math.PI / 2; tail.position.set(0, 0.12, 0.05);
+  cat.add(catBody, catHead, nose, tail);
+  cat.traverse((o) => { if (o.isMesh) o.castShadow = true; });
+  cat.position.set(-3.4, 0.2, 2.4); cat.rotation.y = 0.5; cat.scale.setScalar(1.45);
+  world.add(cat);
+
+  // Framed family picture on the wall
+  const wallFrame = rbox(1.75, 2.45, 0.14, 0.06, mat(0xd9b27c));
+  wallFrame.position.set(5.2, 5.75, -3.42); wallFrame.castShadow = false; world.add(wallFrame);
+  const wallPhoto = new THREE.Mesh(new THREE.PlaneGeometry(1.5, 2.2), new THREE.MeshStandardMaterial({ map: familyTex, roughness: 0.7 }));
+  wallPhoto.position.set(5.2, 5.75, -3.34); world.add(wallPhoto);
 
   // Pin board
   const board = rbox(3.2, 2.1, 0.15, 0.1, mat(0xb08f6e, { roughness: 1 }));
@@ -432,7 +441,7 @@ function init() {
   function spawnNote(t) {
     const m = new THREE.SpriteMaterial({ map: noteTextures[notes.length % 3], color: noteColors[Math.floor(Math.random() * 4)], transparent: true, depthWrite: false });
     const sp = new THREE.Sprite(m);
-    sp.scale.setScalar(0.85);
+    sp.scale.setScalar(0.55);
     sp.position.copy(speakerPos);
     sp.userData = { born: t, drift: (Math.random() - 0.5) * 0.8, sway: Math.random() * 6 };
     world.add(sp); notes.push(sp);
@@ -470,10 +479,21 @@ function init() {
     const pop = age < 0.35 ? 1 - Math.pow(1 - age / 0.35, 3) * 1 + Math.sin(age / 0.35 * Math.PI) * 0.15 : 1;
     const fade = age < 2.6 ? 1 : Math.max(0, 1 - (age - 2.6) / 0.5);
     msg.material.opacity = fade * Math.min(1, age * 6);
-    msg.scale.setScalar(1.35 * pop * (0.85 + 0.15 * fade));
+    msg.scale.setScalar(0.95 * pop * (0.85 + 0.15 * fade));
     msg.position.y = 6.3 + Math.sin(age * 4) * 0.04;
   }
 
+  const track = document.querySelector('.story-track');
+  const forcedP = new URLSearchParams(location.search).get('p');
+  let scrollP = 0, turnSmooth = 0;
+  const readScroll = () => {
+    if (forcedP !== null) { scrollP = Number(forcedP); return; }
+    if (!track) return;
+    const r = track.getBoundingClientRect(), span = r.height - innerHeight;
+    scrollP = span > 0 ? Math.min(1, Math.max(0, -r.top / span)) : 0;
+  };
+  addEventListener('scroll', readScroll, { passive: true }); readScroll();
+  const CHAIR_START = 0.25, CHAIR_END = -2.3;
   const mouseBase = new THREE.Vector3(1.3, 3.23, 0.1);
   const ikTargets = { left: new THREE.Vector3(), right: new THREE.Vector3(), mouse: new THREE.Vector3() };
   const parallax = { x: 0, y: 0 };
@@ -489,6 +509,13 @@ function init() {
     }
     camera.position.set(camBase.x + parallax.x * 1.2, camBase.y - parallax.y * 0.8, camBase.z);
     camera.lookAt(target);
+    // chair swivels toward the visitor on the first bit of scroll; the avatar waves once
+    const turnTarget = Math.min(1, Math.max(0, scrollP / 0.1));
+    turnSmooth += (turnTarget - turnSmooth) * (forcedP !== null ? 1 : 0.1);
+    const turn = turnSmooth * turnSmooth * (3 - 2 * turnSmooth);
+    chair.rotation.y = CHAIR_START + (CHAIR_END - CHAIR_START) * turn;
+    chair.position.z = 1.25 + turn * 0.9;
+    if (layers) { if (turn > 0.7) layers.wave(); else if (turn < 0.2) layers.type(); }
     // world-space hand targets -> chair-local space for the IK
     const ma = rigged ? 0 : avatar.mouseAmt;
     mouse.position.set(mouseBase.x + (Math.sin(t * 2.1) * 0.12 + Math.sin(t * 5.3) * 0.03) * ma, 3.23, mouseBase.z + Math.cos(t * 1.7) * 0.1 * ma);
@@ -499,14 +526,9 @@ function init() {
     avatar.animate(reduceMotion ? 0 : t, ikTargets);
     if (!reduceMotion) {
       updateNotes(t); updateMessage(t);
-      steam.forEach((p, i) => {
-        const k = ((t * 0.5 + i / 3) % 1);
-        p.position.set(-3 + Math.sin(t * 2 + i) * 0.06, 3.7 + k * 0.7, -0.6 + Math.cos(t * 1.5 + i) * 0.05);
-        p.material.opacity = 0.35 * Math.sin(k * Math.PI);
-        p.scale.setScalar(0.8 + k * 0.8);
-      });
+      catBody.scale.y = 0.55 + Math.sin(t * 1.6) * 0.02;
     }
-    window.__typing = !!window.__musicPlaying && avatar.isTyping();
+    window.__typing = !!window.__musicPlaying && avatar.isTyping() && turn < 0.3;
 
     if (!reduceMotion) {
       plant.rotation.z = Math.sin(t * 0.8) * 0.02;

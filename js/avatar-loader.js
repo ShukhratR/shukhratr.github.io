@@ -129,6 +129,31 @@ export async function loadRiggedAvatar({ height = 6.2, animation = 'idle', pose 
       current = next;
     },
     update(dt) { mixer.update(dt); },
+    // Seated layering: legs keep the typing (sitting) pose; upper body switches typing <-> one-time wave
+    seated() {
+      const isLower = (n) => /^(hips|leftupleg|leftleg|leftfoot|lefttoebase|rightupleg|rightleg|rightfoot|righttoebase)$/.test(n);
+      const sub = (key, keepLower) => {
+        const src = assets.clips[key]; if (!src) return null;
+        const c = retarget(src, model);
+        c.tracks = c.tracks.filter((t) => isLower(norm(t.name.split('.')[0])) === keepLower);
+        return mixer.clipAction(c, undefined, undefined);
+      };
+      mixer.stopAllAction();
+      const legs = sub('typing', true), upperType = sub('typing', false), upperWave = sub('wave', false);
+      if (upperWave) { upperWave.setLoop(THREE.LoopOnce, 1); upperWave.clampWhenFinished = true; }
+      legs?.play(); upperType?.play();
+      let waving = false;
+      return {
+        wave() {
+          if (waving || !upperWave || !upperType) return; waving = true;
+          upperWave.reset().setEffectiveWeight(1).fadeIn(0.35).play(); upperType.fadeOut(0.35);
+        },
+        type() {
+          if (!waving || !upperType) return; waving = false;
+          upperType.reset().setEffectiveWeight(1).fadeIn(0.35).play(); upperWave?.fadeOut(0.35);
+        },
+      };
+    },
     // world position of a bone (e.g. 'lefthand')
     bonePosition(name, target = new THREE.Vector3()) {
       let found = null;

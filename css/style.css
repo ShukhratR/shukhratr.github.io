@@ -337,3 +337,8 @@ img { display: block; max-width: 100%; }
 .contact-scene { height: min(70vh, 620px); }
 .contact-scene canvas { width: 100% !important; height: 100% !important; display: block; }
 @media (max-width: 840px) { .contact-grid { grid-template-columns: 1fr; } .contact-scene { height: 420px; } }
+
+/* Nav sits top-left, next to the SR logo */
+.header { justify-content: flex-start; }
+.header .nav { margin-left: 56px; }
+@media (max-width: 480px) { .header .nav { margin-left: 52px; } .nav a { padding: 6px 10px; } }
