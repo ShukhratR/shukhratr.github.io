@@ -139,16 +139,20 @@ export function buildAvatar({ pose = 'sit' } = {}) {
     blush.castShadow = false;
   });
 
+  let typing = false;
   function animate(t, turn, wave) {
     // Typing pose blends into a relaxed pose as the chair turns
     const typeAmt = 1 - turn;
     [armL, armR].forEach((a, i) => {
-      // forearms rest forward on the keyboard; gentle alternating taps
-      const tap = Math.max(0, Math.sin(t * 7 + i * Math.PI)) * 0.05 * typeAmt;
-      a.shoulder.rotation.x = 1.2 * typeAmt + 0.35 * turn;
+      // typing: bursts of quick alternating key presses with short pauses
+      const burst = Math.sin(t * 0.9) + Math.sin(t * 2.3) * 0.5 > -0.4 ? 1 : 0;
+      const press = Math.pow(Math.max(0, Math.sin(t * 11 + i * Math.PI + Math.sin(t * 3) * 0.8)), 3);
+      const tap = press * 0.16 * burst * typeAmt;
+      a.shoulder.rotation.x = 1.2 * typeAmt + 0.35 * turn - tap * 0.25;
       a.shoulder.rotation.z = (i ? 1 : -1) * 0.12 * typeAmt + (i ? -1 : 1) * 0.18 * turn;
       a.elbow.rotation.x = (0.28 - tap) * typeAmt + 1.1 * turn;
-      a.elbow.rotation.z = (i ? -1 : 1) * 0.15 * typeAmt;
+      a.elbow.rotation.z = (i ? -1 : 1) * (0.15 + Math.sin(t * 1.7 + i) * 0.04) * typeAmt;
+      if (i === 0) typing = burst === 1 && typeAmt > 0.5;
     });
     // Wave with the right hand
     if (wave > 0) {
@@ -164,5 +168,5 @@ export function buildAvatar({ pose = 'sit' } = {}) {
     head.rotation.y = Math.sin(t * 0.35) * 0.06 * typeAmt;
   }
 
-  return { group, head, animate };
+  return { group, head, animate, isTyping: () => typing };
 }

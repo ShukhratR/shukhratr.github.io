@@ -419,6 +419,29 @@ function init() {
     }
   }
 
+  // Message notification: a 💬 bubble pops above the left monitor every ~9s
+  const msgTex = canvasTex(256, 256, (g) => {
+    g.fillStyle = '#234ba2'; g.beginPath(); g.roundRect(18, 30, 220, 160, 48); g.fill();
+    g.beginPath(); g.moveTo(70, 180); g.lineTo(60, 236); g.lineTo(120, 186); g.fill();
+    g.font = '110px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
+    g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('💬', 128, 112);
+    g.fillStyle = '#e0525a'; g.beginPath(); g.arc(218, 44, 26, 0, Math.PI * 2); g.fill();
+    g.fillStyle = '#fff'; g.font = '700 34px Urbanist, sans-serif'; g.fillText('1', 218, 46);
+  });
+  const msg = new THREE.Sprite(new THREE.SpriteMaterial({ map: msgTex, transparent: true, depthWrite: false, opacity: 0 }));
+  msg.position.set(-1.6, 6.3, -2.0);
+  world.add(msg);
+  let msgStart = -10;
+  function updateMessage(t) {
+    if (t - msgStart > 9) { msgStart = t; window.sfx?.ding(); }
+    const age = t - msgStart;
+    const pop = age < 0.35 ? 1 - Math.pow(1 - age / 0.35, 3) * 1 + Math.sin(age / 0.35 * Math.PI) * 0.15 : 1;
+    const fade = age < 2.6 ? 1 : Math.max(0, 1 - (age - 2.6) / 0.5);
+    msg.material.opacity = fade * Math.min(1, age * 6);
+    msg.scale.setScalar(1.35 * pop * (0.85 + 0.15 * fade));
+    msg.position.y = 6.3 + Math.sin(age * 4) * 0.04;
+  }
+
   const parallax = { x: 0, y: 0 };
   const clock = new THREE.Clock();
   function frame() {
@@ -432,7 +455,8 @@ function init() {
     camera.position.set(camBase.x + parallax.x * 1.2, camBase.y - parallax.y * 0.8, camBase.z);
     camera.lookAt(target);
     avatar.animate(reduceMotion ? 0 : t, 0, 0);
-    if (!reduceMotion) updateNotes(t);
+    if (!reduceMotion) { updateNotes(t); updateMessage(t); }
+    window.__typing = !!window.__musicPlaying && avatar.isTyping();
 
     if (!reduceMotion) {
       plant.rotation.z = Math.sin(t * 0.8) * 0.02;

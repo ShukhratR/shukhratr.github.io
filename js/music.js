@@ -42,6 +42,7 @@ function schedule() {
     if (beat === 4) noise(t, 0.18, 0.12, 1500);            // snare-ish
     noise(t, 0.04, beat % 2 ? 0.03 : 0.05, 7000);          // hats
     if (beat === 6 && Math.random() < 0.5) tone(hz(CHORDS[bar][3] + 12), t, STEP * 2, 'sine', 0.05);
+    if (window.__typing) for (let k = 0; k < 2; k++) if (Math.random() < 0.7) keyClick(t + k * STEP / 2 + Math.random() * 0.04);
     nextTime += STEP; step++;
   }
 }
@@ -63,6 +64,29 @@ function toggle() {
   btn.setAttribute('aria-pressed', String(playing));
   btn.setAttribute('aria-label', playing ? 'Turn music off' : 'Turn music on');
 }
+// Sound effects used by the 3D scene (silent while music is off)
+function keyClick(t) {
+  const len = 0.025, b = ctx.createBuffer(1, ctx.sampleRate * len, ctx.sampleRate), d = b.getChannelData(0);
+  for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 4);
+  const src = ctx.createBufferSource(), f = ctx.createBiquadFilter(), g = ctx.createGain();
+  f.type = 'bandpass'; f.frequency.value = 2500 + Math.random() * 1500; f.Q.value = 1.2;
+  g.gain.value = 0.18 + Math.random() * 0.08;
+  src.buffer = b; src.connect(f).connect(g).connect(ctx.destination); src.start(t);
+}
+window.sfx = {
+  typing(on) { window.__typing = on; },
+  ding() {
+    if (!playing) return;
+    const t = ctx.currentTime;
+    [[880, 0], [1318.5, 0.12]].forEach(([f, d]) => {
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = 'sine'; o.frequency.value = f;
+      g.gain.setValueAtTime(0, t + d); g.gain.linearRampToValueAtTime(0.18, t + d + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + d + 0.6);
+      o.connect(g).connect(ctx.destination); o.start(t + d); o.stop(t + d + 0.65);
+    });
+  },
+};
 let userTurnedOff = false;
 btn?.addEventListener('click', (e) => { e.stopPropagation(); toggle(); if (!playing) userTurnedOff = true; });
 
