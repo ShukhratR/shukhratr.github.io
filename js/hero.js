@@ -130,31 +130,48 @@ function init() {
     world.add(leg);
   });
 
-  // Monitors
+  // One wide monitor, centred, showing a playful Java class
   const frameMat = mat(0x4a4458, { roughness: 0.35 });
   const monitors = [];
-  [[-1.6, 0.25, 0], [1.6, -0.25, 1]].forEach(([x, rot, v]) => {
-    const g = new THREE.Group();
-    const frame = rbox(2.9, 1.9, 0.18, 0.1, frameMat);
-    g.add(frame);
-    const screen = new THREE.Mesh(
-      new THREE.PlaneGeometry(2.65, 1.65),
-      new THREE.MeshStandardMaterial({ map: codeTexture(v), emissive: 0xffffff, emissiveMap: codeTexture(v), emissiveIntensity: 0.55, roughness: 0.3 })
-    );
-    screen.position.z = 0.095;
-    g.add(screen);
-    const neck = rbox(0.2, 0.8, 0.15, 0.05, frameMat);
-    neck.position.set(0, -1.25, -0.1);
-    g.add(neck);
-    const base = rbox(0.9, 0.08, 0.6, 0.04, frameMat);
-    base.position.set(0, -1.62, 0);
-    g.add(base);
-    g.position.set(x, 4.55, -2.2);
-    g.scale.setScalar(0.8);
-    g.rotation.y = rot;
-    world.add(g);
-    monitors.push(screen);
+  const javaTex = canvasTex(1024, 512, (g, w, h) => {
+    g.fillStyle = '#1e1c26'; g.fillRect(0, 0, w, h);
+    g.fillStyle = '#2a2733'; g.fillRect(0, 0, w, 34); g.fillRect(0, 34, 52, h);
+    ['#ff5f57', '#febc2e', '#28c840'].forEach((c, i) => { g.fillStyle = c; g.beginPath(); g.arc(20 + i * 20, 17, 6, 0, 7); g.fill(); });
+    g.fillStyle = '#8c879a'; g.font = '16px Menlo, monospace'; g.fillText('QualityEngineer.java', 90, 23);
+    const K = '#ff8f40', T = '#7cc6ff', S = '#c8e86b', C = '#6e6a7c', F = '#f5efe6', N = '#b58cff';
+    const lines = [
+      [[C, '// ships bugs to /dev/null since 2018']],
+      [[K, 'public class '], [T, 'Shukhrat '], [K, 'extends '], [T, 'SeniorQAEngineer '], [F, '{']],
+      [[K, '  private final '], [T, 'int '], [F, 'yearsOfExperience = '], [N, '8'], [F, ';']],
+      [[K, '  private '], [T, 'String '], [F, 'coffee = '], [S, '"always"'], [F, ';']],
+      [],
+      [[F, '  '], [T, '@Test']],
+      [[K, '  public void '], [F, 'shipWithConfidence() {']],
+      [[F, '    Bug bug = codebase.'], [T, 'find'], [F, '(Bug::'], [T, 'isSneaky'], [F, ');']],
+      [[F, '    '], [T, 'assertThat'], [F, '(bug).'], [T, 'isNull'], [F, '();  '], [C, '// ✓ 600/600 passed']],
+      [[F, '    pipeline.'], [T, 'smoke'], [F, '('], [N, '15'], [F, ', MINUTES).'], [T, 'go'], [F, '();']],
+      [[F, '  }']],
+      [[F, '}']],
+    ];
+    g.font = '21px Menlo, monospace';
+    lines.forEach((parts, i) => {
+      g.fillStyle = '#4a4655'; g.fillText(String(i + 1).padStart(2, ' '), 14, 70 + i * 34);
+      let x = 70;
+      parts.forEach(([c, txt]) => { g.fillStyle = c; g.fillText(txt, x, 70 + i * 34); x += g.measureText(txt).width; });
+    });
+    g.fillStyle = '#28c840'; g.fillRect(70 + 10, 70 + 12 * 34 - 18, 11, 22);   // cursor
   });
+  {
+    const g = new THREE.Group();
+    g.add(rbox(4.6, 2.5, 0.18, 0.12, frameMat));
+    const screen = new THREE.Mesh(new THREE.PlaneGeometry(4.36, 2.26),
+      new THREE.MeshStandardMaterial({ map: javaTex, emissive: 0xffffff, emissiveMap: javaTex, emissiveIntensity: 0.55, roughness: 0.3 }));
+    screen.position.z = 0.095; g.add(screen);
+    const neck = rbox(0.25, 0.9, 0.15, 0.05, frameMat); neck.position.set(0, -1.55, -0.1); g.add(neck);
+    const base = rbox(1.2, 0.08, 0.7, 0.04, frameMat); base.position.set(0, -1.98, 0); g.add(base);
+    g.position.set(0, 4.75, -2.2); g.scale.setScalar(0.85);
+    world.add(g); monitors.push(screen, screen);
+  }
 
   // Keyboard + mouse
   const kb = rbox(2.2, 0.1, 0.7, 0.05, mat(0xeeeeee));
@@ -164,18 +181,22 @@ function init() {
   mouse.position.set(1.3, 3.23, 0.1);
   world.add(mouse);
 
-  // Family photo in a small standing desk frame
   const familyTex = new THREE.TextureLoader().load('img/family.jpg');
   familyTex.colorSpace = THREE.SRGBColorSpace;
-  const deskFrame = new THREE.Group();
-  const df = rbox(0.62, 0.86, 0.06, 0.03, mat(0x2d2a24));
-  const dPhoto = new THREE.Mesh(new THREE.PlaneGeometry(0.52, 0.76), new THREE.MeshStandardMaterial({ map: familyTex, roughness: 0.7 }));
-  dPhoto.position.z = 0.035;
-  const easel = rbox(0.06, 0.6, 0.06, 0.02, mat(0x2d2a24)); easel.position.set(0, -0.12, -0.18); easel.rotation.x = -0.45;
-  deskFrame.add(df, dPhoto, easel);
-  deskFrame.traverse((o) => { if (o.isMesh) o.castShadow = true; });
-  deskFrame.position.set(-3.0, 3.62, -0.9); deskFrame.rotation.set(-0.12, 0.55, 0);
-  world.add(deskFrame);
+  // Blue coffee cup on a saucer, with coffee and a wisp of steam
+  const coffee = new THREE.Group();
+  const blue = mat(0x2f6fd6, { roughness: 0.3 });
+  const saucer = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.36, 0.05, 32), mat(0xffffff, { roughness: 0.3 })); saucer.position.y = 0.025;
+  const cupBody = new THREE.Mesh(new THREE.CylinderGeometry(0.27, 0.21, 0.42, 32, 1, true), blue); cupBody.position.y = 0.26;
+  const cupBase = new THREE.Mesh(new THREE.CircleGeometry(0.21, 32), blue); cupBase.rotation.x = -Math.PI / 2; cupBase.position.y = 0.055;
+  const brew = new THREE.Mesh(new THREE.CircleGeometry(0.25, 32), mat(0x4a2a17, { roughness: 0.15 })); brew.rotation.x = -Math.PI / 2; brew.position.y = 0.42;
+  const cupHandle = new THREE.Mesh(new THREE.TorusGeometry(0.12, 0.035, 10, 20), blue); cupHandle.position.set(0.3, 0.27, 0);
+  coffee.add(saucer, cupBody, cupBase, brew, cupHandle);
+  coffee.traverse((o) => { if (o.isMesh) o.castShadow = true; });
+  coffee.position.set(-3, 3.2, -0.6); coffee.rotation.y = 0.6;
+  world.add(coffee);
+  const steamMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.35, depthWrite: false });
+  const steam = [0, 1, 2].map((i) => { const puff = new THREE.Mesh(new THREE.SphereGeometry(0.07 + i * 0.02, 12, 10), steamMat.clone()); world.add(puff); return puff; });
 
   // Chair
   const chair = new THREE.Group();
@@ -265,39 +286,46 @@ function init() {
     world.add(book);
   });
 
-  // Sleeping Bengal cat, curled up on the rug
-  const bengalTex = canvasTex(256, 128, (g, w, h) => {
-    const grd = g.createLinearGradient(0, 0, 0, h); grd.addColorStop(0, '#d98a3a'); grd.addColorStop(1, '#f3c27a');
+  // Bengal kitten in a loaf pose (styled after Shukhrat's cat): tan coat, dark rosettes, striped tail, green-gold eyes
+  const bengalTex = canvasTex(512, 256, (g, w, h) => {
+    const grd = g.createLinearGradient(0, 0, 0, h); grd.addColorStop(0, '#8a6a45'); grd.addColorStop(0.6, '#b8925f'); grd.addColorStop(1, '#e2c9a0');
     g.fillStyle = grd; g.fillRect(0, 0, w, h);
-    for (let i = 0; i < 70; i++) {                       // rosette spots
-      const x = Math.random() * w, y = Math.random() * h * 0.85, r = 4 + Math.random() * 6;
-      g.fillStyle = '#5a3418'; g.beginPath(); g.ellipse(x, y, r * 1.3, r, Math.random() * 3, 0, Math.PI * 2); g.fill();
-      g.fillStyle = '#b8682a'; g.beginPath(); g.ellipse(x, y, r * 0.6, r * 0.45, 0, 0, Math.PI * 2); g.fill();
+    for (let i = 0; i < 120; i++) {
+      const x = Math.random() * w, y = Math.random() * h * 0.8, r = 5 + Math.random() * 9;
+      g.fillStyle = '#2b1d12'; g.beginPath(); g.ellipse(x, y, r * 1.5, r * 0.8, Math.random() * 0.6 - 0.3, 0, Math.PI * 2); g.fill();
+      g.fillStyle = '#7a5530'; g.beginPath(); g.ellipse(x, y, r * 0.7, r * 0.35, 0, 0, Math.PI * 2); g.fill();
     }
   });
-  const fur = new THREE.MeshStandardMaterial({ map: bengalTex, roughness: 0.85 });
-  const cat = new THREE.Group();
-  const catBody = new THREE.Mesh(new THREE.SphereGeometry(0.55, 32, 20), fur); catBody.scale.set(1.25, 0.55, 0.9); catBody.position.y = 0.3;
-  const catHead = new THREE.Mesh(new THREE.SphereGeometry(0.28, 24, 18), fur); catHead.position.set(0.55, 0.32, 0.38); catHead.scale.set(1, 0.85, 0.95);
-  [-1, 1].forEach((sd) => {
-    const ear = new THREE.Mesh(new THREE.ConeGeometry(0.09, 0.18, 12), fur);
-    ear.position.set(0.55 + sd * 0.12, 0.55, 0.36); ear.rotation.z = -sd * 0.3; cat.add(ear);
-    const eye = new THREE.Mesh(new THREE.TorusGeometry(0.045, 0.012, 6, 12, Math.PI), mat(0x2d2a24));
-    eye.position.set(0.55 + sd * 0.1, 0.35, 0.62); eye.rotation.z = Math.PI; cat.add(eye);   // closed, sleepy eyes
+  const stripeTex = canvasTex(256, 64, (g, w, h) => {
+    g.fillStyle = '#b8925f'; g.fillRect(0, 0, w, h);
+    g.fillStyle = '#2b1d12'; for (let x = 10; x < w; x += 34) g.fillRect(x, 0, 14, h);
   });
-  const nose = new THREE.Mesh(new THREE.SphereGeometry(0.03, 8, 6), mat(0xd77a7a)); nose.position.set(0.55, 0.28, 0.66);
-  const tail = new THREE.Mesh(new THREE.TorusGeometry(0.5, 0.08, 10, 24, Math.PI * 1.2), fur);
-  tail.rotation.x = Math.PI / 2; tail.position.set(0, 0.12, 0.05);
-  cat.add(catBody, catHead, nose, tail);
+  const fur = new THREE.MeshStandardMaterial({ map: bengalTex, roughness: 0.85 });
+  const tailFur = new THREE.MeshStandardMaterial({ map: stripeTex, roughness: 0.85 });
+  const cat = new THREE.Group();
+  const catBody = new THREE.Mesh(new THREE.SphereGeometry(0.5, 32, 20), fur); catBody.scale.set(1.25, 0.62, 0.8); catBody.position.y = 0.3;
+  const catHead = new THREE.Mesh(new THREE.SphereGeometry(0.27, 24, 18), fur); catHead.position.set(0.6, 0.5, 0); catHead.scale.set(0.9, 0.95, 1);
+  const muzzle = new THREE.Mesh(new THREE.SphereGeometry(0.11, 16, 12), mat(0xe8d2b0)); muzzle.position.set(0.82, 0.43, 0); muzzle.scale.set(0.7, 0.7, 1.1);
+  const catNose = new THREE.Mesh(new THREE.SphereGeometry(0.03, 8, 6), mat(0xd77a7a)); catNose.position.set(0.9, 0.48, 0);
+  cat.add(catBody, catHead, muzzle, catNose);
+  [-1, 1].forEach((sd) => {
+    const ear = new THREE.Mesh(new THREE.ConeGeometry(0.1, 0.22, 12), fur); ear.position.set(0.55, 0.78, sd * 0.15); ear.rotation.x = sd * 0.35; cat.add(ear);
+    const eye = new THREE.Mesh(new THREE.SphereGeometry(0.055, 14, 10), mat(0x9a9a3a, { roughness: 0.15 })); eye.position.set(0.8, 0.56, sd * 0.11); eye.scale.set(0.5, 1, 1); cat.add(eye);
+    const pupil = new THREE.Mesh(new THREE.SphereGeometry(0.025, 8, 8), mat(0x111111)); pupil.position.set(0.83, 0.56, sd * 0.11); cat.add(pupil);
+    const paw = new THREE.Mesh(new THREE.SphereGeometry(0.09, 12, 10), fur); paw.position.set(0.62, 0.08, sd * 0.14); paw.scale.set(1.4, 0.7, 1); cat.add(paw);
+  });
+  const tail = new THREE.Mesh(new THREE.TorusGeometry(0.42, 0.07, 10, 24, Math.PI * 0.9), tailFur);
+  tail.rotation.set(Math.PI / 2, 0, Math.PI * 0.55); tail.position.set(-0.1, 0.08, 0.05);
+  cat.add(tail);
   cat.traverse((o) => { if (o.isMesh) o.castShadow = true; });
-  cat.position.set(-3.4, 0.2, 2.4); cat.rotation.y = 0.5; cat.scale.setScalar(1.45);
+  cat.position.set(-3.3, 0.2, 2.5); cat.rotation.y = -0.9; cat.scale.setScalar(0.95);   // kitten-sized
   world.add(cat);
 
   // Framed family picture on the wall
-  const wallFrame = rbox(1.75, 2.45, 0.14, 0.06, mat(0xd9b27c));
-  wallFrame.position.set(5.2, 5.75, -3.42); wallFrame.castShadow = false; world.add(wallFrame);
-  const wallPhoto = new THREE.Mesh(new THREE.PlaneGeometry(1.5, 2.2), new THREE.MeshStandardMaterial({ map: familyTex, roughness: 0.7 }));
-  wallPhoto.position.set(5.2, 5.75, -3.34); world.add(wallPhoto);
+  const wallFrame = rbox(1.2, 1.7, 0.12, 0.05, mat(0xd9b27c));
+  wallFrame.position.set(5.2, 6.0, -3.42); wallFrame.castShadow = false; world.add(wallFrame);
+  const wallPhoto = new THREE.Mesh(new THREE.PlaneGeometry(1.02, 1.5), new THREE.MeshStandardMaterial({ map: familyTex, roughness: 0.7 }));
+  wallPhoto.position.set(5.2, 6.0, -3.35); world.add(wallPhoto);
 
   // Pin board
   const board = rbox(3.2, 2.1, 0.15, 0.1, mat(0xb08f6e, { roughness: 1 }));
@@ -324,7 +352,7 @@ function init() {
   const face = rbox(0.46, 0.28, 0.04, 0.08, mat(0x1f1d24, { roughness: 0.2 }));
   face.position.set(0, 0.72, 0.22);
   const eyeGlow = new THREE.MeshBasicMaterial({ color: 0x5ee3ff });
-  [-0.1, 0.1].forEach((x) => { const e = new THREE.Mesh(new THREE.CapsuleGeometry(0.035, 0.05, 4, 8), eyeGlow); e.position.set(x, 0.73, 0.245); robot.add(e); });
+  const robotEyes = [-0.1, 0.1].map((x) => { const e = new THREE.Mesh(new THREE.CapsuleGeometry(0.035, 0.05, 4, 8), eyeGlow); e.position.set(x, 0.73, 0.245); robot.add(e); return e; });
   const ant = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.22, 8), mat(0x8a8790));
   ant.position.y = 1.04;
   const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.05, 12, 10), accent);
@@ -510,12 +538,11 @@ function init() {
     camera.position.set(camBase.x + parallax.x * 1.2, camBase.y - parallax.y * 0.8, camBase.z);
     camera.lookAt(target);
     // chair swivels toward the visitor on the first bit of scroll; the avatar waves once
-    const turnTarget = Math.min(1, Math.max(0, scrollP / 0.1));
+    const turnTarget = Math.min(1, Math.max(0, scrollP / 0.14));
     turnSmooth += (turnTarget - turnSmooth) * (forcedP !== null ? 1 : 0.1);
     const turn = turnSmooth * turnSmooth * (3 - 2 * turnSmooth);
-    chair.rotation.y = CHAIR_START + (CHAIR_END - CHAIR_START) * turn;
-    chair.position.z = 1.25 + turn * 0.9;
-    if (layers) { if (turn > 0.7) layers.wave(); else if (turn < 0.2) layers.type(); }
+    chair.rotation.y = CHAIR_START - Math.PI * 2 * turn;          // one full spin, back to the desk
+    chair.position.z = 1.25 + Math.sin(turn * Math.PI) * 1.0;      // roll back while spinning, clear of the desk
     // world-space hand targets -> chair-local space for the IK
     const ma = rigged ? 0 : avatar.mouseAmt;
     mouse.position.set(mouseBase.x + (Math.sin(t * 2.1) * 0.12 + Math.sin(t * 5.3) * 0.03) * ma, 3.23, mouseBase.z + Math.cos(t * 1.7) * 0.1 * ma);
@@ -526,9 +553,17 @@ function init() {
     avatar.animate(reduceMotion ? 0 : t, ikTargets);
     if (!reduceMotion) {
       updateNotes(t); updateMessage(t);
-      catBody.scale.y = 0.55 + Math.sin(t * 1.6) * 0.02;
+      catBody.scale.y = 0.62 + Math.sin(t * 1.6) * 0.015;
+      steam.forEach((p, i) => {
+        const k = ((t * 0.5 + i / 3) % 1);
+        p.position.set(-3 + Math.sin(t * 2 + i) * 0.06, 3.7 + k * 0.7, -0.6 + Math.cos(t * 1.5 + i) * 0.05);
+        p.material.opacity = 0.35 * Math.sin(k * Math.PI); p.scale.setScalar(0.8 + k * 0.8);
+      });
+      // robot blinks every ~3.5s
+      const bl = (t % 3.5) < 0.14 ? 0.12 : 1;
+      robotEyes.forEach((e) => { e.scale.y = bl; });
     }
-    window.__typing = !!window.__musicPlaying && avatar.isTyping() && turn < 0.3;
+    window.__typing = !!window.__musicPlaying && avatar.isTyping() && (turn < 0.05 || turn > 0.95);
 
     if (!reduceMotion) {
       plant.rotation.z = Math.sin(t * 0.8) * 0.02;
