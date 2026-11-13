@@ -156,10 +156,10 @@ function init() {
 
   // Keyboard + mouse
   const kb = rbox(2.2, 0.1, 0.7, 0.05, mat(0xeeeeee));
-  kb.position.set(0, 3.22, -0.4);
+  kb.position.set(0, 3.22, 0.0);
   world.add(kb);
   const mouse = rbox(0.3, 0.12, 0.45, 0.12, mat(0xeeeeee));
-  mouse.position.set(1.35, 3.23, -0.2);
+  mouse.position.set(1.3, 3.23, 0.1);
   world.add(mouse);
 
   // Mug
@@ -182,7 +182,7 @@ function init() {
     const leg = rbox(0.1, 1.75, 0.1, 0.05, metal); leg.position.set(x, 1.15, -0.5); leg.rotation.x = 0.35; chair.add(leg);
   });
   const bar = rbox(1.6, 0.1, 0.1, 0.05, metal); bar.position.set(0, 0.3, 0.92); chair.add(bar);
-  chair.position.set(0.2, 0, 1.6);
+  chair.position.set(0.2, 0, 1.25);
   chair.rotation.y = 0.25;
   world.add(chair);
 
@@ -442,6 +442,7 @@ function init() {
     msg.position.y = 6.3 + Math.sin(age * 4) * 0.04;
   }
 
+  const ikTargets = { left: new THREE.Vector3(), right: new THREE.Vector3(), mouse: new THREE.Vector3() };
   const parallax = { x: 0, y: 0 };
   const clock = new THREE.Clock();
   function frame() {
@@ -454,9 +455,14 @@ function init() {
     }
     camera.position.set(camBase.x + parallax.x * 1.2, camBase.y - parallax.y * 0.8, camBase.z);
     camera.lookAt(target);
-    avatar.animate(reduceMotion ? 0 : t, 0);
-    mouse.position.x = 1.35 + avatar.mouseOffset.x;
-    mouse.position.z = -0.2 + avatar.mouseOffset.z;
+    // world-space hand targets -> chair-local space for the IK
+    const ma = avatar.mouseAmt;
+    mouse.position.set(1.3 + (Math.sin(t * 2.1) * 0.12 + Math.sin(t * 5.3) * 0.03) * ma, 3.23, 0.1 + Math.cos(t * 1.7) * 0.1 * ma);
+    chair.updateMatrixWorld();
+    ikTargets.left.set(-0.4, 3.3, 0.0); chair.worldToLocal(ikTargets.left);
+    ikTargets.right.set(0.4, 3.3, 0.0); chair.worldToLocal(ikTargets.right);
+    ikTargets.mouse.copy(mouse.position); ikTargets.mouse.y += 0.06; chair.worldToLocal(ikTargets.mouse);
+    avatar.animate(reduceMotion ? 0 : t, ikTargets);
     if (!reduceMotion) { updateNotes(t); updateMessage(t); }
     window.__typing = !!window.__musicPlaying && avatar.isTyping();
 

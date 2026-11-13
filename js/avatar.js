@@ -128,42 +128,46 @@ export function buildAvatar({ pose = 'sit' } = {}) {
   });
 
   let typing = false;
-  const mouseOffset = { x: 0, z: 0 };
-  const smooth01 = (e0, e1, x) => { const k = Math.min(1, Math.max(0, (x - e0) / (e1 - e0))); return k * k * (3 - 2 * k); };
-  function animate(t, turn = 0) {
-    const typeAmt = 1 - turn;
-    // ~7s loop: type with both hands, then the right hand moves the mouse
-    const c = t % 7;
-    const mouseAmt = (smooth01(3.6, 4.2, c) - smooth01(6.3, 6.9, c)) * typeAmt;
-    const burst = Math.sin(t * 0.9) + Math.sin(t * 2.3) * 0.5 > -0.4 ? 1 : 0;
-    [armL, armR].forEach((a, i) => {
-      const press = Math.pow(Math.max(0, Math.sin(t * 11 + i * Math.PI + Math.sin(t * 3) * 0.8)), 3);
-      const tap = press * 0.16 * burst * typeAmt;
-      // typing pose
-      let sx = 1.2 * typeAmt + 0.35 * turn - tap * 0.25;
-      let sz = (i ? 1 : -1) * 0.12 * typeAmt + (i ? -1 : 1) * 0.18 * turn;
-      let ex = (0.28 - tap) * typeAmt + 1.1 * turn;
-      let ez = (i ? -1 : 1) * (0.15 + Math.sin(t * 1.7 + i) * 0.04) * typeAmt;
-      if (i === 1 && mouseAmt > 0) {
-        // mouse pose: hand out to the right, small sliding motions
-        const mx = Math.sin(t * 2.1) * 0.06 + Math.sin(t * 5.3) * 0.02;
-        const mz = Math.cos(t * 1.7) * 0.05;
-        sx += (1.05 + mz - sx + tap * 0.25) * mouseAmt;
-        sz += (0.42 + mx - sz) * mouseAmt;
-        ex += (0.4 - ex) * mouseAmt;
-        ez += (-0.25 - ez) * mouseAmt;
-        mouseOffset.x = mx * 1.6 * mouseAmt; mouseOffset.z = -mz * 1.4 * mouseAmt;
-      } else if (i === 1) { mouseOffset.x = 0; mouseOffset.z = 0; }
-      a.shoulder.rotation.set(sx, 0, sz);
-      a.elbow.rotation.set(ex, 0, ez);
-    });
-    typing = burst === 1 && typeAmt > 0.5;
-    // Head: scans between the two monitors, turns toward the right screen while using the mouse, small nods
-    const scan = Math.sin(t * 0.45) * 0.22 + Math.sin(t * 1.3) * 0.05;
-    head.rotation.y = (scan * (1 - mouseAmt) - 0.38 * mouseAmt) * typeAmt;
-    head.rotation.x = (Math.sin(t * 0.9) * 0.04 + Math.max(0, Math.sin(t * 0.31)) * 0.06) * typeAmt - 0.08 * turn;
-    head.rotation.z = Math.sin(t * 0.7) * 0.03 * typeAmt;
+  const L1 = 0.72, L2 = 0.78;                 // upper arm, forearm (to hand centre)
+  const tmp = new THREE.Vector3();
+  // Two-bone IK: rotate shoulder + elbow so the hand lands on `target` (avatar-group space)
+  function reach(a, target) {
+    tmp.copy(target).sub(a.shoulder.position);
+    const d = Math.min(Math.max(tmp.length(), 0.2), L1 + L2 - 0.02);
+    const u = tmp.normalize();
+    const elbowBend = Math.PI - Math.acos((L1 * L1 + L2 * L2 - d * d) / (2 * L1 * L2));
+    const alpha = Math.acos(Math.min(1, (L1 * L1 + d * d - L2 * L2) / (2 * L1 * d)));
+    const tz = Math.asin(Math.max(-1, Math.min(1, u.x)));
+    const tx = Math.atan2(-u.z, -u.y);
+    a.shoulder.rotation.set(tx - alpha, 0, tz);
+    a.elbow.rotation.set(elbowBend, 0, 0);
   }
-
-  return { group, head, animate, isTyping: () => typing, mouseOffset };
+  const smooth01 = (e0, e1, x) => { const k = Math.min(1, Math.max(0, (x - e0) / (e1 - e0))); return k * k * (3 - 2 * k); };
+  // targets: { left, right, mouse } as THREE.Vector3 in avatar-group space (set by the scene)
+  function animate(t, targets) {
+    const c = t % 7;
+    const mouseAmt = smooth01(3.6, 4.2, c) - smooth01(6.3, 6.9, c);
+    const burst = Math.sin(t * 0.9) + Math.sin(t * 2.3) * 0.5 > -0.4 ? 1 : 0;
+    typing = burst === 1;
+    if (targets) {
+      [[armL, targets.left, 0], [armR, targets.right, 1]].forEach(([a, base, i]) => {
+        const press = Math.pow(Math.max(0, Math.sin(t * 11 + i * Math.PI + Math.sin(t * 3) * 0.8)), 3);
+        const goal = tmp.copy(base);
+        goal.x += Math.sin(t * 1.3 + i * 2) * 0.12 * burst;            // hands wander across the keys
+        goal.y += 0.1 - press * 0.08 * burst;                            // lift, then press down onto a key
+        if (i === 1 && mouseAmt > 0) goal.lerp(tmp.clone().copy(targets.mouse).add(new THREE.Vector3(0, 0.1, 0)), mouseAmt);
+        reach(a, goal.clone());
+      });
+    }
+    // Head scans the monitors; looks right toward the mouse screen while using it
+    const scan = Math.sin(t * 0.45) * 0.22 + Math.sin(t * 1.3) * 0.05;
+    head.rotation.y = scan * (1 - mouseAmt) - 0.35 * mouseAmt;
+    head.rotation.x = Math.sin(t * 0.9) * 0.04 + Math.max(0, Math.sin(t * 0.31)) * 0.06;
+    head.rotation.z = Math.sin(t * 0.7) * 0.03;
+    api.mouseAmt = mouseAmt;
+  }
+  const api = { group, head, animate, isTyping: () => typing, mouseAmt: 0, reset() {
+    [armL, armR].forEach((a) => { a.shoulder.rotation.set(0, 0, 0); a.elbow.rotation.set(0, 0, 0); });
+  } };
+  return api;
 }
