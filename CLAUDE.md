@@ -6,13 +6,15 @@ Static GitHub Pages site for Shukhrat Rustamov (Senior QA Automation Engineer). 
 - `index.html` — all page content (story track [hologram stage under the hero panel] → experience → expertise → stack → footer)
 - `css/tokens.css` — design tokens (colors, spacing, radii, type scale, easing). Use these and never hard-code new values.
 - `css/style.css` — every component style; hologram styles are at the bottom (`.holo*`)
-- `js/avatar.js` — `buildAvatar({pose:'sit'|'stand'})`, plus the shared `mat()` / `rbox()` helpers
-- `js/avatar-loader.js` — `loadRiggedAvatar({height, animation})` loads `img/avatar/me.glb` and the Mixamo FBX clips (retargets them by bone name, rotations only) and falls back to `buildAvatar` when the files are missing; used by the desk, hologram and contact scenes
-- `js/hero.js` — desk scene with idle typing and mouse parallax (no scroll logic)
+- `js/utils.js` — shared `mat()` / `rbox()` helpers for the 3D scenes
+- `js/avatar-loader.js` — `loadRiggedAvatar({height, animation, once})` loads `img/avatar/me.glb` (Avaturn) and the Mixamo clips `typing` / `idle` / `greeting` (retargeted by bone name, rotations only); used by all three scenes
+- `js/hero.js` — desk scene: seated avatar typing, wide monitor with Java, keyboard/mouse aligned to the hands, robot that 'speaks' notifications, music notes, cat (`img/cat.glb`), family photo
 - `js/hologram.js` — scroll story controller for `.story-track` (520vh) and sticky `.stage`: the hero panel lifts away, a clip-plane scan turns the colour avatar into a hologram, the 000→100 counter, card reveals and the dark header
 - `js/main.js` — scroll reveal (`.reveal`), back-to-top, footer year, active nav link
 - `tools/scroll.mjs` — real-scroll screenshots through the DevTools protocol (needs Node 22+)
-- `img/` — company logos; `img/me.glb` (planned) is a realistic avatar that replaces `buildAvatar` when present
+- `js/contact.js` — end-of-page scene: avatar greets once then idles; robot laps and parks under the links
+- `js/music.js` — generated lo-fi loop, key clicks and message chime (off until first interaction)
+- `img/` — company logos, `family.jpg`, `cat.glb` (CC BY, credited in footer), `avatar/` (rigged avatar + clips)
 
 ## Standards
 - Three.js `0.160.0` via the importmap in `index.html` (jsdelivr). Pin exact versions.

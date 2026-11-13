@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { buildAvatar, mat, rbox } from './avatar.js';
+import { mat, rbox } from './utils.js';
 import { loadRiggedAvatar } from './avatar-loader.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
@@ -236,21 +236,17 @@ function init() {
   chair.rotation.y = 0.25;
   world.add(chair);
 
-  const avatar = buildAvatar();
-  chair.add(avatar.group);
-  let rigged = null, layers = null, rHand = null;
-  const handPos = new THREE.Vector3(); let reachBest = -Infinity, calibrated = false;   // real avatar from img/avatar/me.glb (+ Mixamo "typing"), if provided
-  loadRiggedAvatar({ height: 6.6, animation: 'typing', pose: 'sit' }).then((r) => {
+  // Avatar (img/avatar/me.glb) seated, playing the Mixamo "typing" loop
+  let rigged = null, rHand = null;
+  const handPos = new THREE.Vector3(); let reachBest = -Infinity, calibrated = false;
+  loadRiggedAvatar({ height: 6.6, animation: 'typing' }).then((r) => {
     if (!r) return;
     rigged = r;
-    avatar.group.visible = false;
     r.model.rotation.y = Math.PI;        // model faces +Z, the desk is at -Z
     r.model.position.set(0, -1.2, -0.15); // drop the hips onto the seat
     chair.add(r.model);
-    layers = r.seated();
     // after the typing loop has run briefly, line the keyboard + mouse up under the real hands
     const calibrate = () => {
-      if (turnSmooth > 0.05) { setTimeout(calibrate, 800); return; }   // only while facing the desk
       chair.updateMatrixWorld(true);
       const L = r.bonePosition('lefthand'), R = r.bonePosition('righthand');
       if (!L || !R) return;
@@ -516,19 +512,7 @@ function init() {
     robot.rotation.y += ((talking ? toAvatar : 0.5) - robot.rotation.y) * 0.08;
   }
 
-  const track = document.querySelector('.story-track');
-  const forcedP = new URLSearchParams(location.search).get('p');
-  let scrollP = 0, turnSmooth = 0;
-  const readScroll = () => {
-    if (forcedP !== null) { scrollP = Number(forcedP); return; }
-    if (!track) return;
-    const r = track.getBoundingClientRect(), span = r.height - innerHeight;
-    scrollP = span > 0 ? Math.min(1, Math.max(0, -r.top / span)) : 0;
-  };
-  addEventListener('scroll', readScroll, { passive: true }); readScroll();
-  const CHAIR_START = 0.25, CHAIR_END = -2.3;
   const mouseBase = new THREE.Vector3(2.4, 3.22, 0.1);
-  const ikTargets = { left: new THREE.Vector3(), right: new THREE.Vector3(), mouse: new THREE.Vector3() };
   const parallax = { x: 0, y: 0 };
   const clock = new THREE.Clock();
   function frame() {
@@ -542,24 +526,12 @@ function init() {
     }
     camera.position.set(camBase.x + parallax.x * 1.2, camBase.y - parallax.y * 0.8, camBase.z);
     camera.lookAt(target);
-    // chair swivels toward the visitor on the first bit of scroll; the avatar waves once
-    const turnTarget = Math.min(1, Math.max(0, scrollP / 0.14));
-    turnSmooth += (turnTarget - turnSmooth) * (forcedP !== null ? 1 : 0.1);
-    const turn = turnSmooth * turnSmooth * (3 - 2 * turnSmooth);
-
-    // world-space hand targets -> chair-local space for the IK
     if (rHand && calibrated) {                     // learn where the right hand reaches furthest (right + back)
       rHand.getWorldPosition(handPos);
       const score = handPos.x - handPos.z;
       if (score > reachBest) { reachBest = score; mouseBase.set(handPos.x, 3.22, handPos.z); }
     }
-    const ma = rigged ? 0 : avatar.mouseAmt;
-    mouse.position.set(mouseBase.x + (Math.sin(t * 2.1) * 0.12 + Math.sin(t * 5.3) * 0.03) * ma, 3.22, mouseBase.z + Math.cos(t * 1.7) * 0.1 * ma);
-    chair.updateMatrixWorld();
-    ikTargets.left.set(-0.4, 3.3, 0.0); chair.worldToLocal(ikTargets.left);
-    ikTargets.right.set(0.4, 3.3, 0.0); chair.worldToLocal(ikTargets.right);
-    ikTargets.mouse.copy(mouse.position); ikTargets.mouse.y += 0.06; chair.worldToLocal(ikTargets.mouse);
-    avatar.animate(reduceMotion ? 0 : t, ikTargets);
+    mouse.position.set(mouseBase.x, 3.22, mouseBase.z);
     if (!reduceMotion) {
       updateNotes(t); updateMessage(t);
       if (catModel) catModel.scale.y = 1 + Math.sin(t * 1.6) * 0.015;   // slow breathing
@@ -567,7 +539,8 @@ function init() {
       const bl = (t % 3.5) < 0.14 ? 0.12 : 1;
       robotEyes.forEach((e) => { e.scale.y = bl; });
     }
-    window.__typing = !!window.__musicPlaying && avatar.isTyping() && (turn < 0.05 || turn > 0.95);
+    // key-click sounds in bursts while the avatar types (music.js reads this)
+    window.__typing = !!window.__musicPlaying && !!rigged && Math.sin(t * 0.9) + Math.sin(t * 2.3) * 0.5 > -0.4;
 
     if (!reduceMotion) {
       plant.rotation.z = Math.sin(t * 0.8) * 0.02;

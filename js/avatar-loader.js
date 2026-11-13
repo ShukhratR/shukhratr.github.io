@@ -8,7 +8,7 @@ import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 
 const BASE = 'img/avatar/';
-const CLIPS = { typing: 'typing.fbx', idle: 'idle.fbx', crossed: 'arms-crossed.fbx', wave: 'wave.fbx', phone: 'phone.fbx' };
+const CLIPS = { typing: 'typing.fbx', idle: 'idle.fbx', greeting: 'greeting.fbx' };
 
 // "mixamorig:LeftArm" / "mixamorigLeftArm" / "LeftArm" -> "leftarm"
 const norm = (name) => name.replace(/^.*mixamorig\d*[:_]?/i, "").replace(/[^a-z0-9]/gi, "").toLowerCase();
@@ -53,42 +53,12 @@ function retarget(clip, model) {
   return new THREE.AnimationClip(clip.name, clip.duration, tracks);
 }
 
-// Rotate a bone around an axis given in model space (bone world matrices must be current).
-const _q = new THREE.Quaternion(), _pq = new THREE.Quaternion();
-function rotateModelSpace(bone, axis, angle) {
-  bone.parent.getWorldQuaternion(_pq);
-  _q.setFromAxisAngle(axis, angle);
-  bone.quaternion.premultiply(_pq.clone().invert().multiply(_q).multiply(_pq));
-  bone.updateMatrixWorld(true);
-}
-const X = new THREE.Vector3(1, 0, 0), Y = new THREE.Vector3(0, 1, 0), Z = new THREE.Vector3(0, 0, 1);
-// Static fallback poses used until Mixamo clips are provided (model faces +Z, its left is +X).
-function applyPose(model, pose) {
-  const b = {};
-  model.traverse((o) => { if (o.isBone) b[norm(o.name)] = o; });
-  model.updateMatrixWorld(true);
-  const r = (name, axis, a) => b[name] && rotateModelSpace(b[name], axis, a);
-  r('leftarm', Z, -1.25); r('rightarm', Z, 1.25);               // arms down from T-pose
-  if (pose === 'sit' || pose === 'type') {
-    r('leftupleg', X, -1.5); r('rightupleg', X, -1.5);          // thighs forward
-    r('leftleg', X, 1.5); r('rightleg', X, 1.5);                // shins down
-    r('leftarm', X, -0.9); r('rightarm', X, -0.9);              // upper arms forward
-    r('leftforearm', X, -0.9); r('rightforearm', X, -0.9);      // forearms to the keyboard
-  } else if (pose === 'crossed') {
-    r('leftarm', X, -0.35); r('rightarm', X, -0.35);            // elbows slightly forward
-    r('leftforearm', X, -1.55); r('rightforearm', X, -1.55);    // forearms forward
-    r('leftforearm', Y, -1.25); r('rightforearm', Y, 1.25);     // fold across the chest
-  } else {
-    r('leftforearm', X, -0.15); r('rightforearm', X, -0.15);    // relaxed
-  }
-}
-
 /**
- * @param {{ height?: number, animation?: string, pose?: string }} opts
+ * @param {{ height?: number, animation?: string, once?: boolean }} opts
  *   height: target model height in scene units; animation: clip to start with.
  * @returns {Promise<null | { model, mixer, play(name, fade?): void, update(dt): void, has(name): boolean }>}
  */
-export async function loadRiggedAvatar({ height = 6.2, animation = 'idle', pose = 'stand', once = false } = {}) {
+export async function loadRiggedAvatar({ height = 6.2, animation = 'idle', once = false } = {}) {
   const assets = await loadAssets();
   if (!assets) return null;
 
@@ -129,37 +99,11 @@ export async function loadRiggedAvatar({ height = 6.2, animation = 'idle', pose 
       current = next;
     },
     update(dt) { mixer.update(dt); },
-    // Seated layering: legs keep the typing (sitting) pose; upper body switches typing <-> one-time wave
-    seated() {
-      const isLower = (n) => /^(hips|leftupleg|leftleg|leftfoot|lefttoebase|rightupleg|rightleg|rightfoot|righttoebase)$/.test(n);
-      const sub = (key, keepLower) => {
-        const src = assets.clips[key]; if (!src) return null;
-        const c = retarget(src, model);
-        c.tracks = c.tracks.filter((t) => isLower(norm(t.name.split('.')[0])) === keepLower);
-        return mixer.clipAction(c, undefined, undefined);
-      };
-      mixer.stopAllAction();
-      const legs = sub('typing', true), upperType = sub('typing', false), upperWave = sub('wave', false);
-      if (upperWave) { upperWave.setLoop(THREE.LoopOnce, 1); upperWave.clampWhenFinished = true; }
-      legs?.play(); upperType?.play();
-      let waving = false;
-      return {
-        wave() {
-          if (waving || !upperWave || !upperType) return; waving = true;
-          upperWave.reset().setEffectiveWeight(1).fadeIn(0.35).play(); upperType.fadeOut(0.35);
-        },
-        type() {
-          if (!waving || !upperType) return; waving = false;
-          upperType.reset().setEffectiveWeight(1).fadeIn(0.35).play(); upperWave?.fadeOut(0.35);
-        },
-      };
-    },
     bone(name) { let f = null; model.traverse((o) => { if (!f && o.isBone && norm(o.name) === name) f = o; }); return f; },
     // world position of a bone (e.g. 'lefthand')
     bonePosition(name, target = new THREE.Vector3()) {
-      let found = null;
-      model.traverse((o) => { if (!found && o.isBone && norm(o.name) === name) found = o; });
-      return found ? found.getWorldPosition(target) : null;
+      const b = api.bone(name);
+      return b ? b.getWorldPosition(target) : null;
     },
   };
   if (actions[animation]) api.play(animation, 0, { once });   // start instantly: no fade from the T-pose

@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import { buildAvatar } from './avatar.js';
 import { loadRiggedAvatar } from './avatar-loader.js';
 
 const host = document.getElementById('holo-scene');
@@ -68,15 +67,9 @@ function init() {
   const spin = new THREE.Group();
   spin.position.y = 0.55;
   scene.add(spin);
-  const colored = buildAvatar({ pose: 'stand' });
-  colored.group.traverse((o) => { if (o.isMesh) { o.material = o.material.clone(); o.material.clippingPlanes = [keepAbove]; } });
-  const ghost = buildAvatar({ pose: 'stand' });
-  ghost.group.traverse((o) => { if (o.isMesh) o.material = holo; });
-  [colored, ghost].forEach((a) => { a.group.rotation.y = Math.PI; spin.add(a.group); });
   const riggedPair = [];
   Promise.all([loadRiggedAvatar({ height: 6.4 }), loadRiggedAvatar({ height: 6.4 })]).then(([c, g]) => {
     if (!c || !g) return;
-    colored.group.visible = false; ghost.group.visible = false;
     c.model.traverse((o) => { if (o.isMesh) { o.material = o.material.clone(); o.material.clippingPlanes = [keepAbove]; } });
     g.model.traverse((o) => { if (o.isMesh) o.material = holo; });
     [c, g].forEach((r) => { spin.add(r.model); riggedPair.push(r); });

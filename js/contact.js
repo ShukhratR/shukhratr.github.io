@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { buildAvatar, mat, rbox } from './avatar.js';
+import { mat, rbox } from './utils.js';
 import { loadRiggedAvatar } from './avatar-loader.js';
 
 const host = document.getElementById('contact-scene');
@@ -34,46 +34,14 @@ function init() {
   const floor = new THREE.Mesh(new THREE.PlaneGeometry(40, 40), new THREE.ShadowMaterial({ opacity: 0.12 }));
   floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; scene.add(floor);
 
-  // Avatar: standing, arms crossed, facing the visitor
-  const avatar = buildAvatar({ pose: 'stand' });
-  avatar.group.rotation.y = Math.PI - 0.15;
-  avatar.group.position.x = AVATAR_X;
-  avatar.crossArms();
-  scene.add(avatar.group);
   let rigged = null;
-  loadRiggedAvatar({ height: 6.4, animation: 'phone', pose: 'stand', once: true }).then((r) => {
+  // Avatar: a standing greeting once, then the warrior idle on loop
+  loadRiggedAvatar({ height: 6.4, animation: 'greeting', once: true }).then((r) => {
     if (!r) return;
     rigged = r;
-    avatar.group.visible = false;
-    r.model.rotation.y = 0;
     r.model.position.x = AVATAR_X;
     scene.add(r.model);
-    // Smartphone: attach to whichever hand is raised to the ear once the call animation is underway
-    const phone = new THREE.Group();
-    const body = rbox(0.12, 0.24, 0.02, 0.012, mat(0x1c1c21, { roughness: 0.3, metalness: 0.4 }));
-    const glass = new THREE.Mesh(new THREE.PlaneGeometry(0.105, 0.215), mat(0x2a3550, { roughness: 0.05, metalness: 0.2 }));
-    glass.position.z = 0.011;
-    const cam = new THREE.Mesh(new THREE.CircleGeometry(0.008, 12), mat(0x050505)); cam.position.set(0.03, 0.09, -0.011); cam.rotation.y = Math.PI;
-    phone.add(body, glass, cam);
-    phone.traverse((o) => { if (o.isMesh) o.castShadow = true; });
-    phone.scale.setScalar(2.1);                          // world-sized: ~0.5 units tall, like a real phone in his hand
-    phone.visible = false;
-    scene.add(phone);
-    const L = r.bone('lefthand'), R = r.bone('righthand'), H = r.bone('head');
-    const _h = new THREE.Vector3();
-    // each frame: the phone rides in whichever hand is raised (the call hand)
-    phoneTick = () => {
-      if (!L || !R) return;
-      L.getWorldPosition(_l); R.getWorldPosition(_r);
-      H.getWorldPosition(_h);
-      const dl = _l.distanceTo(_h), dr = _r.distanceTo(_h);
-      if (!phoneHand && Math.min(dl, dr) < 1.2) phoneHand = dl < dr ? L : R;   // the hand that comes up to the ear
-      if (!phoneHand) return;
-      phone.visible = true;
-      phoneHand.getWorldPosition(phone.position);
-      phoneHand.getWorldQuaternion(phone.quaternion);
-      phone.translateY(0.22); phone.translateZ(0.06);
-    };
+    r.mixer.addEventListener('finished', () => r.play('idle', 0.6));
   });
 
   // QA props
@@ -114,8 +82,6 @@ function init() {
   });
 
   let robotStart = null;
-  let phoneTick = null, phoneHand = null;
-  const _l = new THREE.Vector3(), _r = new THREE.Vector3();
   // parking spot: the floor point under the bottom-left of the section (below the links)
   const parkPoint = new THREE.Vector3();
   const findPark = () => {
@@ -138,11 +104,7 @@ function init() {
     if (!visible) return;
     const t = clock.getElapsedTime();
     if (rigged) rigged.update(Math.min(0.05, t - (frame.last ?? t))); frame.last = t;
-    if (phoneTick) phoneTick();
     if (!reduce) {
-      avatar.head.rotation.y = Math.sin(t * 0.6) * 0.15;
-      avatar.head.rotation.z = Math.sin(t * 0.8) * 0.04;
-      avatar.group.position.y = Math.sin(t * 1.6) * 0.03;      // breathing
       // one lap around the avatar, then drive to the bottom-left (under the links) and park
       if (robotStart === null) robotStart = t;
       const lap = Math.min(1, (t - robotStart) / 7);

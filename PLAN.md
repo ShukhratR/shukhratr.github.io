@@ -43,7 +43,7 @@ Status: ✅ done · 🟡 partial · ⬜ to do
 - ⬜ Decision: keep as is, restyle to match, or merge into Experience details
 
 ## 6. Contact
-- 🟡 "Let's work together!" + social buttons (Mail, LinkedIn, GitHub, Phone)
+- ✅ "Let's work together!" + social buttons (Mail, LinkedIn, GitHub, Phone), two-column with 3D scene
 - ⬜ **Round icon-only social buttons**, like the reference
 - ✅ **Contact 3D scene** in a rounded beige panel: the avatar standing with arms crossed in an original QA setting (sticky-note test cases, a "PASSED" stamp, a coffee mug, a rubber duck), not the reference's moving boxes
 - ⬜ Menu switches to "Contact" active here
