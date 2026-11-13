@@ -88,14 +88,14 @@ export function buildAvatar({ pose = 'sit' } = {}) {
   back.scale.set(1.02, 1.06, 0.98);
   const hairCap = add(head, new THREE.Mesh(new THREE.SphereGeometry(0.665, 32, 24, 0, Math.PI * 2, 0, Math.PI * 0.3), hair), 0, 0.06, 0);
   hairCap.scale.set(1.02, 1.1, 1.0);
-  // Simple curly hair: smooth cap + a few large soft curls
-  const curl = new THREE.SphereGeometry(1, 24, 16);
-  [[-0.32, 0.5, -0.22, 0.24], [0, 0.58, -0.3, 0.26], [0.32, 0.5, -0.22, 0.24],
-   [-0.2, 0.66, 0.08, 0.26], [0.2, 0.66, 0.08, 0.26], [0, 0.62, 0.32, 0.25],
-   [-0.5, 0.3, 0.05, 0.2], [0.5, 0.3, 0.05, 0.2]].forEach(([x, y, z, r]) => {
-    const c = add(head, new THREE.Mesh(curl, hair), x, y, z);
-    c.scale.set(r, r * 0.85, r);
-  });
+  // Classic short hair: smooth top volume with a swept side-part fringe
+  const top = add(head, new THREE.Mesh(new THREE.SphereGeometry(0.6, 32, 20), hair), 0.02, 0.36, 0.0);
+  top.scale.set(1.12, 0.62, 1.1);
+  const fringe = add(head, new THREE.Mesh(new THREE.SphereGeometry(0.4, 32, 20), hair), 0.12, 0.44, -0.3);
+  fringe.scale.set(1.35, 0.45, 0.8);
+  fringe.rotation.set(-0.25, 0, -0.18);
+  const part = add(head, new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.02, 0.5), mat(0x2e1c13)), -0.22, 0.6, -0.05);
+  part.rotation.x = -0.2;
 
   // Happy open smile (clean-shaven)
   const mouth = new THREE.Mesh(new THREE.CircleGeometry(0.13, 24, Math.PI, Math.PI), mat(0x7a2e2a, { roughness: 0.4 }));

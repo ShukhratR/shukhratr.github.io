@@ -442,20 +442,6 @@ function init() {
     msg.position.y = 6.3 + Math.sin(age * 4) * 0.04;
   }
 
-  // Chair swivels toward the visitor as soon as they start scrolling
-  const track = document.querySelector('.story-track');
-  const forcedP = new URLSearchParams(location.search).get('p');
-  let scrollP = 0, turnSmooth = 0;
-  function readScroll() {
-    if (forcedP !== null) { scrollP = Number(forcedP); return; }
-    if (!track) return;
-    const r = track.getBoundingClientRect(), span = r.height - innerHeight;
-    scrollP = span > 0 ? Math.min(1, Math.max(0, -r.top / span)) : 0;
-  }
-  addEventListener('scroll', readScroll, { passive: true });
-  readScroll();
-  const CHAIR_START = 0.25, CHAIR_END = -2.3;
-
   const parallax = { x: 0, y: 0 };
   const clock = new THREE.Clock();
   function frame() {
@@ -468,16 +454,11 @@ function init() {
     }
     camera.position.set(camBase.x + parallax.x * 1.2, camBase.y - parallax.y * 0.8, camBase.z);
     camera.lookAt(target);
-    const turnTarget = Math.min(1, Math.max(0, scrollP / 0.12));
-    turnSmooth += (turnTarget - turnSmooth) * (forcedP !== null ? 1 : 0.1);
-    const turn = turnSmooth * turnSmooth * (3 - 2 * turnSmooth);
-    chair.rotation.y = CHAIR_START + (CHAIR_END - CHAIR_START) * turn;
-    chair.position.z = 1.6 + turn * 0.8;
-    avatar.animate(reduceMotion ? 0 : t, turn);
+    avatar.animate(reduceMotion ? 0 : t, 0);
     mouse.position.x = 1.35 + avatar.mouseOffset.x;
     mouse.position.z = -0.2 + avatar.mouseOffset.z;
     if (!reduceMotion) { updateNotes(t); updateMessage(t); }
-    window.__typing = !!window.__musicPlaying && avatar.isTyping() && turn < 0.5;
+    window.__typing = !!window.__musicPlaying && avatar.isTyping();
 
     if (!reduceMotion) {
       plant.rotation.z = Math.sin(t * 0.8) * 0.02;

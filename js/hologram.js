@@ -149,7 +149,7 @@ function init() {
     const t = clock.getElapsedTime();
     smooth += (progress - smooth) * (reduce || forced !== null ? 1 : 0.12);
 
-    const lift = ease(seg(smooth, 0.12, 0.36));
+    const lift = ease(seg(smooth, 0, 0.3));
     heroPanel.style.transform = `translateY(${-lift * 115}%) rotate(${-lift * 5}deg)`;
     heroPanel.style.visibility = lift >= 1 ? 'hidden' : '';
 
