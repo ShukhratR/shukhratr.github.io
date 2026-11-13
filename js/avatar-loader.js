@@ -8,7 +8,7 @@ import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 
 const BASE = 'img/avatar/';
-const CLIPS = { typing: 'typing.fbx', idle: 'idle.fbx', greeting: 'greeting.fbx' };
+const CLIPS = { typing: 'typing.fbx', idle: 'idle.fbx', secret: 'secret.fbx' };
 
 // "mixamorig:LeftArm" / "mixamorigLeftArm" / "LeftArm" -> "leftarm"
 const norm = (name) => name.replace(/^.*mixamorig\d*[:_]?/i, "").replace(/[^a-z0-9]/gi, "").toLowerCase();
@@ -88,6 +88,7 @@ export async function loadRiggedAvatar({ height = 6.2, animation = 'idle', once 
     model: wrapper,
     mixer,
     has: (name) => !!actions[name],
+    duration: (name) => actions[name]?.getClip().duration ?? 0,
     play(name, fade = 0.4, opts = {}) {
       const next = actions[name];
       if (!next || next === current) return;

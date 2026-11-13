@@ -35,14 +35,15 @@ function init() {
   floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; scene.add(floor);
 
   let rigged = null;
-  // Avatar: a standing greeting once, then the warrior idle on loop
-  loadRiggedAvatar({ height: 6.4, animation: 'greeting', once: true }).then((r) => {
+  // Avatar: idles, then (once the robot has parked) tells the robot a secret; back to idle afterwards
+  loadRiggedAvatar({ height: 6.4, animation: 'idle' }).then((r) => {
     if (!r) return;
     rigged = r;
     r.model.position.x = AVATAR_X;
     scene.add(r.model);
-    r.mixer.addEventListener('finished', () => r.play('idle', 0.6));
   });
+
+
 
   // QA props
   // little robot buddy
@@ -81,7 +82,7 @@ function init() {
     paper.rotation.set(-Math.PI / 2, 0, r); paper.position.set(x, 0.01, z); paper.receiveShadow = true; scene.add(paper);
   });
 
-  let robotStart = null;
+  let robotStart = null, parkedAt = null, secretStart = null, secretEnd = null, saidIt = false;
   // parking spot: the floor point under the bottom-left of the section (below the links)
   const parkPoint = new THREE.Vector3();
   const findPark = () => {
@@ -96,7 +97,10 @@ function init() {
   new ResizeObserver(resize).observe(host); resize();
 
   let visible = false;
-  new IntersectionObserver(([e]) => { visible = e.isIntersecting; if (!visible) robotStart = null; }).observe(host);
+  new IntersectionObserver(([e]) => {
+    visible = e.isIntersecting;
+    if (!visible) { robotStart = parkedAt = secretStart = secretEnd = null; saidIt = false; rigged?.play('idle', 0); }
+  }).observe(host);
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const clock = new THREE.Clock();
   (function frame() {
@@ -116,7 +120,24 @@ function init() {
       const dx = tx - robot.position.x, dz = tz - robot.position.z, dist = Math.hypot(dx, dz);
       const k = lap < 1 ? 0.1 : 0.07;
       robot.position.x += dx * k; robot.position.z += dz * k;
-      const facing = dist > 0.05 ? Math.atan2(dx, dz) : 0.2;          // parked: face the visitor
+      // once parked: avatar tells the robot a secret, robot faces him and answers "Yes, sir!"
+      if (lap >= 1 && dist < 0.15 && parkedAt === null) parkedAt = t;
+      if (rigged && parkedAt !== null && secretStart === null && t - parkedAt > 1.2) {
+        rigged.play('secret', 0.4, { once: true }); secretStart = t;
+      }
+      const secretDur = rigged ? rigged.duration('secret') : 0;
+      if (secretStart !== null && secretEnd === null && t > secretStart + secretDur - 0.3) {
+        secretEnd = t; rigged.play('idle', 0.6);                    // secret told: back to idle
+      }
+      const listening = secretStart !== null && secretEnd === null;
+      // after hearing the secret the robot is so shocked it falls over, lies there a moment, then pops back up
+      const since = secretEnd !== null ? t - secretEnd : -1;
+      const fall = since < 0 ? 0 : since < 0.45 ? since / 0.45 : since < 2.6 ? 1 : since < 3.2 ? 1 - (since - 2.6) / 0.6 : 0;
+      const f = fall * fall * (3 - 2 * fall);
+      robot.rotation.z = -1.45 * f + (fall === 1 ? Math.sin(t * 9) * 0.03 : 0);   // tip over sideways (+ a little wobble)
+      robot.position.y = -0.12 * f;
+      if (since > 0 && !saidIt) { saidIt = true; window.sfx?.ding(); }      const toAvatar = Math.atan2(AVATAR_X - robot.position.x, 0 - robot.position.z);
+      const facing = dist > 0.05 ? Math.atan2(dx, dz) : (listening || (secretEnd !== null && t - secretEnd < 3.2) ? toAvatar : 0.2);
       robot.rotation.y += (facing - robot.rotation.y) * 0.1;
       wheels.forEach((w) => { w.rotation.x += dist * k * 4; });
       const blink = (t % 3.2) < 0.14 ? 0.12 : 1; eyes.forEach((e) => { e.scale.y = blink; });
