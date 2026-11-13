@@ -88,25 +88,13 @@ export function buildAvatar({ pose = 'sit' } = {}) {
   back.scale.set(1.02, 1.06, 0.98);
   const hairCap = add(head, new THREE.Mesh(new THREE.SphereGeometry(0.665, 32, 24, 0, Math.PI * 2, 0, Math.PI * 0.3), hair), 0, 0.06, 0);
   hairCap.scale.set(1.02, 1.1, 1.0);
-  // curly, messy hair: a ring of curls over the crown, fringe and sides
-  const curl = new THREE.SphereGeometry(1, 14, 10);
-  const curls = [];
-  for (let i = 0; i < 26; i++) {               // crown + top
-    const a = (i / 26) * Math.PI * 2, r = 0.32 + (i % 3) * 0.1;
-    curls.push([Math.cos(a) * r, 0.5 + (i % 2) * 0.06 + (0.42 - r) * 0.5, Math.sin(a) * r + 0.04, 0.16 + (i % 4) * 0.02]);
-  }
-  for (let i = 0; i < 9; i++) {                // fringe falling on the forehead
-    const x = -0.44 + i * 0.11;
-    curls.push([x, 0.38 - Math.abs(x) * 0.25 + (i % 2) * 0.04, -0.5 + Math.abs(x) * 0.35, 0.12 + (i % 3) * 0.02]);
-  }
-  for (let i = 0; i < 10; i++) {               // sides + back, over the ears
-    const s2 = i % 2 ? 1 : -1, k = Math.floor(i / 2);
-    curls.push([s2 * 0.6, 0.28 - k * 0.07, -0.05 + k * 0.12, 0.15]);
-  }
-  curls.forEach(([x, y, z, r], i) => {
+  // Simple curly hair: smooth cap + a few large soft curls
+  const curl = new THREE.SphereGeometry(1, 24, 16);
+  [[-0.32, 0.5, -0.22, 0.24], [0, 0.58, -0.3, 0.26], [0.32, 0.5, -0.22, 0.24],
+   [-0.2, 0.66, 0.08, 0.26], [0.2, 0.66, 0.08, 0.26], [0, 0.62, 0.32, 0.25],
+   [-0.5, 0.3, 0.05, 0.2], [0.5, 0.3, 0.05, 0.2]].forEach(([x, y, z, r]) => {
     const c = add(head, new THREE.Mesh(curl, hair), x, y, z);
-    c.scale.set(r * 1.15, r * 0.95, r);
-    c.rotation.set(i * 0.7, i * 1.3, 0);
+    c.scale.set(r, r * 0.85, r);
   });
 
   // Happy open smile (clean-shaven)

@@ -149,7 +149,7 @@ function init() {
     const t = clock.getElapsedTime();
     smooth += (progress - smooth) * (reduce || forced !== null ? 1 : 0.12);
 
-    const lift = ease(seg(smooth, 0, 0.3));
+    const lift = ease(seg(smooth, 0.12, 0.36));
     heroPanel.style.transform = `translateY(${-lift * 115}%) rotate(${-lift * 5}deg)`;
     heroPanel.style.visibility = lift >= 1 ? 'hidden' : '';
 
@@ -163,8 +163,7 @@ function init() {
     cards.forEach((c, i) => c.classList.toggle('is-visible', smooth > 0.4 + i * 0.12));
 
     // turn around: back to the viewer (as at the desk) -> facing front, centered
-    const turn = ease(seg(smooth, 0.12, 0.36));
-    spin.rotation.y = Math.PI * (1 - turn) + (reduce ? 0 : Math.sin(t * 0.4) * 0.08 * turn);
+    spin.rotation.y = reduce ? 0 : Math.sin(t * 0.4) * 0.08;   // already facing front after the desk turn
     if (lift < 0.05) return;                           // stage hidden under the hero
     uniforms.uTime.value = t;
     if (!reduce) {
