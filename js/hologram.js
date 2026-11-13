@@ -12,16 +12,23 @@ function holoMaterial(uniforms) {
     uniforms,
     transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, clipping: true,
     vertexShader: `
+      #include <common>
+      #include <skinning_pars_vertex>
       #include <clipping_planes_pars_vertex>
       varying vec3 vN; varying vec3 vW; varying vec3 vV;
       void main() {
-        vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+        #include <beginnormal_vertex>
+        #include <skinbase_vertex>
+        #include <skinnormal_vertex>
+        #include <begin_vertex>
+        #include <skinning_vertex>
+        vec4 mvPosition = modelViewMatrix * vec4(transformed, 1.0);
         #include <clipping_planes_vertex>
-        vec4 w = modelMatrix * vec4(position, 1.0);
+        vec4 w = modelMatrix * vec4(transformed, 1.0);
         vW = w.xyz;
-        vN = normalize(mat3(modelMatrix) * normal);
+        vN = normalize(mat3(modelMatrix) * objectNormal);
         vV = normalize(cameraPosition - w.xyz);
-        gl_Position = projectionMatrix * viewMatrix * w;
+        gl_Position = projectionMatrix * mvPosition;
       }`,
     fragmentShader: `
       #include <clipping_planes_pars_fragment>

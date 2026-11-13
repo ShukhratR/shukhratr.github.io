@@ -11,7 +11,7 @@ const BASE = 'img/avatar/';
 const CLIPS = { typing: 'typing.fbx', idle: 'idle.fbx', crossed: 'arms-crossed.fbx', wave: 'wave.fbx' };
 
 // "mixamorig:LeftArm" / "mixamorigLeftArm" / "LeftArm" -> "leftarm"
-const norm = (name) => name.replace(/^mixamorig[:_]?/i, '').replace(/[^a-z0-9]/gi, '').toLowerCase();
+const norm = (name) => name.replace(/^.*mixamorig\d*[:_]?/i, "").replace(/[^a-z0-9]/gi, "").toLowerCase();
 
 let assetsPromise;
 function loadAssets() {
