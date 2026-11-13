@@ -15,6 +15,7 @@ ws.onmessage = (m) => { const d = JSON.parse(m.data); if (d.id && pending[d.id])
   if (d.method === 'Runtime.exceptionThrown') logs.push('EXC: ' + d.params.exceptionDetails.exception?.description); };
 const send = (method, params = {}) => new Promise(r => { pending[++id] = r; ws.send(JSON.stringify({ id, method, params })); });
 await send('Runtime.enable'); await send('Page.enable');
+if (process.env.MOBILE) await send('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 2, mobile: true });
 await send('Page.navigate', { url }); await sleep(6000);
 const ev = async (e) => (await send('Runtime.evaluate', { expression: e, returnByValue: true })).result.value;
 console.log('docHeight', await ev('document.documentElement.scrollHeight'), 'vh', await ev('innerHeight'));

@@ -82,7 +82,7 @@ function init() {
     paper.rotation.set(-Math.PI / 2, 0, r); paper.position.set(x, 0.01, z); paper.receiveShadow = true; scene.add(paper);
   });
 
-  let robotStart = null, parkedAt = null, secretStart = null, secretEnd = null, saidIt = false;
+  let robotStart = null, parkedAt = null, secretStart = null, secretEnd = null, saidIt = false, backToIdle = false;
   // parking spot: the floor point under the bottom-left of the section (below the links)
   const parkPoint = new THREE.Vector3();
   const findPark = () => {
@@ -119,14 +119,17 @@ function init() {
       const dx = tx - robot.position.x, dz = tz - robot.position.z, dist = Math.hypot(dx, dz);
       const k = lap < 1 ? 0.1 : 0.07;
       robot.position.x += dx * k; robot.position.z += dz * k;
-      // once parked: avatar tells the robot a secret; robot faces him, then spins once and falls over (stays down)
+      // once parked: avatar tells the robot a secret, then salutes; robot faces him, then spins once and falls over (stays down)
       if (lap >= 1 && dist < 0.15 && parkedAt === null) parkedAt = t;
       if (rigged && parkedAt !== null && secretStart === null && t - parkedAt > 1.2) {
         rigged.play('secret', 0.4, { once: true }); secretStart = t;
       }
       const secretDur = rigged ? rigged.duration('secret') : 0;
       if (secretStart !== null && secretEnd === null && t > secretStart + secretDur - 0.3) {
-        secretEnd = t; rigged.play('idle', 0.6);                    // secret told: back to idle
+        secretEnd = t; rigged.play('salute', 0.4, { once: true });   // secret told: salute
+      }
+      if (secretEnd !== null && !backToIdle && t > secretEnd + rigged.duration('salute') - 0.3) {
+        backToIdle = true; rigged.play('idle', 0.6);                // then settle into the idle loop
       }
       const listening = secretStart !== null && secretEnd === null;
       // after hearing the secret the robot is so shocked it falls over, lies there a moment, then pops back up

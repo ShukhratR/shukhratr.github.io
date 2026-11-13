@@ -8,7 +8,7 @@ import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 
 const BASE = 'img/avatar/';
-const CLIPS = { typing: 'typing.fbx', idle: 'idle.fbx', secret: 'secret.fbx' };
+const CLIPS = { typing: 'typing.fbx', idle: 'idle.fbx', secret: 'secret.fbx', salute: 'salute.fbx' };
 
 // "mixamorig:LeftArm" / "mixamorigLeftArm" / "LeftArm" -> "leftarm"
 const norm = (name) => name.replace(/^.*mixamorig\d*[:_]?/i, "").replace(/[^a-z0-9]/gi, "").toLowerCase();
