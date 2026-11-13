@@ -39,44 +39,10 @@ function star(g, cx, cy, r, color) {
   for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r * 0.45 : r; g.lineTo(cx + Math.cos(a) * rr, cy + Math.sin(a) * rr); }
   g.closePath(); g.fill();
 }
-function codeTexture(variant) {
-  const c = document.createElement('canvas');
-  c.width = 512; c.height = 320;
-  const g = c.getContext('2d');
-  g.fillStyle = '#1f1d24'; g.fillRect(0, 0, 512, 320);
-  g.fillStyle = '#2b2833'; g.fillRect(0, 0, 70, 320);
-  const colors = ['#ff8400', '#7cc6ff', '#c8e86b', '#f5efe6', '#b58cff'];
-  let seed = variant * 97 + 3;
-  const rnd = () => ((seed = (seed * 9301 + 49297) % 233280) / 233280);
-  for (let y = 18; y < 300; y += 18) {
-    let x = 90 + Math.floor(rnd() * 3) * 22;
-    const parts = 1 + Math.floor(rnd() * 3);
-    for (let p = 0; p < parts; p++) {
-      const w = 30 + rnd() * 110;
-      g.fillStyle = colors[Math.floor(rnd() * colors.length)];
-      g.fillRect(x, y, w, 7);
-      x += w + 10;
-    }
-    g.fillStyle = '#4a4655'; g.fillRect(20, y, 30, 7);
-  }
-  if (variant === 1) {
-    // test results panel
-    g.fillStyle = '#26232c'; g.fillRect(300, 180, 190, 120);
-    for (let i = 0; i < 5; i++) {
-      g.fillStyle = i === 3 ? '#ff5d5d' : '#5ed68a';
-      g.beginPath(); g.arc(320, 200 + i * 20, 6, 0, Math.PI * 2); g.fill();
-      g.fillStyle = '#8c879a'; g.fillRect(335, 197 + i * 20, 90 + (i * 23) % 50, 6);
-    }
-  }
-  const t = new THREE.CanvasTexture(c);
-  t.colorSpace = THREE.SRGBColorSpace;
-  t.anisotropy = 4;
-  return t;
-}
 
 function init() {
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, innerWidth < 840 ? 1.5 : 2));
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.outputColorSpace = THREE.SRGBColorSpace;

@@ -46,7 +46,7 @@ function holoMaterial(uniforms) {
 
 function init() {
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, innerWidth < 840 ? 1.5 : 2));
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 0.95;
   host.appendChild(renderer.domElement);
@@ -123,7 +123,9 @@ function init() {
     const w = host.clientWidth, h = host.clientHeight;
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
-    camera.position.z = w / h < 1 ? 19 : 15.5;
+    const portrait = w / h < 1;
+    camera.position.z = portrait ? 23 : 15.5;
+    camera.lookAt(0, portrait ? 1.8 : 3.9, 0);         // portrait: lower target lifts the avatar into the top half
     camera.updateProjectionMatrix();
   }
   new ResizeObserver(resize).observe(host);

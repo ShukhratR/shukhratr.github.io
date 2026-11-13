@@ -333,3 +333,14 @@ img { display: block; max-width: 100%; }
 /* Contact text sits near the top of the section */
 .contact-grid { align-items: start; }
 .contact-grid .contact { padding-top: var(--space-xxl); }
+
+/* Hologram on phones: 2x2 compact cards at the bottom, avatar above, counter top-right */
+@media (max-width: 1024px) {
+  .holo { display: grid; grid-template-columns: 1fr 1fr; align-content: end; gap: 8px; padding: 0 12px 18px; }
+  .holo-l2, .holo-r2 { display: none; }
+  .holo-card { padding: 8px 10px; border-radius: 10px; }
+  .holo-card h3 { font-size: 13px; margin-bottom: 2px; }
+  .holo-card p, .holo-card li { font-size: 10.5px; line-height: 1.4; }
+  .holo-card ul { padding-left: .9em; }
+  .holo-badge { position: absolute; top: 76px; right: 14px; left: auto; bottom: auto; transform: none; font-size: 18px; order: 0; }
+}

@@ -55,3 +55,4 @@ Defaults if not given: keep existing content, decide mobile layout yourself, pus
   - For real scrolling, or to compare against a reference site, use the same scroll positions on both:
     `node tools/scroll.mjs <url> <scratchpad> <prefix> 0 700 1400 2100 2800`, then shrink the shots with `sips -Z 480` before viewing them.
     Plain `--screenshot` can't capture scrolled positions.
+  - Phone check: prefix with `MOBILE=1` (390×844 @2x) or `DPR=2` for Retina desktop.
