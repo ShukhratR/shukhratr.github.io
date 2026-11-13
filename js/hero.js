@@ -163,10 +163,28 @@ function init() {
   mouse.position.set(1.3, 3.23, 0.1);
   world.add(mouse);
 
-  // Mug
-  const mug = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.22, 0.5, 24), mat(0xff8400, { roughness: 0.4 }));
-  mug.position.set(-3, 3.42, -0.6); mug.castShadow = true;
-  world.add(mug);
+  // Blue coffee cup on a saucer, with coffee and a wisp of steam
+  const coffee = new THREE.Group();
+  const blue = mat(0x2f6fd6, { roughness: 0.3 });
+  const saucer = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.36, 0.05, 32), mat(0xffffff, { roughness: 0.3 }));
+  saucer.position.y = 0.025;
+  const cupBody = new THREE.Mesh(new THREE.CylinderGeometry(0.27, 0.21, 0.42, 32, 1, true), blue);
+  cupBody.position.y = 0.26;
+  const cupBase = new THREE.Mesh(new THREE.CircleGeometry(0.21, 32), blue);
+  cupBase.rotation.x = -Math.PI / 2; cupBase.position.y = 0.055;
+  const brew = new THREE.Mesh(new THREE.CircleGeometry(0.25, 32), mat(0x4a2a17, { roughness: 0.15 }));
+  brew.rotation.x = -Math.PI / 2; brew.position.y = 0.42;
+  const cupHandle = new THREE.Mesh(new THREE.TorusGeometry(0.12, 0.035, 10, 20), blue);
+  cupHandle.position.set(0.3, 0.27, 0);
+  coffee.add(saucer, cupBody, cupBase, brew, cupHandle);
+  coffee.traverse((o) => { if (o.isMesh) o.castShadow = true; });
+  coffee.position.set(-3, 3.2, -0.6); coffee.rotation.y = 0.6;
+  world.add(coffee);
+  const steamMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.35, depthWrite: false });
+  const steam = [0, 1, 2].map((i) => {
+    const puff = new THREE.Mesh(new THREE.SphereGeometry(0.07 + i * 0.02, 12, 10), steamMat.clone());
+    world.add(puff); return puff;
+  });
 
   // Chair
   const chair = new THREE.Group();
@@ -287,14 +305,7 @@ function init() {
     pin.position.set(x, y + 0.33, -3.3); pin.castShadow = true; world.add(pin);
   });
 
-  // Desk props: pen cup, rubber duck (debugging mascot), speaker, grid cube
-  const cup = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.25, 0.6, 24), mat(0xd9c6ad));
-  cup.position.set(-2.9, 3.47, -1.9); cup.castShadow = true; world.add(cup);
-  [[0x8fc7e8, 0.12], [0xe8707a, -0.15]].forEach(([c, tilt], i) => {
-    const pencil = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 1.0, 8), mat(c));
-    pencil.position.set(-2.9 + (i ? 0.08 : -0.06), 3.95, -1.9); pencil.rotation.z = tilt; pencil.castShadow = true;
-    world.add(pencil);
-  });
+  // Desk props: robot, speaker, puzzle cube
   // Small desk robot (original design)
   const robot = new THREE.Group();
   const shell = mat(0xf4f1ec, { roughness: 0.35 });
@@ -486,7 +497,15 @@ function init() {
     ikTargets.right.set(0.4, 3.3, 0.0); chair.worldToLocal(ikTargets.right);
     ikTargets.mouse.copy(mouse.position); ikTargets.mouse.y += 0.06; chair.worldToLocal(ikTargets.mouse);
     avatar.animate(reduceMotion ? 0 : t, ikTargets);
-    if (!reduceMotion) { updateNotes(t); updateMessage(t); }
+    if (!reduceMotion) {
+      updateNotes(t); updateMessage(t);
+      steam.forEach((p, i) => {
+        const k = ((t * 0.5 + i / 3) % 1);
+        p.position.set(-3 + Math.sin(t * 2 + i) * 0.06, 3.7 + k * 0.7, -0.6 + Math.cos(t * 1.5 + i) * 0.05);
+        p.material.opacity = 0.35 * Math.sin(k * Math.PI);
+        p.scale.setScalar(0.8 + k * 0.8);
+      });
+    }
     window.__typing = !!window.__musicPlaying && avatar.isTyping();
 
     if (!reduceMotion) {
