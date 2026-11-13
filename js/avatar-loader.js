@@ -53,12 +53,42 @@ function retarget(clip, model) {
   return new THREE.AnimationClip(clip.name, clip.duration, tracks);
 }
 
+// Rotate a bone around an axis given in model space (bone world matrices must be current).
+const _q = new THREE.Quaternion(), _pq = new THREE.Quaternion();
+function rotateModelSpace(bone, axis, angle) {
+  bone.parent.getWorldQuaternion(_pq);
+  _q.setFromAxisAngle(axis, angle);
+  bone.quaternion.premultiply(_pq.clone().invert().multiply(_q).multiply(_pq));
+  bone.updateMatrixWorld(true);
+}
+const X = new THREE.Vector3(1, 0, 0), Y = new THREE.Vector3(0, 1, 0), Z = new THREE.Vector3(0, 0, 1);
+// Static fallback poses used until Mixamo clips are provided (model faces +Z, its left is +X).
+function applyPose(model, pose) {
+  const b = {};
+  model.traverse((o) => { if (o.isBone) b[norm(o.name)] = o; });
+  model.updateMatrixWorld(true);
+  const r = (name, axis, a) => b[name] && rotateModelSpace(b[name], axis, a);
+  r('leftarm', Z, -1.25); r('rightarm', Z, 1.25);               // arms down from T-pose
+  if (pose === 'sit' || pose === 'type') {
+    r('leftupleg', X, -1.5); r('rightupleg', X, -1.5);          // thighs forward
+    r('leftleg', X, 1.5); r('rightleg', X, 1.5);                // shins down
+    r('leftarm', X, -0.9); r('rightarm', X, -0.9);              // upper arms forward
+    r('leftforearm', X, -0.9); r('rightforearm', X, -0.9);      // forearms to the keyboard
+  } else if (pose === 'crossed') {
+    r('leftarm', X, -0.35); r('rightarm', X, -0.35);            // elbows slightly forward
+    r('leftforearm', X, -1.55); r('rightforearm', X, -1.55);    // forearms forward
+    r('leftforearm', Y, -1.25); r('rightforearm', Y, 1.25);     // fold across the chest
+  } else {
+    r('leftforearm', X, -0.15); r('rightforearm', X, -0.15);    // relaxed
+  }
+}
+
 /**
- * @param {{ height?: number, animation?: string }} opts
+ * @param {{ height?: number, animation?: string, pose?: string }} opts
  *   height: target model height in scene units; animation: clip to start with.
  * @returns {Promise<null | { model, mixer, play(name, fade?): void, update(dt): void, has(name): boolean }>}
  */
-export async function loadRiggedAvatar({ height = 6.2, animation = 'idle' } = {}) {
+export async function loadRiggedAvatar({ height = 6.2, animation = 'idle', pose = 'stand' } = {}) {
   const assets = await loadAssets();
   if (!assets) return null;
 
@@ -97,6 +127,7 @@ export async function loadRiggedAvatar({ height = 6.2, animation = 'idle' } = {}
     },
     update(dt) { mixer.update(dt); },
   };
-  api.play(actions[animation] ? animation : Object.keys(actions)[0]);
+  if (actions[animation]) api.play(animation);
+  else applyPose(model, pose);   // no clip yet: hold a natural static pose instead of a T-pose
   return api;
 }

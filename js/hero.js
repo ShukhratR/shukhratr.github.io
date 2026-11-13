@@ -190,7 +190,7 @@ function init() {
   const avatar = buildAvatar();
   chair.add(avatar.group);
   let rigged = null;   // real avatar from img/avatar/me.glb (+ Mixamo "typing"), if provided
-  loadRiggedAvatar({ height: 6.6, animation: 'typing' }).then((r) => {
+  loadRiggedAvatar({ height: 6.6, animation: 'typing', pose: 'sit' }).then((r) => {
     if (!r) return;
     rigged = r;
     avatar.group.visible = false;
