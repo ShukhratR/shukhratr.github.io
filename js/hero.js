@@ -219,7 +219,7 @@ function init() {
 
   // Second shelf: gold trophy cup with a "HALA MADRID" plaque
   const shelf2 = rbox(1.7, 0.15, 0.8, 0.05, woodMat);
-  shelf2.position.set(-4.5, 5.4, -3.2); world.add(shelf2);
+  shelf2.position.set(5.2, 5.4, -3.2); world.add(shelf2);
   const gold = mat(0xe6b422, { metalness: 0.85, roughness: 0.25 });
   const trophy = new THREE.Group();
   const cupPts = [];
@@ -239,7 +239,7 @@ function init() {
   base2.position.y = 0.21;
   trophy.add(cupMesh, stem, base1, base2);
   trophy.traverse((o) => { if (o.isMesh) o.castShadow = true; });
-  trophy.position.set(-4.5, 5.48, -3.15);
+  trophy.position.set(5.2, 5.48, -3.15);
   world.add(trophy);
   const plaqueTex = canvasTex(512, 96, (g, w, h) => {
     g.fillStyle = '#1d2a5b'; g.fillRect(0, 0, w, h);
@@ -248,7 +248,7 @@ function init() {
     g.fillText('HALA MADRID', w / 2, 66);
   });
   const plaque = new THREE.Mesh(new THREE.PlaneGeometry(1.25, 0.24), new THREE.MeshStandardMaterial({ map: plaqueTex, roughness: 0.6 }));
-  plaque.position.set(-4.5, 5.2, -2.79);
+  plaque.position.set(5.2, 5.2, -2.79);
   world.add(plaque);
 
   // Pin board
@@ -338,28 +338,7 @@ function init() {
   });
 
   // Picture frame on the right wall
-  const pennantTex = canvasTex(256, 512, (g, w, h) => {
-    g.fillStyle = '#ffffff'; g.fillRect(0, 0, w, h);
-    g.fillStyle = '#d4a017'; g.fillRect(0, 0, w, 26);           // gold header band
-    g.fillStyle = '#4b2a7b'; g.fillRect(0, 26, w, 10);          // purple trim
-    g.save(); g.translate(w / 2, 250); g.rotate(-Math.PI / 2);
-    g.fillStyle = '#1d2a5b'; g.textAlign = 'center';
-    g.font = '800 64px Urbanist, sans-serif'; g.fillText('HALA', 0, -10);
-    g.fillText('MADRID', 0, 62);
-    g.restore();
-  });
-  const pShape = new THREE.Shape();
-  pShape.moveTo(-0.65, 1.2); pShape.lineTo(0.65, 1.2); pShape.lineTo(0, -1.4); pShape.closePath();
-  const pGeo = new THREE.ShapeGeometry(pShape);
-  const uv = pGeo.attributes.uv;               // map shape coords to 0..1 UVs
-  for (let i = 0; i < uv.count; i++) {
-    const x = pGeo.attributes.position.getX(i), y = pGeo.attributes.position.getY(i);
-    uv.setXY(i, (x + 0.65) / 1.3, (y + 1.4) / 2.6);
-  }
-  const pennant = new THREE.Mesh(pGeo, new THREE.MeshStandardMaterial({ map: pennantTex, side: THREE.DoubleSide, roughness: 0.85 }));
-  pennant.position.set(5.2, 5.6, -3.42); pennant.rotation.z = 0.06; world.add(pennant);
-  const rod = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 1.6, 8), mat(0xc9b28a));
-  rod.rotation.z = Math.PI / 2; rod.position.set(5.2, 6.82, -3.4); world.add(rod);
+
 
 
 
