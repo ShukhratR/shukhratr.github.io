@@ -3,7 +3,7 @@ import { writeFileSync } from 'node:fs';
 const [,, url, outDir, prefix, ...ys] = process.argv;  // node tools/scroll.mjs <url> <outDir> <prefix> <y1> <y2> ...
 const chrome = spawn('/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
   ['--headless=new','--remote-debugging-port=9333','--use-angle=swiftshader','--enable-unsafe-swiftshader',
-   '--hide-scrollbars','--window-size=1440,900',`--user-data-dir=${outDir}/prof`,'about:blank'], { stdio: 'ignore' });
+   '--hide-scrollbars','--window-size=1440,900',...(process.env.DPR ? ['--force-device-scale-factor=' + process.env.DPR] : []),`--user-data-dir=${outDir}/prof`,'about:blank'], { stdio: 'ignore' });
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 let target;
 for (let i = 0; i < 40 && !target; i++) { await sleep(250); try { target = (await (await fetch('http://127.0.0.1:9333/json')).json()).find(t => t.type === 'page'); } catch {} }

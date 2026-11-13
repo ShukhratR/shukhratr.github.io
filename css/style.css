@@ -247,6 +247,7 @@ img { display: block; max-width: 100%; }
   font-family: "Space Mono", monospace; color: #e1f5ff;
 }
 .holo-scene { position: absolute; inset: 0; }
+.holo-scene canvas { width: 100% !important; height: 100% !important; display: block; }
 .holo-card {
   position: absolute; z-index: 2;
   border: 2px solid rgba(129,189,216,.7); border-radius: var(--radius-md);

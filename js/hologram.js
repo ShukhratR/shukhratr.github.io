@@ -45,7 +45,7 @@ function init() {
   host.appendChild(renderer.domElement);
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
-  camera.position.set(0, 6.8, 13);
+  camera.position.set(0, 7.2, 15.5);
   camera.lookAt(0, 3.9, 0);
 
   const uniforms = { uTime: { value: 0 }, uColor: { value: new THREE.Color(0x4cc3ff) } };
@@ -114,7 +114,7 @@ function init() {
     const w = host.clientWidth, h = host.clientHeight;
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
-    camera.position.z = w / h < 1 ? 17 : 12.5;
+    camera.position.z = w / h < 1 ? 19 : 15.5;
     camera.updateProjectionMatrix();
   }
   new ResizeObserver(resize).observe(host);
