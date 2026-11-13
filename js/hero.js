@@ -159,7 +159,7 @@ function init() {
   kb.position.set(0, 3.22, -0.4);
   world.add(kb);
   const mouse = rbox(0.3, 0.12, 0.45, 0.12, mat(0xeeeeee));
-  mouse.position.set(1.6, 3.23, -0.35);
+  mouse.position.set(1.35, 3.23, -0.2);
   world.add(mouse);
 
   // Mug
@@ -454,7 +454,9 @@ function init() {
     }
     camera.position.set(camBase.x + parallax.x * 1.2, camBase.y - parallax.y * 0.8, camBase.z);
     camera.lookAt(target);
-    avatar.animate(reduceMotion ? 0 : t, 0, 0);
+    avatar.animate(reduceMotion ? 0 : t, 0);
+    mouse.position.x = 1.35 + avatar.mouseOffset.x;
+    mouse.position.z = -0.2 + avatar.mouseOffset.z;
     if (!reduceMotion) { updateNotes(t); updateMessage(t); }
     window.__typing = !!window.__musicPlaying && avatar.isTyping();
 
