@@ -209,33 +209,28 @@ function init() {
 
   // Chair
   const chair = new THREE.Group();
-  const leather = mat(0x1f1f24, { roughness: 0.55 });
-  const accentC = mat(0xff8400, { roughness: 0.45 });
-  const seat = rbox(1.8, 0.32, 1.7, 0.16, leather); seat.position.y = 2.1;
-  [-0.82, 0.82].forEach((x) => {                         // seat side bolsters
-    const bol = rbox(0.22, 0.3, 1.6, 0.1, leather); bol.position.set(x, 2.3, 0); chair.add(bol);
+  // Simple office chair in light tones (contrasts with the dark outfit)
+  const fabric = mat(0xd9d6cf, { roughness: 0.85 });
+  const frameW = mat(0xf4f3ef, { roughness: 0.4 });
+  const steel = mat(0xb7b9bd, { metalness: 0.7, roughness: 0.3 });
+  const seat = rbox(1.75, 0.28, 1.65, 0.14, fabric); seat.position.y = 2.1;
+  const seatShell = rbox(1.65, 0.12, 1.55, 0.06, frameW); seatShell.position.y = 1.93;
+  const back = rbox(1.6, 2.1, 0.18, 0.16, fabric); back.position.set(0, 3.45, 0.92); back.rotation.x = -0.14;
+  const backFrame = rbox(1.7, 2.2, 0.08, 0.06, frameW); backFrame.position.set(0, 3.45, 1.04); backFrame.rotation.x = -0.14;
+  const spine = rbox(0.18, 1.3, 0.12, 0.05, frameW); spine.position.set(0, 2.45, 1.0);
+  [-1, 1].forEach((sd) => {                                  // armrests
+    const post = rbox(0.1, 0.55, 0.1, 0.04, frameW); post.position.set(sd * 0.92, 2.45, 0.2); chair.add(post);
+    const pad = rbox(0.2, 0.08, 0.75, 0.04, mat(0x9a9894, { roughness: 0.7 })); pad.position.set(sd * 0.92, 2.75, 0.15); chair.add(pad);
   });
-  const back = rbox(1.6, 2.9, 0.3, 0.2, leather); back.position.set(0, 3.75, 0.88); back.rotation.x = -0.12;
-  [-0.72, 0.72].forEach((x) => {                         // backrest wings + orange racing stripes
-    const wing = rbox(0.24, 2.6, 0.4, 0.1, leather); wing.position.set(x, 3.6, 0.82); wing.rotation.x = -0.12; chair.add(wing);
-    const stripe = rbox(0.12, 2.5, 0.05, 0.02, accentC); stripe.position.set(x * 0.55, 3.75, 0.71); stripe.rotation.x = -0.12; chair.add(stripe);
-  });
-  const pillow = rbox(0.9, 0.35, 0.22, 0.12, accentC); pillow.position.set(0, 4.8, 0.86); pillow.rotation.x = -0.12;
-  const lumbar = rbox(0.9, 0.35, 0.22, 0.12, accentC); lumbar.position.set(0, 2.75, 0.74);
-  [-1, 1].forEach((sd) => {                              // armrests
-    const post = rbox(0.12, 0.6, 0.12, 0.04, leather); post.position.set(sd * 0.98, 2.5, 0.15); chair.add(post);
-    const pad = rbox(0.24, 0.1, 0.8, 0.05, leather); pad.position.set(sd * 0.98, 2.82, 0.1); chair.add(pad);
-  });
-  const metal = mat(0x8a8790, { metalness: 0.7, roughness: 0.3 });
-  const gas = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.12, 1.3, 16), metal); gas.position.y = 1.3; chair.add(gas);
-  for (let i = 0; i < 5; i++) {                          // 5-star base with casters
+  const gas = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.11, 1.25, 16), steel); gas.position.y = 1.25;
+  chair.add(seat, seatShell, back, backFrame, spine, gas);
+  for (let i = 0; i < 5; i++) {                              // white 5-star base, dark casters
     const a5 = i / 5 * Math.PI * 2;
-    const arm = rbox(0.14, 0.1, 1.0, 0.04, leather);
-    arm.position.set(Math.sin(a5) * 0.5, 0.45, Math.cos(a5) * 0.5); arm.rotation.y = a5; chair.add(arm);
-    const wheel = new THREE.Mesh(new THREE.SphereGeometry(0.11, 12, 10), leather);
-    wheel.position.set(Math.sin(a5) * 0.95, 0.2, Math.cos(a5) * 0.95); chair.add(wheel);
+    const arm = rbox(0.13, 0.09, 0.95, 0.04, frameW);
+    arm.position.set(Math.sin(a5) * 0.47, 0.42, Math.cos(a5) * 0.47); arm.rotation.y = a5; chair.add(arm);
+    const wheel = new THREE.Mesh(new THREE.SphereGeometry(0.1, 12, 10), mat(0x3a3a40));
+    wheel.position.set(Math.sin(a5) * 0.9, 0.18, Math.cos(a5) * 0.9); chair.add(wheel);
   }
-  chair.add(seat, back, pillow, lumbar);
   chair.traverse((o) => { if (o.isMesh) o.castShadow = true; });
   chair.position.set(0.2, 0, 1.25);
   chair.rotation.y = 0.25;
