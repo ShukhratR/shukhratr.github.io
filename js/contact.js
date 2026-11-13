@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { buildAvatar, mat, rbox } from './avatar.js';
+import { loadRiggedAvatar } from './avatar-loader.js';
 
 const host = document.getElementById('contact-scene');
 if (host) { try { init(); } catch { host.remove(); } }
@@ -37,6 +38,14 @@ function init() {
   avatar.group.rotation.y = Math.PI - 0.15;
   avatar.crossArms();
   scene.add(avatar.group);
+  let rigged = null;
+  loadRiggedAvatar({ height: 6.4, animation: 'crossed' }).then((r) => {
+    if (!r) return;
+    rigged = r;
+    avatar.group.visible = false;
+    r.model.rotation.y = -0.15;
+    scene.add(r.model);
+  });
 
   // QA props
   const clip = new THREE.Group();
@@ -100,6 +109,7 @@ function init() {
     requestAnimationFrame(frame);
     if (!visible) return;
     const t = clock.getElapsedTime();
+    if (rigged) rigged.update(Math.min(0.05, t - (frame.last ?? t))); frame.last = t;
     if (!reduce) {
       avatar.head.rotation.y = Math.sin(t * 0.6) * 0.15;
       avatar.head.rotation.z = Math.sin(t * 0.8) * 0.04;

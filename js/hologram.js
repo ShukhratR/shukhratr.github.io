@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { buildAvatar } from './avatar.js';
+import { loadRiggedAvatar } from './avatar-loader.js';
 
 const host = document.getElementById('holo-scene');
 if (host) {
@@ -65,6 +66,14 @@ function init() {
   const ghost = buildAvatar({ pose: 'stand' });
   ghost.group.traverse((o) => { if (o.isMesh) o.material = holo; });
   [colored, ghost].forEach((a) => { a.group.rotation.y = Math.PI; spin.add(a.group); });
+  const riggedPair = [];
+  Promise.all([loadRiggedAvatar({ height: 6.4 }), loadRiggedAvatar({ height: 6.4 })]).then(([c, g]) => {
+    if (!c || !g) return;
+    colored.group.visible = false; ghost.group.visible = false;
+    c.model.traverse((o) => { if (o.isMesh) { o.material = o.material.clone(); o.material.clippingPlanes = [keepAbove]; } });
+    g.model.traverse((o) => { if (o.isMesh) o.material = holo; });
+    [c, g].forEach((r) => { spin.add(r.model); riggedPair.push(r); });
+  });
 
   scene.add(new THREE.HemisphereLight(0xfff4e6, 0x3a5fae, 1.5));
   const key = new THREE.DirectionalLight(0xfff1dc, 2.4);
@@ -144,8 +153,9 @@ function init() {
   readScroll();
 
   const clock = new THREE.Clock();
-  (function frame() {
-    requestAnimationFrame(frame);
+  const frame = { last: null };
+  (function loop() {
+    requestAnimationFrame(loop);
     const t = clock.getElapsedTime();
     smooth += (progress - smooth) * (reduce || forced !== null ? 1 : 0.12);
 
@@ -166,6 +176,7 @@ function init() {
     spin.rotation.y = reduce ? 0 : Math.sin(t * 0.4) * 0.08;   // already facing front after the desk turn
     if (lift < 0.05) return;                           // stage hidden under the hero
     uniforms.uTime.value = t;
+    riggedPair.forEach((r) => r.update(Math.min(0.05, t - (frame.last ?? t)))); frame.last = t;
     if (!reduce) {
       spin.position.y = 0.55 + Math.sin(t * 1.5) * 0.05;
     }

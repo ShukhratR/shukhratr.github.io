@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { buildAvatar, mat, rbox } from './avatar.js';
+import { loadRiggedAvatar } from './avatar-loader.js';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 
 const host = document.getElementById('hero-scene');
@@ -188,6 +189,15 @@ function init() {
 
   const avatar = buildAvatar();
   chair.add(avatar.group);
+  let rigged = null;   // real avatar from img/avatar/me.glb (+ Mixamo "typing"), if provided
+  loadRiggedAvatar({ height: 6.6, animation: 'typing' }).then((r) => {
+    if (!r) return;
+    rigged = r;
+    avatar.group.visible = false;
+    r.model.rotation.y = Math.PI;        // model faces +Z, the desk is at -Z
+    r.model.position.set(0, -1.2, -0.15); // drop the hips onto the seat
+    chair.add(r.model);
+  });
 
   // Plant
   const plant = new THREE.Group();
@@ -449,6 +459,7 @@ function init() {
     requestAnimationFrame(frame);
     if (!visible) return;
     const t = clock.getElapsedTime();
+    if (rigged) rigged.update(Math.min(0.05, t - (frame.last ?? t))); frame.last = t;
     if (!reduceMotion) {
       parallax.x += (pointer.x - parallax.x) * 0.05;
       parallax.y += (pointer.y - parallax.y) * 0.05;

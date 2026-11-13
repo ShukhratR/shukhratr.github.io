@@ -7,6 +7,7 @@ Static GitHub Pages site for Shukhrat Rustamov (Senior QA Automation Engineer). 
 - `css/tokens.css` — design tokens (colors, spacing, radii, type scale, easing). Use these and never hard-code new values.
 - `css/style.css` — every component style; hologram styles are at the bottom (`.holo*`)
 - `js/avatar.js` — `buildAvatar({pose:'sit'|'stand'})`, plus the shared `mat()` / `rbox()` helpers
+- `js/avatar-loader.js` — `loadRiggedAvatar({height, animation})` loads `img/avatar/me.glb` and the Mixamo FBX clips (retargets them by bone name, rotations only) and falls back to `buildAvatar` when the files are missing; used by the desk, hologram and contact scenes
 - `js/hero.js` — desk scene with idle typing and mouse parallax (no scroll logic)
 - `js/hologram.js` — scroll story controller for `.story-track` (520vh) and sticky `.stage`: the hero panel lifts away, a clip-plane scan turns the colour avatar into a hologram, the 000→100 counter, card reveals and the dark header
 - `js/main.js` — scroll reveal (`.reveal`), back-to-top, footer year, active nav link
