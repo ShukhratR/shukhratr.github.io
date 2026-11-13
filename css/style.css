@@ -327,3 +327,9 @@ img { display: block; max-width: 100%; }
 .chip img { width: 20px; height: 20px; object-fit: contain; }
 .chip-badge { width: 20px; height: 20px; border-radius: 6px; display: grid; place-items: center; color: #fff; font-size: 9px; font-weight: 800; letter-spacing: 0; }
 .chip:hover img { filter: brightness(1.15); }
+
+/* Contact scene */
+.contact-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); align-items: center; gap: var(--space-lg); }
+.contact-scene { height: min(70vh, 620px); }
+.contact-scene canvas { width: 100% !important; height: 100% !important; display: block; }
+@media (max-width: 840px) { .contact-grid { grid-template-columns: 1fr; } .contact-scene { height: 420px; } }

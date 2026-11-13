@@ -198,7 +198,13 @@ export function buildAvatar({ pose = 'sit' } = {}) {
     head.rotation.z = Math.sin(t * 0.7) * 0.03;
     api.mouseAmt = mouseAmt;
   }
-  const api = { group, head, animate, isTyping: () => typing, mouseAmt: 0, reset() {
+  const api = { group, head, animate, isTyping: () => typing, mouseAmt: 0,
+    // arms folded across the chest (targets in avatar-group space)
+    crossArms() {
+      reach(armL, new THREE.Vector3(0.42, 3.12, -0.5));
+      reach(armR, new THREE.Vector3(-0.42, 3.24, -0.56));
+    },
+    reset() {
     [armL, armR].forEach((a) => { a.shoulder.rotation.set(0, 0, 0); a.elbow.rotation.set(0, 0, 0); });
   } };
   return api;

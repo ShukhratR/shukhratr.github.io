@@ -45,7 +45,7 @@ Status: ✅ done · 🟡 partial · ⬜ to do
 ## 6. Contact
 - 🟡 "Let's work together!" + social buttons (Mail, LinkedIn, GitHub, Phone)
 - ⬜ **Round icon-only social buttons**, like the reference
-- ⬜ **Contact 3D scene** in a rounded beige panel: the avatar standing with arms crossed in an original QA setting (sticky-note test cases, a "PASSED" stamp, a coffee mug, a rubber duck), not the reference's moving boxes
+- ✅ **Contact 3D scene** in a rounded beige panel: the avatar standing with arms crossed in an original QA setting (sticky-note test cases, a "PASSED" stamp, a coffee mug, a rubber duck), not the reference's moving boxes
 - ⬜ Menu switches to "Contact" active here
 
 ## 7. Footer
