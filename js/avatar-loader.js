@@ -154,6 +154,7 @@ export async function loadRiggedAvatar({ height = 6.2, animation = 'idle', pose 
         },
       };
     },
+    bone(name) { let f = null; model.traverse((o) => { if (!f && o.isBone && norm(o.name) === name) f = o; }); return f; },
     // world position of a bone (e.g. 'lefthand')
     bonePosition(name, target = new THREE.Vector3()) {
       let found = null;

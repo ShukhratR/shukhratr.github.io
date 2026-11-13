@@ -243,7 +243,8 @@ function init() {
 
   const avatar = buildAvatar();
   chair.add(avatar.group);
-  let rigged = null, layers = null;   // real avatar from img/avatar/me.glb (+ Mixamo "typing"), if provided
+  let rigged = null, layers = null, rHand = null;
+  const handPos = new THREE.Vector3(); let reachBest = -Infinity, calibrated = false;   // real avatar from img/avatar/me.glb (+ Mixamo "typing"), if provided
   loadRiggedAvatar({ height: 6.6, animation: 'typing', pose: 'sit' }).then((r) => {
     if (!r) return;
     rigged = r;
@@ -262,9 +263,10 @@ function init() {
       const lowest = Math.min(L.y, R.y);
       r.model.position.y += deskTop + 0.12 - lowest;          // hands rest just above the keys
       kb.position.set(L.x + 0.55, 3.2, L.z - 0.22);
-      mouseBase.set(R.x, 3.22, R.z - 0.22);
+      calibrated = true;
     };
     setTimeout(calibrate, 1200);
+    rHand = r.bone('righthand');
   });
 
   // Plant
@@ -320,7 +322,8 @@ function init() {
     m.position.set(-(box.min.x + size.x / 2) * k, -box.min.y * k, -(box.min.z + size.z / 2) * k);
     m.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
     catModel = new THREE.Group(); catModel.add(m);
-    catModel.position.set(-3.2, 0.2, 2.6); catModel.rotation.y = -Math.PI / 4;   // side-on to the camera
+    catModel.position.set(-5.2, 0.2, 3.9);
+    catModel.rotation.y = Math.atan2(0.2 - (-5.2), 1.25 - 3.9);   // face the avatar
     world.add(catModel);
   });
 
@@ -550,6 +553,11 @@ function init() {
     const turn = turnSmooth * turnSmooth * (3 - 2 * turnSmooth);
 
     // world-space hand targets -> chair-local space for the IK
+    if (rHand && calibrated) {                     // learn where the right hand reaches furthest (right + back)
+      rHand.getWorldPosition(handPos);
+      const score = handPos.x - handPos.z;
+      if (score > reachBest) { reachBest = score; mouseBase.set(handPos.x, 3.22, handPos.z); }
+    }
     const ma = rigged ? 0 : avatar.mouseAmt;
     mouse.position.set(mouseBase.x + (Math.sin(t * 2.1) * 0.12 + Math.sin(t * 5.3) * 0.03) * ma, 3.22, mouseBase.z + Math.cos(t * 1.7) * 0.1 * ma);
     chair.updateMatrixWorld();

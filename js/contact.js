@@ -74,7 +74,7 @@ function init() {
   const ant = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.3, 8), mat(0x8a8790)); ant.position.y = 1.7;
   robot.add(b, h, face, bulb, ant);
   robot.traverse((o) => { if (o.isMesh && o.material !== eyeMat) o.castShadow = true; });
-  robot.position.set(AVATAR_X + 1.9, 0, 0.6); robot.rotation.y = 0.45; robot.scale.setScalar(1.15); scene.add(robot);
+  robot.position.set(-2, 0, 1.5); robot.rotation.y = 0.45; robot.scale.setScalar(1.15); scene.add(robot);
 
   // scattered bug reports on the floor
   [[-1.8, 2.6, 0.4, '#fff3c4'], [2.2, 2.9, -0.3, '#ffffff'], [-3.6, 0.2, 0.9, '#cfe3ff'], [5.4, -0.6, 0.2, '#ffffff']].forEach(([x, z, r, c]) => {
@@ -120,10 +120,10 @@ function init() {
       let tx, tz;
       if (lap < 1) {
         const a = lap * Math.PI * 2;
-        tx = AVATAR_X + Math.cos(a) * 1.9; tz = 0.4 + Math.sin(a) * 1.5;
+        tx = parkPoint.x + Math.cos(a) * 1.4; tz = parkPoint.z - 0.6 + Math.sin(a) * 0.9;
       } else { tx = parkPoint.x; tz = parkPoint.z; }
       const dx = tx - robot.position.x, dz = tz - robot.position.z, dist = Math.hypot(dx, dz);
-      const k = lap < 1 ? 0.12 : 0.07;
+      const k = lap < 1 ? 0.1 : 0.07;
       robot.position.x += dx * k; robot.position.z += dz * k;
       const facing = dist > 0.05 ? Math.atan2(dx, dz) : 0.2;          // parked: face the visitor
       robot.rotation.y += (facing - robot.rotation.y) * 0.1;

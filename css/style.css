@@ -357,3 +357,7 @@ img { display: block; max-width: 100%; }
   .contact-grid { min-height: 0; }
   .contact-scene { position: relative; inset: auto; height: 420px; }
 }
+
+/* Contact text sits near the top of the section */
+.contact-grid { align-items: start; }
+.contact-grid .contact { padding-top: var(--space-xxl); }
