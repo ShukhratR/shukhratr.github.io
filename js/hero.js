@@ -197,6 +197,17 @@ function init() {
     r.model.rotation.y = Math.PI;        // model faces +Z, the desk is at -Z
     r.model.position.set(0, -1.2, -0.15); // drop the hips onto the seat
     chair.add(r.model);
+    // after the typing loop has run briefly, line the keyboard + mouse up under the real hands
+    setTimeout(() => {
+      chair.updateMatrixWorld(true);
+      const L = r.bonePosition('lefthand'), R = r.bonePosition('righthand');
+      if (!L || !R) return;
+      const deskTop = 3.2;
+      const lowest = Math.min(L.y, R.y);
+      r.model.position.y += deskTop + 0.12 - lowest;          // hands rest just above the keys
+      kb.position.set((L.x + R.x) / 2, 3.22, (L.z + R.z) / 2);
+      mouseBase.set(R.x + 0.85, 3.23, R.z + 0.1);
+    }, 1200);
   });
 
   // Plant
@@ -452,6 +463,7 @@ function init() {
     msg.position.y = 6.3 + Math.sin(age * 4) * 0.04;
   }
 
+  const mouseBase = new THREE.Vector3(1.3, 3.23, 0.1);
   const ikTargets = { left: new THREE.Vector3(), right: new THREE.Vector3(), mouse: new THREE.Vector3() };
   const parallax = { x: 0, y: 0 };
   const clock = new THREE.Clock();
@@ -467,8 +479,8 @@ function init() {
     camera.position.set(camBase.x + parallax.x * 1.2, camBase.y - parallax.y * 0.8, camBase.z);
     camera.lookAt(target);
     // world-space hand targets -> chair-local space for the IK
-    const ma = avatar.mouseAmt;
-    mouse.position.set(1.3 + (Math.sin(t * 2.1) * 0.12 + Math.sin(t * 5.3) * 0.03) * ma, 3.23, 0.1 + Math.cos(t * 1.7) * 0.1 * ma);
+    const ma = rigged ? 0 : avatar.mouseAmt;
+    mouse.position.set(mouseBase.x + (Math.sin(t * 2.1) * 0.12 + Math.sin(t * 5.3) * 0.03) * ma, 3.23, mouseBase.z + Math.cos(t * 1.7) * 0.1 * ma);
     chair.updateMatrixWorld();
     ikTargets.left.set(-0.4, 3.3, 0.0); chair.worldToLocal(ikTargets.left);
     ikTargets.right.set(0.4, 3.3, 0.0); chair.worldToLocal(ikTargets.right);

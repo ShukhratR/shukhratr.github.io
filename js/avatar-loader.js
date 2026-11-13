@@ -121,13 +121,21 @@ export async function loadRiggedAvatar({ height = 6.2, animation = 'idle', pose 
     play(name, fade = 0.4) {
       const next = actions[name];
       if (!next || next === current) return;
-      next.reset().setEffectiveWeight(1).fadeIn(fade).play();
+      next.reset().setEffectiveWeight(1);
+      if (fade > 0) next.fadeIn(fade);
+      next.play();
       if (current) current.fadeOut(fade);
       current = next;
     },
     update(dt) { mixer.update(dt); },
+    // world position of a bone (e.g. 'lefthand')
+    bonePosition(name, target = new THREE.Vector3()) {
+      let found = null;
+      model.traverse((o) => { if (!found && o.isBone && norm(o.name) === name) found = o; });
+      return found ? found.getWorldPosition(target) : null;
+    },
   };
-  if (actions[animation]) api.play(animation);
+  if (actions[animation]) api.play(animation, 0);   // start instantly: no fade from the T-pose
   else applyPose(model, pose);   // no clip yet: hold a natural static pose instead of a T-pose
   return api;
 }
