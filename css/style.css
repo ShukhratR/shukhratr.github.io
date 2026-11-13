@@ -274,7 +274,7 @@ img { display: block; max-width: 100%; }
 .holo-skills { right: 17%; top: 33%; }
 .holo-skills::after { right: 100%; }
 .holo-badge {
-  position: absolute; left: 50%; bottom: 7%; transform: translateX(-50%); z-index: 2;
+  position: absolute; left: 50%; bottom: 2.5%; transform: translateX(-50%); z-index: 2;
   background: #0a1c4a; padding: 2px 12px; border-radius: 4px; font-size: 28px; font-weight: 700; letter-spacing: .08em;
 }
 @media (max-width: 1024px) {

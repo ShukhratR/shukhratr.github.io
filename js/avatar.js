@@ -22,8 +22,8 @@ export function cap(w, h, material) {
 
 export function buildAvatar({ pose = 'sit' } = {}) {
   // Softer, lighter palette: charcoal blazer reads as "black" without crushing to pure dark
-  const SKIN = 0xf1c6a2, HAIR = 0x1f1a17, BLAZER = 0x3f3f46, TEE = 0x3f3f46,
-        PANTS = 0x26262b, SHOE = 0xfbfaf7, SOLE = 0x3a3a40;
+  const SKIN = 0xf1c6a2, HAIR = 0x4a2c1d, BLAZER = 0x3f3f46, TEE = 0x3f3f46,
+        PANTS = 0x3d5f93, SHOE = 0xfbfaf7, SOLE = 0x3a3a40;
   const skin = mat(SKIN, { roughness: 0.5 });
   const hair = mat(HAIR, { roughness: 0.6 });
   const blazer = mat(BLAZER, { roughness: 0.55 });
@@ -143,10 +143,12 @@ export function buildAvatar({ pose = 'sit' } = {}) {
     // Typing pose blends into a relaxed pose as the chair turns
     const typeAmt = 1 - turn;
     [armL, armR].forEach((a, i) => {
-      const tap = Math.sin(t * 14 + i * 1.7) * 0.06 * typeAmt;
-      a.shoulder.rotation.x = 0.85 * typeAmt + 0.35 * turn + tap;
-      a.shoulder.rotation.z = (i ? -1 : 1) * (0.08 + 0.1 * turn);
-      a.elbow.rotation.x = 0.75 * typeAmt + 1.1 * turn;
+      // forearms rest forward on the keyboard; gentle alternating taps
+      const tap = Math.max(0, Math.sin(t * 7 + i * Math.PI)) * 0.05 * typeAmt;
+      a.shoulder.rotation.x = 1.2 * typeAmt + 0.35 * turn;
+      a.shoulder.rotation.z = (i ? 1 : -1) * 0.12 * typeAmt + (i ? -1 : 1) * 0.18 * turn;
+      a.elbow.rotation.x = (0.28 - tap) * typeAmt + 1.1 * turn;
+      a.elbow.rotation.z = (i ? -1 : 1) * 0.15 * typeAmt;
     });
     // Wave with the right hand
     if (wave > 0) {
@@ -155,13 +157,11 @@ export function buildAvatar({ pose = 'sit' } = {}) {
       armR.shoulder.rotation.z = 0.3 + 2.0 * w;
       armR.elbow.rotation.x = 0;
       armR.elbow.rotation.z = (0.6 + Math.sin(t * 9) * 0.35) * w;
-    } else {
-      armR.elbow.rotation.z = 0;
     }
     // Head: small typing nod, then a friendly tilt toward the viewer
-    head.rotation.x = Math.sin(t * 1.3) * 0.04 * typeAmt - 0.08 * turn;
+    head.rotation.x = Math.sin(t * 0.9) * 0.025 * typeAmt - 0.08 * turn;
     head.rotation.z = Math.sin(t * 0.7) * 0.03 + 0.12 * wave;
-    head.rotation.y = Math.sin(t * 0.5) * 0.08 * typeAmt;
+    head.rotation.y = Math.sin(t * 0.35) * 0.06 * typeAmt;
   }
 
   return { group, head, animate };
