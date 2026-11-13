@@ -22,7 +22,7 @@ export function cap(w, h, material) {
 
 export function buildAvatar({ pose = 'sit' } = {}) {
   // Softer, lighter palette: charcoal blazer reads as "black" without crushing to pure dark
-  const SKIN = 0xb97a52, HAIR = 0x3a2416, BLAZER = 0x2f3440, TEE = 0x2f3440,
+  const SKIN = 0xe0ad86, HAIR = 0x3a2416, BLAZER = 0x2f3440, TEE = 0x2f3440,
         PANTS = 0x3d5f93, SHOE = 0xfbfaf7, SOLE = 0x3a3a40;
   const skin = mat(SKIN, { roughness: 0.5 });
   const strands = (() => {
@@ -39,7 +39,7 @@ export function buildAvatar({ pose = 'sit' } = {}) {
     t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(3, 2);
     return t;
   })();
-  const hair = new THREE.MeshStandardMaterial({ color: 0x3a2416, roughness: 0.45 });
+  const hair = new THREE.MeshStandardMaterial({ color: 0x3b2417, roughness: 0.38, metalness: 0.05 });
   // gently lumpy sphere for natural volume
   const lumpy = (r, ws, hs, phiS, phiL, thS, thL, amp = 0.025) => {
     const geo = new THREE.SphereGeometry(r, ws, hs, phiS, phiL, thS, thL);
@@ -117,16 +117,21 @@ export function buildAvatar({ pose = 'sit' } = {}) {
   shell.rotation.x = 0.32;   // hairline higher at the forehead, lower at the back
   const nape = add(head, new THREE.Mesh(lumpy(0.66, 40, 24, 0, Math.PI, Math.PI * 0.45, Math.PI * 0.2), hair), 0, 0.02, 0.05);
   nape.scale.set(1.03, 1.05, 1.03);
-  // sculpted locks swept up and back
-  const lock = new THREE.SphereGeometry(1, 28, 18);
-  [[-0.34, 0.6, -0.18, 0.2, -0.5, 0.35], [-0.12, 0.7, -0.26, 0.22, -0.6, 0.1], [0.12, 0.72, -0.24, 0.22, -0.6, -0.1],
-   [0.34, 0.6, -0.16, 0.2, -0.5, -0.35], [-0.22, 0.74, 0.05, 0.22, -0.3, 0.2], [0.2, 0.75, 0.06, 0.22, -0.3, -0.2],
-   [0, 0.72, 0.3, 0.24, 0.2, 0], [-0.5, 0.42, -0.02, 0.17, 0, 0.5], [0.5, 0.42, -0.02, 0.17, 0, -0.5]]
-    .forEach(([x, y, z, r, rx, rz]) => {
-      const l = add(head, new THREE.Mesh(lock, hair), x, y, z);
-      l.scale.set(r * 1.25, r * 0.7, r * 1.3);
-      l.position.y -= 0.08;
-      l.rotation.set(rx * 0.6 - 0.35, 0, rz * 0.6);
+  // Tousled quiff: tapered teardrop locks sweeping up and back
+  const prof = [];
+  for (let i = 0; i <= 14; i++) {                 // round base -> pointed tip
+    const k = i / 14;
+    prof.push(new THREE.Vector2(Math.sin(Math.min(1, k * 1.8) * Math.PI / 2) * Math.pow(1 - k, 0.55) * 0.24, k * 0.5));
+  }
+  const lockGeo = new THREE.LatheGeometry(prof, 20);
+  // [x, y, z, tiltX (back), tiltZ (side), scale]
+  [[-0.3, 0.42, -0.36, -1.15, 0.3, 1.0], [-0.1, 0.46, -0.42, -1.05, 0.1, 1.1], [0.12, 0.46, -0.42, -1.1, -0.12, 1.05],
+   [0.32, 0.42, -0.34, -1.2, -0.35, 0.95], [-0.22, 0.56, -0.12, -1.4, 0.25, 1.05], [0.02, 0.6, -0.16, -1.35, -0.05, 1.15],
+   [0.25, 0.56, -0.1, -1.45, -0.3, 1.0], [-0.14, 0.58, 0.16, -1.65, 0.15, 0.95], [0.14, 0.58, 0.18, -1.7, -0.15, 0.95]]
+    .forEach(([x, y, z, rx, rz, sc], i) => {
+      const l = add(head, new THREE.Mesh(lockGeo, hair), x, y, z);
+      l.rotation.set(rx, (i % 3 - 1) * 0.25, rz);
+      l.scale.set(sc * 1.15, sc, sc * 0.85);
     });
   // sideburns + soft side-part line
   [-1, 1].forEach((sd) => add(head, new THREE.Mesh(new THREE.CapsuleGeometry(0.05, 0.16, 4, 8), hair), sd * 0.63, 0.1, -0.12));
@@ -142,7 +147,7 @@ export function buildAvatar({ pose = 'sit' } = {}) {
     brow.rotation.z = Math.PI / 2 + s * 0.12;
   });
   add(head, new THREE.Mesh(new THREE.SphereGeometry(0.02, 8, 8), mat(0x4a2c1d)), 0.3, -0.12, -0.5);
-  const nose = add(head, new THREE.Mesh(new THREE.SphereGeometry(0.085, 20, 16), mat(0xb26f48, { roughness: 0.5 })), 0, -0.14, -0.58);
+  const nose = add(head, new THREE.Mesh(new THREE.SphereGeometry(0.085, 20, 16), mat(0xd89c74, { roughness: 0.5 })), 0, -0.14, -0.58);
   nose.scale.set(1.15, 0.85, 0.75);
   const smile = new THREE.Mesh(new THREE.TorusGeometry(0.13, 0.009, 6, 24, Math.PI * 0.7), mat(0x3a2018));
   smile.rotation.set(0, Math.PI, Math.PI + Math.PI * 0.15);
