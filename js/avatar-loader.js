@@ -8,7 +8,7 @@ import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 
 const BASE = 'img/avatar/';
-const CLIPS = { typing: 'typing.fbx', idle: 'idle.fbx', crossed: 'arms-crossed.fbx', wave: 'wave.fbx' };
+const CLIPS = { typing: 'typing.fbx', idle: 'idle.fbx', crossed: 'arms-crossed.fbx', wave: 'wave.fbx', phone: 'phone.fbx' };
 
 // "mixamorig:LeftArm" / "mixamorigLeftArm" / "LeftArm" -> "leftarm"
 const norm = (name) => name.replace(/^.*mixamorig\d*[:_]?/i, "").replace(/[^a-z0-9]/gi, "").toLowerCase();
@@ -88,7 +88,7 @@ function applyPose(model, pose) {
  *   height: target model height in scene units; animation: clip to start with.
  * @returns {Promise<null | { model, mixer, play(name, fade?): void, update(dt): void, has(name): boolean }>}
  */
-export async function loadRiggedAvatar({ height = 6.2, animation = 'idle', pose = 'stand' } = {}) {
+export async function loadRiggedAvatar({ height = 6.2, animation = 'idle', pose = 'stand', once = false } = {}) {
   const assets = await loadAssets();
   if (!assets) return null;
 
@@ -118,10 +118,11 @@ export async function loadRiggedAvatar({ height = 6.2, animation = 'idle', pose 
     model: wrapper,
     mixer,
     has: (name) => !!actions[name],
-    play(name, fade = 0.4) {
+    play(name, fade = 0.4, opts = {}) {
       const next = actions[name];
       if (!next || next === current) return;
       next.reset().setEffectiveWeight(1);
+      if (opts.once) { next.setLoop(THREE.LoopOnce, 1); next.clampWhenFinished = true; }
       if (fade > 0) next.fadeIn(fade);
       next.play();
       if (current) current.fadeOut(fade);
@@ -135,7 +136,7 @@ export async function loadRiggedAvatar({ height = 6.2, animation = 'idle', pose 
       return found ? found.getWorldPosition(target) : null;
     },
   };
-  if (actions[animation]) api.play(animation, 0);   // start instantly: no fade from the T-pose
+  if (actions[animation]) api.play(animation, 0, { once });   // start instantly: no fade from the T-pose
   else applyPose(model, pose);   // no clip yet: hold a natural static pose instead of a T-pose
   return api;
 }

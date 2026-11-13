@@ -39,7 +39,7 @@ function init() {
   avatar.crossArms();
   scene.add(avatar.group);
   let rigged = null;
-  loadRiggedAvatar({ height: 6.4, animation: 'wave', pose: 'stand' }).then((r) => {
+  loadRiggedAvatar({ height: 6.4, animation: 'phone', pose: 'stand', once: true }).then((r) => {
     if (!r) return;
     rigged = r;
     avatar.group.visible = false;
