@@ -177,7 +177,7 @@ function init() {
     cone.material.uniforms.uBeam.value = seg(smooth, 0.3, 0.4);
     scanRing.visible = scan > 0 && scan < 1;
     counter.textContent = String(Math.round(scan * 100)).padStart(3, '0');
-    cards.forEach((c, i) => c.classList.toggle('is-visible', smooth > 0.4 + i * 0.12));
+    cards.forEach((c, i) => c.classList.toggle('is-visible', smooth > 0.38 + i * 0.07));
 
     // turn around: back to the viewer (as at the desk) -> facing front, centered
     spin.rotation.y = reduce ? 0 : Math.sin(t * 0.4) * 0.08;   // already facing front after the desk turn

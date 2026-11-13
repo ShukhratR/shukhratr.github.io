@@ -256,24 +256,26 @@ img { display: block; max-width: 100%; }
   clip-path: inset(-10px -90px -10px calc(100% + 90px));
   transition: clip-path .7s var(--ease-smooth);
 }
-.holo-skills { clip-path: inset(-10px calc(100% + 90px) -10px -90px); }
+.holo-r1, .holo-r2, .holo-r3 { clip-path: inset(-10px calc(100% + 90px) -10px -90px); }
 .holo-card.is-visible { clip-path: inset(-10px -90px -10px 0); }
-.holo-skills.is-visible { clip-path: inset(-10px 0 -10px -90px); }
+.holo-r1.is-visible, .holo-r2.is-visible, .holo-r3.is-visible { clip-path: inset(-10px 0 -10px -90px); }
 .holo-card::after {
   content: ""; position: absolute; top: 50%; width: 60px; height: 2px; background: rgba(129,189,216,.7);
 }
-.holo-card h3 { font-size: 26px; margin-bottom: 4px; }
-.holo-card p, .holo-card li { font-size: 15px; line-height: 1.6; }
+.holo-card h3 { font-size: 20px; margin-bottom: 4px; }
+.holo-sub { opacity: .7; }
+.holo-card p, .holo-card li { font-size: 13px; line-height: 1.55; }
+.holo-card { width: min(300px, 24vw); }
 .holo-card ul { padding-left: 1.1em; }
-.holo-name { left: 26%; top: 26%; }
-.holo-name::after { left: 100%; }
-.holo-card::before { content: ""; position: absolute; top: calc(50% - 5px); width: 10px; height: 10px; border-radius: 50%; background: #8fe1ff; }
-.holo-name::before, .holo-bio::before { left: calc(100% + 60px); }
-.holo-skills::before { right: calc(100% + 60px); }
-.holo-bio { left: 14%; top: 56%; max-width: 360px; }
-.holo-bio::after { left: 100%; }
-.holo-skills { right: 17%; top: 33%; }
-.holo-skills::after { right: 100%; }
+.holo-l1, .holo-l2, .holo-l3 { left: 9%; }
+.holo-r1, .holo-r2, .holo-r3 { right: 9%; }
+.holo-l1, .holo-r1 { top: 16%; }
+.holo-l2, .holo-r2 { top: 41%; }
+.holo-l3, .holo-r3 { top: 64%; }
+.holo-l1::after, .holo-l2::after, .holo-l3::after { left: 100%; }
+.holo-r1::after, .holo-r2::after, .holo-r3::after { right: 100%; }
+.holo-l1::before, .holo-l2::before, .holo-l3::before { left: calc(100% + 60px); }
+.holo-r1::before, .holo-r2::before, .holo-r3::before { right: calc(100% + 60px); }
 .holo-badge {
   position: absolute; left: 50%; bottom: 2.5%; transform: translateX(-50%); z-index: 2;
   background: #0a1c4a; padding: 2px 12px; border-radius: 4px; font-size: 28px; font-weight: 700; letter-spacing: .08em;
@@ -286,6 +288,8 @@ img { display: block; max-width: 100%; }
   .holo-card p, .holo-card li { font-size: 12px; line-height: 1.45; }
   .holo-badge { order: -1; transform: none; left: auto; bottom: auto; }
   .holo-card::after, .holo-card::before { display: none; }
+  .holo-card { width: auto; }
+  .holo-r1, .holo-r2, .holo-r3 { clip-path: inset(-10px 0 -10px -90px); }
   .holo-badge { align-self: center; }
 }
 
