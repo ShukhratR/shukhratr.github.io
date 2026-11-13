@@ -189,6 +189,7 @@ function init() {
   m4.makeTranslation(0.0, 0.07, 0.34); kAlt.setMatrixAt(0, m4);
   kb.add(keys, kAlt);
   kb.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+  kb.scale.setScalar(0.75);
   kb.position.set(0, 3.2, 0.0);
   world.add(kb);
   const mouse = new THREE.Group();
@@ -204,20 +205,6 @@ function init() {
 
   const familyTex = new THREE.TextureLoader().load('img/family.jpg');
   familyTex.colorSpace = THREE.SRGBColorSpace;
-  // Blue coffee cup on a saucer, with coffee and a wisp of steam
-  const coffee = new THREE.Group();
-  const blue = mat(0x2f6fd6, { roughness: 0.3 });
-  const saucer = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.36, 0.05, 32), mat(0xffffff, { roughness: 0.3 })); saucer.position.y = 0.025;
-  const cupBody = new THREE.Mesh(new THREE.CylinderGeometry(0.27, 0.21, 0.42, 32, 1, true), blue); cupBody.position.y = 0.26;
-  const cupBase = new THREE.Mesh(new THREE.CircleGeometry(0.21, 32), blue); cupBase.rotation.x = -Math.PI / 2; cupBase.position.y = 0.055;
-  const brew = new THREE.Mesh(new THREE.CircleGeometry(0.25, 32), mat(0x4a2a17, { roughness: 0.15 })); brew.rotation.x = -Math.PI / 2; brew.position.y = 0.42;
-  const cupHandle = new THREE.Mesh(new THREE.TorusGeometry(0.12, 0.035, 10, 20), blue); cupHandle.position.set(0.3, 0.27, 0);
-  coffee.add(saucer, cupBody, cupBase, brew, cupHandle);
-  coffee.traverse((o) => { if (o.isMesh) o.castShadow = true; });
-  coffee.position.set(-3, 3.2, -0.6); coffee.rotation.y = 0.6;
-  world.add(coffee);
-  const steamMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.35, depthWrite: false });
-  const steam = [0, 1, 2].map((i) => { const puff = new THREE.Mesh(new THREE.SphereGeometry(0.07 + i * 0.02, 12, 10), steamMat.clone()); world.add(puff); return puff; });
 
   // Chair
   const chair = new THREE.Group();
@@ -273,8 +260,8 @@ function init() {
       const deskTop = 3.2;
       const lowest = Math.min(L.y, R.y);
       r.model.position.y += deskTop + 0.12 - lowest;          // hands rest just above the keys
-      kb.position.set((L.x + R.x) / 2, 3.2, (L.z + R.z) / 2 + 0.05);
-      mouseBase.set((L.x + R.x) / 2 + 2.2, 3.22, (L.z + R.z) / 2 + 0.1);
+      kb.position.set(L.x + 0.55, 3.2, L.z + 0.05);
+      mouseBase.set(R.x, 3.22, R.z + 0.05);
     };
     setTimeout(calibrate, 1200);
   });
@@ -301,9 +288,23 @@ function init() {
   const shelf = rbox(2.4, 0.15, 0.8, 0.05, woodMat);
   shelf.position.set(-2.4, 6.4, -3.2);
   world.add(shelf);
-  [0xff8400, 0x234ba2, 0xf7d36a, 0xe9ded0].forEach((c, i) => {
-    const book = rbox(0.3, 0.9 - (i % 2) * 0.15, 0.6, 0.04, mat(c));
-    book.position.set(-3.3 + i * 0.36, 6.9 - (i % 2) * 0.07, -3.2);
+  // Hardcover books with (original) QA-joke titles on the spines
+  [['#c0392b', '#f5efe6', 'ASSERT YOURSELF', 0.95], ['#1d3557', '#e6b422', 'FLAKY NO MORE', 0.82], ['#2a6f4e', '#f5efe6', 'THE ART OF NULL', 0.9],
+   ['#e6b422', '#2d2a24', 'BUGS: A LOVE STORY', 0.78], ['#3d2b52', '#f5efe6', 'GREEN BUILDS', 0.88]].forEach(([bg, ink, title, hgt], i) => {
+    const spine = canvasTex(64, 256, (g, w, h) => {
+      g.fillStyle = bg; g.fillRect(0, 0, w, h);
+      g.fillStyle = ink; g.fillRect(0, 14, w, 4); g.fillRect(0, h - 18, w, 4);         // gold bands
+      g.save(); g.translate(w / 2 + 7, h / 2); g.rotate(-Math.PI / 2);
+      g.font = '700 19px Urbanist, sans-serif'; g.textAlign = 'center'; g.fillText(title, 0, 0); g.restore();
+    });
+    const cover = new THREE.MeshStandardMaterial({ color: bg, roughness: 0.7 });
+    const pages = new THREE.MeshStandardMaterial({ color: 0xf3ead8, roughness: 0.9 });
+    const spineMat = new THREE.MeshStandardMaterial({ map: spine, roughness: 0.6 });
+    // box faces: +x, -x, +y, -y, +z (spine toward viewer), -z
+    const book = new THREE.Mesh(new THREE.BoxGeometry(0.2, hgt, 0.62), [cover, cover, pages, pages, spineMat, cover]);
+    book.castShadow = true;
+    book.position.set(-3.45 + i * 0.22, 6.47 + hgt / 2, -3.15);
+    if (i === 4) { book.rotation.z = -0.22; book.position.x += 0.08; }       // last one leans
     world.add(book);
   });
 
@@ -539,11 +540,6 @@ function init() {
     avatar.animate(reduceMotion ? 0 : t, ikTargets);
     if (!reduceMotion) {
       updateNotes(t); updateMessage(t);
-      steam.forEach((p, i) => {
-        const k = ((t * 0.5 + i / 3) % 1);
-        p.position.set(-3 + Math.sin(t * 2 + i) * 0.06, 3.7 + k * 0.7, -0.6 + Math.cos(t * 1.5 + i) * 0.05);
-        p.material.opacity = 0.35 * Math.sin(k * Math.PI); p.scale.setScalar(0.8 + k * 0.8);
-      });
       // robot blinks every ~3.5s
       const bl = (t % 3.5) < 0.14 ? 0.12 : 1;
       robotEyes.forEach((e) => { e.scale.y = bl; });

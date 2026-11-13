@@ -342,3 +342,7 @@ img { display: block; max-width: 100%; }
 .header { justify-content: flex-start; }
 .header .nav { margin-left: 56px; }
 @media (max-width: 480px) { .header .nav { margin-left: 52px; } .nav a { padding: 6px 10px; } }
+
+/* Name and tag sit higher in the hero */
+.hero-text { align-self: start; margin-top: 16vh; }
+@media (max-width: 840px) { .hero-text { margin-top: 0; } }

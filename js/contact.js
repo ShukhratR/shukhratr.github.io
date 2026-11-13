@@ -62,8 +62,9 @@ function init() {
     const hand = new THREE.Mesh(new THREE.SphereGeometry(0.1, 14, 10), shell); hand.position.y = -0.42;
     pivot.add(upper, hand); pivot.rotation.z = sd * 0.35; robot.add(pivot); return pivot;
   });
+  const wheels = [];
   [-1, 1].forEach((sd) => {                                          // wheels
-    const w = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.16, 0.12, 20), mat(0x2b2d33)); w.rotation.z = Math.PI / 2; w.position.set(sd * 0.36, 0.16, 0); robot.add(w);
+    const w = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.16, 0.12, 20), mat(0x2b2d33)); w.rotation.z = Math.PI / 2; w.position.set(sd * 0.36, 0.16, 0); robot.add(w); wheels.push(w);
     const hub = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.13, 12), accent); hub.rotation.z = Math.PI / 2; hub.position.set(sd * 0.36, 0.16, 0); robot.add(hub);
   });
   const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.08, 12, 10), accent); bulb.position.y = 1.85;
@@ -102,7 +103,12 @@ function init() {
       avatar.head.rotation.y = Math.sin(t * 0.6) * 0.15;
       avatar.head.rotation.z = Math.sin(t * 0.8) * 0.04;
       avatar.group.position.y = Math.sin(t * 1.6) * 0.03;      // breathing
-      robot.rotation.y = 0.45 + Math.sin(t * 0.9) * 0.2;
+      // follow the avatar like a pet: drive toward a point that circles around his feet
+      const tx = Math.sin(t * 0.5) * 2.4 - 0.3, tz = 1.6 + Math.cos(t * 0.5) * 1.0;
+      const dx = tx - robot.position.x, dz = tz - robot.position.z;
+      robot.position.x += dx * 0.03; robot.position.z += dz * 0.03;
+      if (Math.abs(dx) + Math.abs(dz) > 0.02) robot.rotation.y += (Math.atan2(dx, dz) - robot.rotation.y) * 0.08;
+      wheels.forEach((w) => { w.rotation.x += Math.hypot(dx, dz) * 0.4; });
       const blink = (t % 3.2) < 0.14 ? 0.12 : 1; eyes.forEach((e) => { e.scale.y = blink; });
       arms[0].rotation.z = -0.35 - Math.sin(t * 1.8) * 0.15; arms[1].rotation.z = 0.35 + Math.sin(t * 1.8 + 1) * 0.15;
       bulb.material.emissive?.setHex(Math.sin(t * 4) > 0 ? 0x552200 : 0x000000);
