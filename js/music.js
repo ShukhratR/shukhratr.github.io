@@ -57,8 +57,18 @@ function toggle() {
     master.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.4);
     setTimeout(() => clearInterval(timer), 450);
   }
+  window.__musicPlaying = playing;
+  window.dispatchEvent(new CustomEvent('music', { detail: playing }));
   btn.classList.toggle('is-on', playing);
   btn.setAttribute('aria-pressed', String(playing));
   btn.setAttribute('aria-label', playing ? 'Turn music off' : 'Turn music on');
 }
-btn?.addEventListener('click', toggle);
+let userTurnedOff = false;
+btn?.addEventListener('click', (e) => { e.stopPropagation(); toggle(); if (!playing) userTurnedOff = true; });
+
+// Browsers only allow sound after a user gesture: start on the first click / tap / key press
+function autoStart() {
+  if (!playing && !userTurnedOff) toggle();
+  ['pointerdown', 'keydown'].forEach((ev) => removeEventListener(ev, autoStart, true));
+}
+['pointerdown', 'keydown'].forEach((ev) => addEventListener(ev, autoStart, true));

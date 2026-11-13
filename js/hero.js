@@ -387,6 +387,38 @@ function init() {
   let visible = true;
   new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(host);
 
+  // Music notes floating out of the speaker while music plays
+  const noteTextures = ['♪', '♫', '♬'].map((ch) => canvasTex(128, 128, (g) => {
+    g.fillStyle = '#ffffff'; g.font = '700 104px serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
+    g.shadowColor = 'rgba(0,0,0,.35)'; g.shadowBlur = 6;
+    g.fillText(ch, 64, 70);
+  }));
+  const noteColors = [0xff8400, 0x234ba2, 0x2fa84f, 0xe0525a];
+  const notes = [];
+  const speakerPos = new THREE.Vector3(3.3, 4.2, -1.3);
+  let lastNote = 0;
+  function spawnNote(t) {
+    const m = new THREE.SpriteMaterial({ map: noteTextures[notes.length % 3], color: noteColors[Math.floor(Math.random() * 4)], transparent: true, depthWrite: false });
+    const sp = new THREE.Sprite(m);
+    sp.scale.setScalar(0.85);
+    sp.position.copy(speakerPos);
+    sp.userData = { born: t, drift: (Math.random() - 0.5) * 0.8, sway: Math.random() * 6 };
+    world.add(sp); notes.push(sp);
+  }
+  function updateNotes(t) {
+    if (window.__musicPlaying && t - lastNote > 0.55) { spawnNote(t); lastNote = t; }
+    for (let i = notes.length - 1; i >= 0; i--) {
+      const n = notes[i], age = t - n.userData.born, life = 3.2;
+      n.position.set(
+        speakerPos.x + n.userData.drift * age + Math.sin(age * 3 + n.userData.sway) * 0.15,
+        speakerPos.y + age * 0.9,
+        speakerPos.z + age * 0.25);
+      n.material.opacity = Math.min(1, age * 4) * Math.max(0, 1 - age / life);
+      n.material.rotation = Math.sin(age * 2 + n.userData.sway) * 0.3;
+      if (age > life) { world.remove(n); n.material.dispose(); notes.splice(i, 1); }
+    }
+  }
+
   const parallax = { x: 0, y: 0 };
   const clock = new THREE.Clock();
   function frame() {
@@ -400,6 +432,7 @@ function init() {
     camera.position.set(camBase.x + parallax.x * 1.2, camBase.y - parallax.y * 0.8, camBase.z);
     camera.lookAt(target);
     avatar.animate(reduceMotion ? 0 : t, 0, 0);
+    if (!reduceMotion) updateNotes(t);
 
     if (!reduceMotion) {
       plant.rotation.z = Math.sin(t * 0.8) * 0.02;
