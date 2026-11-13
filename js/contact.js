@@ -12,6 +12,7 @@ function tex(w, h, draw) {
 }
 
 function init() {
+  const AVATAR_X = window.innerWidth > 840 ? 3.6 : 0;   // right half on desktop, centred on phones
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
   renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -21,8 +22,8 @@ function init() {
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
-  camera.position.set(-0.6, 4.4, 13.5);
-  camera.lookAt(-0.8, 3.0, 0);
+  camera.position.set(0, 4.4, 15);
+  camera.lookAt(0, 2.8, 0);
 
   scene.add(new THREE.HemisphereLight(0xfff6ea, 0xd8c3a5, 1.5));
   const sun = new THREE.DirectionalLight(0xffffff, 2.1);
@@ -36,6 +37,7 @@ function init() {
   // Avatar: standing, arms crossed, facing the visitor
   const avatar = buildAvatar({ pose: 'stand' });
   avatar.group.rotation.y = Math.PI - 0.15;
+  avatar.group.position.x = AVATAR_X;
   avatar.crossArms();
   scene.add(avatar.group);
   let rigged = null;
@@ -44,6 +46,7 @@ function init() {
     rigged = r;
     avatar.group.visible = false;
     r.model.rotation.y = 0;
+    r.model.position.x = AVATAR_X;
     scene.add(r.model);
   });
 
@@ -71,7 +74,7 @@ function init() {
   const ant = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.3, 8), mat(0x8a8790)); ant.position.y = 1.7;
   robot.add(b, h, face, bulb, ant);
   robot.traverse((o) => { if (o.isMesh && o.material !== eyeMat) o.castShadow = true; });
-  robot.position.set(-2.4, 0, 1.4); robot.rotation.y = 0.45; robot.scale.setScalar(1.15); scene.add(robot);
+  robot.position.set(AVATAR_X + 1.9, 0, 0.6); robot.rotation.y = 0.45; robot.scale.setScalar(1.15); scene.add(robot);
 
   // scattered bug reports on the floor
   [[-1.8, 2.6, 0.4, '#fff3c4'], [2.2, 2.9, -0.3, '#ffffff'], [-3.6, 0.2, 0.9, '#cfe3ff'], [5.4, -0.6, 0.2, '#ffffff']].forEach(([x, z, r, c]) => {
@@ -84,14 +87,22 @@ function init() {
     paper.rotation.set(-Math.PI / 2, 0, r); paper.position.set(x, 0.01, z); paper.receiveShadow = true; scene.add(paper);
   });
 
+  let robotStart = null;
+  // parking spot: the floor point under the bottom-left of the section (below the links)
+  const parkPoint = new THREE.Vector3();
+  const findPark = () => {
+    const ray = new THREE.Raycaster();
+    ray.setFromCamera(new THREE.Vector2(window.innerWidth > 840 ? -0.58 : -0.5, -0.93), camera);
+    ray.ray.intersectPlane(new THREE.Plane(new THREE.Vector3(0, 1, 0), 0), parkPoint);
+  };
   function resize() {
     const w = host.clientWidth, hh = host.clientHeight;
-    renderer.setSize(w, hh, false); camera.aspect = w / hh; camera.updateProjectionMatrix();
+    renderer.setSize(w, hh, false); camera.aspect = w / hh; camera.updateProjectionMatrix(); findPark();
   }
   new ResizeObserver(resize).observe(host); resize();
 
   let visible = false;
-  new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(host);
+  new IntersectionObserver(([e]) => { visible = e.isIntersecting; if (!visible) robotStart = null; }).observe(host);
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const clock = new THREE.Clock();
   (function frame() {
@@ -103,12 +114,20 @@ function init() {
       avatar.head.rotation.y = Math.sin(t * 0.6) * 0.15;
       avatar.head.rotation.z = Math.sin(t * 0.8) * 0.04;
       avatar.group.position.y = Math.sin(t * 1.6) * 0.03;      // breathing
-      // follow the avatar like a pet: drive toward a point that circles around his feet
-      const tx = Math.sin(t * 0.5) * 2.4 - 0.3, tz = 1.6 + Math.cos(t * 0.5) * 1.0;
-      const dx = tx - robot.position.x, dz = tz - robot.position.z;
-      robot.position.x += dx * 0.03; robot.position.z += dz * 0.03;
-      if (Math.abs(dx) + Math.abs(dz) > 0.02) robot.rotation.y += (Math.atan2(dx, dz) - robot.rotation.y) * 0.08;
-      wheels.forEach((w) => { w.rotation.x += Math.hypot(dx, dz) * 0.4; });
+      // one lap around the avatar, then drive to the bottom-left (under the links) and park
+      if (robotStart === null) robotStart = t;
+      const lap = Math.min(1, (t - robotStart) / 7);
+      let tx, tz;
+      if (lap < 1) {
+        const a = lap * Math.PI * 2;
+        tx = AVATAR_X + Math.cos(a) * 1.9; tz = 0.4 + Math.sin(a) * 1.5;
+      } else { tx = parkPoint.x; tz = parkPoint.z; }
+      const dx = tx - robot.position.x, dz = tz - robot.position.z, dist = Math.hypot(dx, dz);
+      const k = lap < 1 ? 0.12 : 0.07;
+      robot.position.x += dx * k; robot.position.z += dz * k;
+      const facing = dist > 0.05 ? Math.atan2(dx, dz) : 0.2;          // parked: face the visitor
+      robot.rotation.y += (facing - robot.rotation.y) * 0.1;
+      wheels.forEach((w) => { w.rotation.x += dist * k * 4; });
       const blink = (t % 3.2) < 0.14 ? 0.12 : 1; eyes.forEach((e) => { e.scale.y = blink; });
       arms[0].rotation.z = -0.35 - Math.sin(t * 1.8) * 0.15; arms[1].rotation.z = 0.35 + Math.sin(t * 1.8 + 1) * 0.15;
       bulb.material.emissive?.setHex(Math.sin(t * 4) > 0 ? 0x552200 : 0x000000);

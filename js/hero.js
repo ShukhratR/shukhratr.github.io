@@ -261,8 +261,8 @@ function init() {
       const deskTop = 3.2;
       const lowest = Math.min(L.y, R.y);
       r.model.position.y += deskTop + 0.12 - lowest;          // hands rest just above the keys
-      kb.position.set(L.x + 0.55, 3.2, L.z + 0.05);
-      mouseBase.set(R.x, 3.22, R.z + 0.05);
+      kb.position.set(L.x + 0.55, 3.2, L.z - 0.22);
+      mouseBase.set(R.x, 3.22, R.z - 0.22);
     };
     setTimeout(calibrate, 1200);
   });
@@ -501,7 +501,7 @@ function init() {
     g.fillStyle = '#fff'; g.font = '700 34px Urbanist, sans-serif'; g.fillText('1', 218, 46);
   });
   const msg = new THREE.Sprite(new THREE.SpriteMaterial({ map: msgTex, transparent: true, depthWrite: false, opacity: 0 }));
-  msg.position.set(-1.6, 6.3, -2.0);
+  msg.position.set(-3.0, 4.7, 0.2);
   world.add(msg);
   let msgStart = -10;
   function updateMessage(t) {
@@ -510,8 +510,12 @@ function init() {
     const pop = age < 0.35 ? 1 - Math.pow(1 - age / 0.35, 3) * 1 + Math.sin(age / 0.35 * Math.PI) * 0.15 : 1;
     const fade = age < 2.6 ? 1 : Math.max(0, 1 - (age - 2.6) / 0.5);
     msg.material.opacity = fade * Math.min(1, age * 6);
-    msg.scale.setScalar(0.95 * pop * (0.85 + 0.15 * fade));
-    msg.position.y = 6.3 + Math.sin(age * 4) * 0.04;
+    msg.scale.setScalar(0.75 * pop * (0.85 + 0.15 * fade));
+    msg.position.y = 4.7 + Math.sin(age * 4) * 0.04;
+    // robot turns its head toward the avatar while it talks, then back to the visitor
+    const talking = age < 3.1;
+    const toAvatar = Math.atan2(0.2 - robot.position.x, 1.25 - robot.position.z);
+    robot.rotation.y += ((talking ? toAvatar : 0.5) - robot.rotation.y) * 0.08;
   }
 
   const track = document.querySelector('.story-track');

@@ -348,3 +348,12 @@ img { display: block; max-width: 100%; }
 @media (max-width: 840px) { .hero-text { margin-top: 0; } }
 .credit { font-size: 11px; opacity: .7; }
 .credit a { text-decoration: underline; }
+
+/* Contact: 3D scene spans the whole section (robot can drive under the links) */
+.contact-grid { position: relative; min-height: min(72vh, 640px); }
+.contact-grid .contact { position: relative; z-index: 1; }
+.contact-scene { position: absolute; inset: 0; height: auto; z-index: 0; pointer-events: none; }
+@media (max-width: 840px) {
+  .contact-grid { min-height: 0; }
+  .contact-scene { position: relative; inset: auto; height: 420px; }
+}
