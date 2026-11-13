@@ -46,7 +46,7 @@ function init() {
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
   camera.position.set(0, 6.8, 13);
-  camera.lookAt(0, 3.6, 0);
+  camera.lookAt(0, 3.9, 0);
 
   const uniforms = { uTime: { value: 0 }, uColor: { value: new THREE.Color(0x4cc3ff) } };
   const holo = holoMaterial(uniforms);
@@ -131,7 +131,7 @@ function init() {
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const seg = (p, a, b) => Math.min(1, Math.max(0, (p - a) / (b - a)));
   const ease = (x) => 1 - Math.pow(1 - x, 3);
-  const TOP = 6.6, BOTTOM = 0.55;  // avatar height range in world Y
+  const TOP = 7.0, BOTTOM = 0.55;  // avatar height range in world Y
   let progress = 0, smooth = 0;
 
   function readScroll() {

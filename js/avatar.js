@@ -22,7 +22,7 @@ export function cap(w, h, material) {
 
 export function buildAvatar({ pose = 'sit' } = {}) {
   // Softer, lighter palette: charcoal blazer reads as "black" without crushing to pure dark
-  const SKIN = 0xf1c6a2, HAIR = 0x4a2c1d, BLAZER = 0x3f3f46, TEE = 0x3f3f46,
+  const SKIN = 0xb97a52, HAIR = 0x3a2416, BLAZER = 0x2f3440, TEE = 0x2f3440,
         PANTS = 0x3d5f93, SHOE = 0xfbfaf7, SOLE = 0x3a3a40;
   const skin = mat(SKIN, { roughness: 0.5 });
   const strands = (() => {
@@ -39,7 +39,7 @@ export function buildAvatar({ pose = 'sit' } = {}) {
     t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(3, 2);
     return t;
   })();
-  const hair = new THREE.MeshStandardMaterial({ color: 0xffffff, map: strands, roughness: 0.55, metalness: 0.05 });
+  const hair = new THREE.MeshStandardMaterial({ color: 0x3a2416, roughness: 0.45 });
   // gently lumpy sphere for natural volume
   const lumpy = (r, ws, hs, phiS, phiL, thS, thL, amp = 0.025) => {
     const geo = new THREE.SphereGeometry(r, ws, hs, phiS, phiL, thS, thL);
@@ -96,18 +96,18 @@ export function buildAvatar({ pose = 'sit' } = {}) {
   const armL = arm(-1), armR = arm(1);
 
   // Neck + head
-  add(group, new THREE.Mesh(new THREE.CylinderGeometry(0.17, 0.19, 0.35, 16), skin), 0, 3.82, 0);
+  add(group, new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.18, 0.55, 16), skin), 0, 3.9, 0);
   const head = new THREE.Group();
   head.position.set(0, 4.45, 0);
-  head.scale.setScalar(1.42); head.position.y = 4.7;
+  head.scale.setScalar(1.42); head.position.y = 4.9;
   group.add(head);
 
   const skull = add(head, new THREE.Mesh(new THREE.SphereGeometry(0.62, 40, 32), skin), 0, 0, 0);
-  skull.scale.set(1, 1.06, 0.96);
+  skull.scale.set(0.9, 1.14, 0.94);
   // ears
   [-1, 1].forEach((s) => {
-    const ear = add(head, new THREE.Mesh(new THREE.SphereGeometry(0.13, 16, 12), skin), s * 0.6, 0.0, 0.02);
-    ear.scale.set(0.5, 1, 0.8);
+    const ear = add(head, new THREE.Mesh(new THREE.SphereGeometry(0.17, 20, 16), skin), s * 0.56, -0.04, 0.02);
+    ear.scale.set(0.45, 1, 0.75);
   });
 
   // Hair: back shell, top cap, voluminous wavy front swept up
@@ -117,30 +117,39 @@ export function buildAvatar({ pose = 'sit' } = {}) {
   shell.rotation.x = 0.32;   // hairline higher at the forehead, lower at the back
   const nape = add(head, new THREE.Mesh(lumpy(0.66, 40, 24, 0, Math.PI, Math.PI * 0.45, Math.PI * 0.2), hair), 0, 0.02, 0.05);
   nape.scale.set(1.03, 1.05, 1.03);
-  const volume = add(head, new THREE.Mesh(lumpy(0.56, 48, 28, 0, Math.PI * 2, 0, Math.PI * 0.5, 0.04), hair), 0.03, 0.3, 0.02);
-  volume.scale.set(1.15, 0.85, 1.12);
-  const fringe = add(head, new THREE.Mesh(lumpy(0.4, 40, 24, 0, Math.PI * 2, 0, Math.PI * 0.55, 0.05), hair), 0.14, 0.52, -0.3);
-  fringe.scale.set(1.2, 0.45, 0.75);
-  fringe.rotation.set(-0.35, 0.1, -0.22);
+  // sculpted locks swept up and back
+  const lock = new THREE.SphereGeometry(1, 28, 18);
+  [[-0.34, 0.6, -0.18, 0.2, -0.5, 0.35], [-0.12, 0.7, -0.26, 0.22, -0.6, 0.1], [0.12, 0.72, -0.24, 0.22, -0.6, -0.1],
+   [0.34, 0.6, -0.16, 0.2, -0.5, -0.35], [-0.22, 0.74, 0.05, 0.22, -0.3, 0.2], [0.2, 0.75, 0.06, 0.22, -0.3, -0.2],
+   [0, 0.72, 0.3, 0.24, 0.2, 0], [-0.5, 0.42, -0.02, 0.17, 0, 0.5], [0.5, 0.42, -0.02, 0.17, 0, -0.5]]
+    .forEach(([x, y, z, r, rx, rz]) => {
+      const l = add(head, new THREE.Mesh(lock, hair), x, y, z);
+      l.scale.set(r * 1.25, r * 0.7, r * 1.3);
+      l.position.y -= 0.08;
+      l.rotation.set(rx * 0.6 - 0.35, 0, rz * 0.6);
+    });
   // sideburns + soft side-part line
   [-1, 1].forEach((sd) => add(head, new THREE.Mesh(new THREE.CapsuleGeometry(0.05, 0.16, 4, 8), hair), sd * 0.63, 0.1, -0.12));
-  const part = add(head, new THREE.Mesh(new THREE.CapsuleGeometry(0.012, 0.45, 4, 6), new THREE.MeshStandardMaterial({ color: 0x1c100a })), -0.24, 0.66, -0.02);
-  part.rotation.x = Math.PI / 2 - 0.15;
 
   // Face: eyes, brows, nose, mole
-  const eyeMat = mat(0x3a2418, { roughness: 0.2 });
+  const eyeMat = mat(0x16131a, { roughness: 0.08 });
   const shine = new THREE.MeshBasicMaterial({ color: 0xffffff });
   [-1, 1].forEach((s) => {
     const eye = add(head, new THREE.Mesh(new THREE.SphereGeometry(0.1, 20, 16), eyeMat), s * 0.22, 0.02, -0.55);
-    eye.scale.set(0.85, 1.1, 0.55);
+    eye.scale.set(0.78, 1.18, 0.5);
     add(head, new THREE.Mesh(new THREE.SphereGeometry(0.03, 10, 8), shine), s * 0.22 + 0.03, 0.07, -0.6);
-    const brow = add(head, rbox(0.25, 0.07, 0.06, 0.03, hair), s * 0.22, 0.22, -0.56);
-    brow.rotation.z = s * -0.08;
+    const brow = add(head, new THREE.Mesh(new THREE.CapsuleGeometry(0.045, 0.16, 6, 12), hair), s * 0.22, 0.22, -0.53);
+    brow.rotation.z = Math.PI / 2 + s * 0.12;
   });
-  add(head, new THREE.Mesh(new THREE.SphereGeometry(0.02, 8, 8), mat(0x6b4632)), 0.3, -0.1, -0.55);
+  add(head, new THREE.Mesh(new THREE.SphereGeometry(0.02, 8, 8), mat(0x4a2c1d)), 0.3, -0.12, -0.5);
+  const nose = add(head, new THREE.Mesh(new THREE.SphereGeometry(0.085, 20, 16), mat(0xb26f48, { roughness: 0.5 })), 0, -0.14, -0.58);
+  nose.scale.set(1.15, 0.85, 0.75);
+  const smile = new THREE.Mesh(new THREE.TorusGeometry(0.13, 0.009, 6, 24, Math.PI * 0.7), mat(0x3a2018));
+  smile.rotation.set(0, Math.PI, Math.PI + Math.PI * 0.15);
+  add(head, smile, 0, -0.27, -0.52);
   // cheek blush
   [-1, 1].forEach((s) => {
-    const blush = add(head, new THREE.Mesh(new THREE.CircleGeometry(0.09, 16), new THREE.MeshBasicMaterial({ color: 0xf0a088, transparent: true, opacity: 0.5 })), s * 0.33, -0.1, -0.535);
+    const blush = add(head, new THREE.Mesh(new THREE.CircleGeometry(0.09, 16), new THREE.MeshBasicMaterial({ color: 0xf0a088, transparent: true, opacity: 0.18 })), s * 0.33, -0.1, -0.535);
     blush.rotation.y = Math.PI + s * -0.5;
     blush.castShadow = false;
   });
