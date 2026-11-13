@@ -346,3 +346,5 @@ img { display: block; max-width: 100%; }
 /* Name and tag sit higher in the hero */
 .hero-text { align-self: start; margin-top: 16vh; }
 @media (max-width: 840px) { .hero-text { margin-top: 0; } }
+.credit { font-size: 11px; opacity: .7; }
+.credit a { text-decoration: underline; }

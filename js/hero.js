@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { buildAvatar, mat, rbox } from './avatar.js';
 import { loadRiggedAvatar } from './avatar-loader.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 
 const host = document.getElementById('hero-scene');
@@ -309,6 +310,20 @@ function init() {
   });
 
 
+  // Sleeping cat on the rug: "Sleeping CAT" by Andrea Marziano (Sketchfab), credited in the footer
+  let catModel = null;
+  new GLTFLoader().load('img/cat.glb', (gltf) => {
+    const m = gltf.scene;
+    const box = new THREE.Box3().setFromObject(m), size = box.getSize(new THREE.Vector3());
+    const k = 2.2 / Math.max(size.x, size.z);               // kitten-sized: ~2.2 units nose-to-tail
+    m.scale.setScalar(k);
+    m.position.set(-(box.min.x + size.x / 2) * k, -box.min.y * k, -(box.min.z + size.z / 2) * k);
+    m.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+    catModel = new THREE.Group(); catModel.add(m);
+    catModel.position.set(-3.2, 0.2, 2.6); catModel.rotation.y = -Math.PI / 4;   // side-on to the camera
+    world.add(catModel);
+  });
+
   // Framed family picture on the wall
   const wallFrame = rbox(1.2, 1.7, 0.12, 0.05, mat(0xd9b27c));
   wallFrame.position.set(5.2, 6.0, -3.42); wallFrame.castShadow = false; world.add(wallFrame);
@@ -540,6 +555,7 @@ function init() {
     avatar.animate(reduceMotion ? 0 : t, ikTargets);
     if (!reduceMotion) {
       updateNotes(t); updateMessage(t);
+      if (catModel) catModel.scale.y = 1 + Math.sin(t * 1.6) * 0.015;   // slow breathing
       // robot blinks every ~3.5s
       const bl = (t % 3.5) < 0.14 ? 0.12 : 1;
       robotEyes.forEach((e) => { e.scale.y = bl; });
